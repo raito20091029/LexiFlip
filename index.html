@@ -1096,6 +1096,7 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   else renderChoices();
 })();
 </script>
+<style id="lexiflip-hard-startup">body:not(.lf-ready) #initialModeSelect{display:block!important}body:not(.lf-ready) #homeScreen{display:none!important}body:not(.lf-ready) .top,body:not(.lf-ready) .tabs,body:not(.lf-ready) .layout{display:none!important}</style>
 <script id="lexiflip-boot-safety">
 (()=> {
   function boot(){
@@ -1105,12 +1106,12 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
     const tabs=document.querySelector('.tabs');
     const layout=document.querySelector('.layout');
     if(document.body.classList.contains('lf-ready')) return;
-    if(screen) screen.style.display='block';
-    if(home) home.style.display='none';
+    if(screen){screen.style.setProperty('display','block','important');screen.hidden=false;}
+    if(home){home.style.setProperty('display','none','important');}
     document.body.classList.remove('home-mode');
-    if(top) top.style.display='none';
-    if(tabs) tabs.style.display='none';
-    if(layout) layout.style.display='none';
+    if(top) top.style.setProperty('display','none','important');
+    if(tabs) tabs.style.setProperty('display','none','important');
+    if(layout) layout.style.setProperty('display','none','important');
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
