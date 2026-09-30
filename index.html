@@ -949,7 +949,7 @@ const versionBadge=document.createElement('span');versionBadge.id='appVersionBad
         c.weak=v<0;
         streak=v>0?streak+1:0;
         try{save()}catch(err){}
-        i=(i+1)%cards.length;
+        if(cards.length>1){let next=i;while(next===i)next=Math.floor(Math.random()*cards.length);i=next}else{i=0;}
         try{render()}catch(err){}
         try{if(typeof renderWeakList==='function')renderWeakList()}catch(err){}
         try{if(typeof daily!=='undefined'){daily.count++;if(typeof renderDailyGoal==='function')renderDailyGoal()}}catch(err){}
