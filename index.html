@@ -677,7 +677,7 @@ function cleanDisplayText(value){
       s=s.slice(0,start)+s.slice(end+close.length);
     }
   }
-  s=s.replace(/\s{2,}/g,' ').replace(/\s*\\/\s*/g,' / ').replace(/\s*([,、;；])\s*/g,'$1 ').trim();
+  s=s.replace(/\s{2,}/g,' ').replace(/\s*\/\s*/g,' / ').replace(/\s*([,、;；])\s*/g,'$1 ').trim();
   s=s.replace(/^\s*[/]\s*/,'').replace(/\s*[/]\s*$/,'').trim();
   return s;
 }
