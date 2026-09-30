@@ -110,7 +110,7 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
     }
   }
   hook();
-  let quizCombo=0,lastResult='';
+  let quizCombo=0,lastResult='';window.lexiQuizCombo=0;
   const answers=document.getElementById('answers');
   if(answers)answers.addEventListener('click',()=>{lastResult=''});
   const result=document.getElementById('result');
@@ -119,9 +119,9 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
       const t=result.textContent||'';
       if(!t||t===lastResult)return;
       lastResult=t;
-      if(t.includes('正解！')){quizCombo++;addXP(quizCombo*quizCombo)}
-      else if(t.includes('不正解'))quizCombo=0;
-      if(t.includes('テスト終了'))quizCombo=0;
+      if(t.includes('正解！')){quizCombo++;window.lexiQuizCombo=quizCombo;addXP(quizCombo*quizCombo)}
+      else if(t.includes('不正解')){quizCombo=0;window.lexiQuizCombo=0;}
+      if(t.includes('テスト終了')){quizCombo=0;window.lexiQuizCombo=0;}
     }).observe(result,{childList:true,subtree:true,characterData:true});
   }
   render();
