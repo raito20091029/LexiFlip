@@ -1,4 +1,4 @@
-const CACHE='lexiflip-v0.9.82';
+const CACHE='lexiflip-v0.9.83';
 const ASSETS=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./vocabulary-pack-1.js','./vocabulary-pack-2.js','./vocabulary-pack-3.js','./vocabulary-pack-4.js'];
 
 self.addEventListener('install',e=>{
