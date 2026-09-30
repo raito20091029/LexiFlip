@@ -297,7 +297,7 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
       const t=result.textContent||'';
       if(!t||t===lastResult)return;
       lastResult=t;
-      if(t.includes('正解！')){quizCombo++;window.lexiQuizCombo=quizCombo;if(window.lexiProfileRecord)window.lexiProfileRecord(true);addXP(quizCombo*quizCombo)}
+      if(t.includes('正解！')){quizCombo++;window.lexiQuizCombo=quizCombo;if(window.lexiProfileRecord)window.lexiProfileRecord(true);addXP(Math.min(16,quizCombo*quizCombo))}
       else if(t.includes('不正解')){if(window.lexiProfileRecord)window.lexiProfileRecord(false);quizCombo=0;window.lexiQuizCombo=0;}
       if(t.includes('テスト終了')){quizCombo=0;window.lexiQuizCombo=0;}
     }).observe(result,{childList:true,subtree:true,characterData:true});
