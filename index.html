@@ -73,11 +73,6 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
       if(goal)home.insertBefore(box,goal);
       else home.appendChild(box);
     }
-    const side=document.querySelector('.side');
-    if(side){
-      const sb=box.cloneNode(true);sb.id='lexiSidePlayerCard';
-      side.prepend(sb);
-    }
   }
   const style=document.createElement('style');
   style.textContent=
