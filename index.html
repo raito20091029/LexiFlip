@@ -848,6 +848,23 @@ const versionBadge=document.createElement('span');versionBadge.id='appVersionBad
   document.getElementById('initialProfile')?.addEventListener('click',()=>enter('profile'));
   document.getElementById('homeTab')?.addEventListener('click',goHome);
 
+  // メイン画面のタブ切り替えをここで一元管理
+  document.querySelectorAll('.tab[data-page]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const page=btn.dataset.page;
+      if(!pages.includes(page)) return;
+      if(screen) screen.style.display='none';
+      if(home) home.style.display='none';
+      document.body.classList.remove('home-mode');
+      document.body.classList.add('lf-ready');
+      if(top) top.style.setProperty('display','flex','important');
+      if(tabs) tabs.style.setProperty('display','flex','important');
+      if(layout) layout.style.setProperty('display','grid','important');
+      showPage(page);
+      window.scrollTo(0,0);
+    });
+  });
+
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',goHome,{once:true});
   else goHome();
 })();
