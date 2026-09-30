@@ -831,6 +831,7 @@ function quizKey(c){return String(c?.jp||'')+'|'+String(c?.en||'')}
 function quizPromptKey(v){return String(v??'').trim().toLowerCase()}
 let quizUsedKeys=new Set();
 let quizUsedPromptKeys=new Set();
+let quizLastPromptKey='';
 function buildQuizPool(){
   const seen=new Set();
   return quizShuffle([...cards]).filter(c=>{
@@ -873,7 +874,7 @@ function showQuiz(){
     for(const dir of directions){
       const prompt=dir?candidate.jp:candidate.en;
       const promptKey=quizPromptKey(prompt);
-      if(promptKey && !quizUsedPromptKeys.has(promptKey)){
+      if(promptKey && promptKey!==quizLastPromptKey && !quizUsedPromptKeys.has(promptKey)){
         card=candidate;
         askJP=dir;
         selectedIndex=n;
@@ -890,13 +891,27 @@ function showQuiz(){
     quizUsedKeys=new Set();
     quizUsedPromptKeys=new Set();
     quizIndex=0;
-    card=quizCards[0];
-    askJP=true;
-    if(quizCards.length>1 && quizLastKey===quizKey(card)){
-      [quizCards[0],quizCards[1]]=[quizCards[1],quizCards[0]];
-      card=quizCards[0];
+    for(let n=0;n<quizCards.length;n++){
+      const candidate=quizCards[n];
+      const candidateKey=quizKey(candidate);
+      if(candidateKey===quizLastKey)continue;
+      const directions=[true,false];
+      for(const dir of directions){
+        const promptKey=quizPromptKey(dir?candidate.jp:candidate.en);
+        if(promptKey && promptKey!==quizLastPromptKey){
+          card=candidate;
+          askJP=dir;
+          selectedIndex=n;
+          break;
+        }
+      }
+      if(card)break;
     }
-    selectedIndex=0;
+    if(!card){
+      card=quizCards[0];
+      askJP=true;
+      selectedIndex=0;
+    }
   }
 
   quizIndex=selectedIndex;
@@ -908,6 +923,7 @@ function showQuiz(){
   quizUsedKeys.add(currentKey);
   quizUsedPromptKeys.add(promptKey);
   quizLastKey=currentKey;
+  quizLastPromptKey=promptKey;
 
   let opts=[answer,...cards.filter(x=>x!==card).sort(()=>Math.random()-.5).slice(0,3).map(x=>askJP?x.en:x.jp)]
     .filter((x,i,a)=>x && a.indexOf(x)===i);
