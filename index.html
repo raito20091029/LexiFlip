@@ -832,9 +832,11 @@ function quizPromptKey(v){return String(v??'').trim().toLowerCase()}
 let quizUsedKeys=new Set();
 let quizUsedPromptKeys=new Set();
 let quizLastPromptKey='';
+let quizMode='all';
+let quizStudyCards=cards;
 function buildQuizPool(){
   const seen=new Set();
-  return quizShuffle([...cards]).filter(c=>{
+  return quizShuffle([...quizStudyCards]).filter(c=>{
     const key=quizKey(c);
     if(seen.has(key))return false;
     seen.add(key);
@@ -842,6 +844,7 @@ function buildQuizPool(){
   });
 }
 function makeQuiz(){
+  quizStudyCards=Array.isArray(quizStudyCards)&&quizStudyCards.length?quizStudyCards:cards;
   quizCards=buildQuizPool();
   quizUsedKeys=new Set();
   quizUsedPromptKeys=new Set();
@@ -1062,7 +1065,71 @@ const saveGrowth=x=>{try{localStorage.setItem(growthKey,JSON.stringify(x.slice(-
 const updateGrowth=(patch={})=>{const list=loadGrowth(),today=todayKey();let row=list.find(x=>x.date===today);if(!row){row={date:today,xp:0,answers:0,correct:0,study:0};list.push(row)}row.xp=Math.max(0,(row.xp||0)+(patch.xp||0));row.answers=Math.max(0,(row.answers||0)+(patch.answers||0));row.correct=Math.max(0,(row.correct||0)+(patch.correct||0));row.study=Math.max(0,(row.study||0)+(patch.study||0));list.sort((a,b)=>a.date.localeCompare(b.date));saveGrowth(list)};
 const growthRangeKey='lexiflip_growth_range';let growthRange=localStorage.getItem(growthRangeKey)||'7';const renderGrowthChart=()=>{const box=$('#growthChart');if(!box)return;const list=loadGrowth().sort((a,b)=>a.date.localeCompare(b.date));const range=growthRange==='all'?'all':Math.max(1,Number(growthRange)||7);let days=[];if(range==='all'){days=list.length?list.slice():[{date:todayKey(),xp:0,answers:0,correct:0,study:0}]}else{const base=new Date();for(let i=range-1;i>=0;i--){const d=new Date(base);d.setDate(base.getDate()-i);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');days.push(list.find(x=>x.date===key)||{date:key,xp:0,answers:0,correct:0,study:0})}}const max=Math.max(1,...days.map(x=>Number(x.xp)||0));const W=700,H=190,L=34,R=12,T=18,B=32,innerW=W-L-R,innerH=H-T-B,denom=Math.max(1,days.length-1);const pts=days.map((d,i)=>{const x=L+(innerW*(i/denom)),y=T+innerH-(innerH*((Number(d.xp)||0)/max));return{x,y,v:Number(d.xp)||0,d}});const line=pts.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');const area=L+','+(T+innerH)+' '+line+' '+(L+innerW)+','+(T+innerH);const labels=pts.map((p,i)=>{if(days.length>12&&i%Math.ceil(days.length/7)!==0&&i!==days.length-1)return '';const dt=new Date(days[i].date+'T00:00:00');return '<text x="'+p.x.toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle" class="growth-chart-label">'+(dt.getMonth()+1)+'/'+dt.getDate()+'</text>'}).join('');const points=pts.map(p=>'<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(days.length>30?3.5:4.5)+'" class="growth-chart-point"><title>'+p.d.date+'：'+p.v+' XP</title></circle>').join('');const values=days.length<=14?pts.map(p=>p.v>0?'<text x="'+p.x.toFixed(1)+'" y="'+Math.max(11,p.y-9).toFixed(1)+'" text-anchor="middle" class="growth-chart-value">'+p.v+'</text>':'').join(''):'';const grids=[0,.5,1].map(q=>{const y=T+innerH-(innerH*q);return '<line x1="'+L+'" y1="'+y.toFixed(1)+'" x2="'+(L+innerW)+'" y2="'+y.toFixed(1)+'" class="growth-chart-grid"/>'}).join('');const total=days.reduce((a,x)=>a+(Number(x.xp)||0),0);box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="成長グラフ">'+grids+'<polygon points="'+area+'" class="growth-chart-area"/><polyline points="'+line+'" class="growth-chart-line"/>'+points+values+labels+'</svg>';const s=$('#growthChartSummary');if(s)s.textContent=(range==='all'?'全期間 ':range+'日間 ')+total+' XP';const t=$('#growthChartTitle');if(t)t.textContent=range==='all'?'📈 全期間の成長':'📈 直近'+range+'日間の成長';document.querySelectorAll('.growth-range-btn').forEach(b=>b.classList.toggle('active',b.dataset.growthRange===String(growthRange)))};document.addEventListener('click',e=>{const b=e.target.closest('.growth-range-btn');if(!b)return;growthRange=b.dataset.growthRange;localStorage.setItem(growthRangeKey,growthRange);renderGrowthChart()});window.lexiProfileRecord=(correct=false)=>{const x=load();x.answers++;if(correct)x.correct++;x.bestStreak=Math.max(x.bestStreak,window.lexiQuizCombo||0);saveStats(x);recordDay();updateGrowth({answers:1,correct:correct?1:0,study:1});if(window.renderProfile)renderProfile()};
 window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(x);updateGrowth({xp:Number(n)||0});if(window.renderProfile)renderProfile()};document.addEventListener('click',e=>{const av=e.target.closest('#avatarOptions .avatar-option'),ti=e.target.closest('.title-option');if(av){e.preventDefault();e.stopPropagation();if(av.classList.contains('locked'))return;const chosen=av.dataset.avatar;if(!chosen)return;localStorage.setItem(avatarKey,chosen);try{localStorage.setItem(avatarKey+'_backup',chosen)}catch(err){};renderProfile();return}if(ti&&!ti.classList.contains('locked')){e.preventDefault();localStorage.setItem(titleKey,ti.dataset.title);renderProfile();return}if(e.target.id==='profileSave'){const name=$('#profileName').value.trim();localStorage.setItem(nameKey,name);if(!localStorage.getItem(avatarKey))localStorage.setItem(avatarKey,avatarForName(name));renderProfile()}});})();
-</script><!-- 起動時の強制ホーム遷移は削除。initial-mode-js が唯一の画面遷移管理を担当。 --><style id="lexiflip-initial-mode-css">.lf-initial-mode{max-width:900px;margin:0 auto;padding:52px 20px 70px;text-align:center}.lf-initial-mode .lf-menu-grid{margin:28px auto 0}.lf-initial-mode .lf-menu-card{min-height:220px}@media(max-width:650px){.lf-initial-mode{padding:32px 14px}.lf-initial-mode .lf-menu-card{min-height:180px}}</style><script id="lexiflip-initial-mode-js">
+</script>
+<script id="lexiflip-quiz-level-selector">
+(()=>{
+  function ensureQuizLevelSelector(){
+    let el=document.getElementById('quizLevelSelect');
+    if(el)return el;
+    el=document.createElement('div');
+    el.id='quizLevelSelect';
+    el.innerHTML='<div class="card-level-panel"><div class="card-level-brand">LEXIFLIP</div><h2>🎯 4択テスト</h2><p>テストする単語レベルを選択してください</p><div id="quizLevelGrid" class="card-level-grid"></div><button id="quizLevelCancel" class="card-level-cancel">← メインメニューに戻る</button></div>';
+    document.body.appendChild(el);
+    const st=document.createElement('style');
+    st.textContent='#quizLevelSelect{position:fixed;inset:0;z-index:10000;display:none;overflow:auto;padding:24px 14px;background:linear-gradient(160deg,var(--bg),var(--panel2))}#quizLevelSelect .card-level-panel{width:min(720px,100%);margin:auto;padding:26px 18px;border:1px solid var(--border);border-radius:24px;background:var(--panel);box-shadow:0 20px 60px #0005}#quizLevelSelect .card-level-brand{font-size:11px;letter-spacing:.18em;font-weight:950;color:var(--muted);text-align:center}#quizLevelSelect h2{text-align:center;margin:8px 0 4px;font-size:26px}#quizLevelSelect .card-level-panel>p{text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px}#quizLevelSelect .card-level-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#quizLevelSelect .card-level-btn{min-height:145px;text-align:left;padding:18px;border:1px solid var(--border);border-radius:20px;background:var(--panel2);color:var(--text);cursor:pointer;box-shadow:0 6px 0 #0002}#quizLevelSelect .card-level-btn:active{transform:translateY(2px);box-shadow:0 3px 0 #0002}@media(max-width:650px){#quizLevelSelect .card-level-grid{grid-template-columns:1fr}#quizLevelSelect{padding:14px}#quizLevelSelect .card-level-btn{min-height:125px}}';
+    document.head.appendChild(st);
+    document.getElementById('quizLevelCancel').onclick=()=>{
+      el.style.display='none';
+      if(typeof goHome==='function')goHome();
+      else{
+        const initial=document.getElementById('initialModeSelect');
+        if(initial)initial.style.display='block';
+      }
+    };
+    return el;
+  }
+
+  window.showQuizLevelSelect=function(){
+    const el=ensureQuizLevelSelector();
+    const grid=el.querySelector('#quizLevelGrid');
+    const lv=typeof currentPlayerLevel==='function'?currentPlayerLevel():1;
+    const labels=typeof cardLevelLabels!=='undefined'?cardLevelLabels:{
+      common:['📘','常用英語','日常会話で特によく使う英単語'],
+      beginner:['🌱','初級','まず身につけたい基本語彙'],
+      intermediate:['🔥','中級','会話・文章で使える語彙を広げる'],
+      advanced:['👑','上級','より高度で幅広い語彙に挑戦']
+    };
+    const unlocks={common:1,beginner:5,intermediate:15,advanced:30};
+    grid.innerHTML=Object.entries(labels).map(([key,v])=>{
+      const count=key==='common'?cards.filter(c=>c.common).length:cards.filter(c=>c.level===key).length;
+      const need=unlocks[key],locked=lv<need;
+      return '<button type="button" class="card-level-btn '+(locked?'is-locked':'')+'" data-quiz-level="'+key+'" '+(locked?'disabled aria-disabled="true"':'')+'><span class="card-level-icon">'+(locked?'🔒':v[0])+'</span><span class="card-level-name">'+v[1]+'</span><span class="card-level-desc">'+(locked?'Lv.'+need+'で解放':v[2])+'</span><span class="card-level-count">'+(locked?'あとLv.'+(need-lv):count.toLocaleString()+'語')+'</span></button>';
+    }).join('');
+    grid.querySelectorAll('[data-quiz-level]:not([disabled])').forEach(b=>b.onclick=()=>{
+      const mode=b.dataset.quizLevel;
+      quizMode=mode;
+      quizStudyCards=mode==='common'?cards.filter(c=>c.common):cards.filter(c=>c.level===mode);
+      el.style.display='none';
+      const initial=document.getElementById('initialModeSelect'),home=document.getElementById('homeScreen'),top=document.querySelector('.top'),tabs=document.querySelector('.tabs'),layout=document.querySelector('.layout');
+      if(initial)initial.style.display='none';
+      if(home)home.style.display='none';
+      document.body.classList.remove('home-mode');
+      document.body.classList.add('lf-ready');
+      if(top)top.style.setProperty('display','flex','important');
+      if(tabs)tabs.style.setProperty('display','flex','important');
+      if(layout)layout.style.setProperty('display','grid','important');
+      document.querySelectorAll('.tab[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page==='quiz'));
+      document.querySelectorAll('[id$="Page"]').forEach(x=>x.classList.add('hide'));
+      const qp=document.getElementById('quizPage');if(qp)qp.classList.remove('hide','show'),qp.classList.add('show');
+      if(typeof makeQuiz==='function')makeQuiz();
+      window.scrollTo(0,0);
+    });
+    el.style.display='flex';
+    window.scrollTo(0,0);
+  };
+})();
+</script>
+<!-- 起動時の強制ホーム遷移は削除。initial-mode-js が唯一の画面遷移管理を担当。 --><style id="lexiflip-initial-mode-css">.lf-initial-mode{max-width:900px;margin:0 auto;padding:52px 20px 70px;text-align:center}.lf-initial-mode .lf-menu-grid{margin:28px auto 0}.lf-initial-mode .lf-menu-card{min-height:220px}@media(max-width:650px){.lf-initial-mode{padding:32px 14px}.lf-initial-mode .lf-menu-card{min-height:180px}}</style><script id="lexiflip-initial-mode-js">
 (()=> {
   const screen=document.getElementById('initialModeSelect');
   const home=document.getElementById('homeScreen');
@@ -1108,7 +1175,7 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   }
 
   document.getElementById('initialStudy')?.addEventListener('click',()=>showCardLevelSelect());
-  document.getElementById('initialQuiz')?.addEventListener('click',()=>enter('quiz'));
+  document.getElementById('initialQuiz')?.addEventListener('click',()=>showQuizLevelSelect());
   document.getElementById('initialManage')?.addEventListener('click',()=>enter('manage'));
   document.getElementById('initialProfile')?.addEventListener('click',()=>enter('profile'));
   document.getElementById('homeTab')?.addEventListener('click',goHome);
@@ -1125,6 +1192,10 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
       if(top) top.style.setProperty('display','flex','important');
       if(tabs) tabs.style.setProperty('display','flex','important');
       if(layout) layout.style.setProperty('display','grid','important');
+      if(page==='quiz' && typeof showQuizLevelSelect==='function'){
+        showQuizLevelSelect();
+        return;
+      }
       showPage(page);
       window.scrollTo(0,0);
     });
