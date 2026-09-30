@@ -56,20 +56,23 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
     setTimeout(()=>d.remove(),1800);
   }
   function render(){
-    document.querySelectorAll('#lexiPlayerCard,#lexiSidePlayerCard').forEach(el=>el.remove());
-    const box=document.createElement('div');
-    box.id='lexiPlayerCard';
+    const home=document.getElementById('homeScreen');
+    if(!home)return;
+    let boxes=home.querySelectorAll('#lexiPlayerCard');
+    let box=boxes[0];
+    boxes.forEach((el,n)=>{if(n>0)el.remove()});
+    if(!box){
+      box=document.createElement('div');
+      box.id='lexiPlayerCard';
+      const goal=home.querySelector('#homeGoal')?.parentElement;
+      if(goal)home.insertBefore(box,goal);
+      else home.appendChild(box);
+    }
     const n=need(p.level), pct=Math.min(100,p.xp/n*100);
     box.innerHTML='<div class="lx-player-top"><div><div class="lx-label">PLAYER</div><div class="lx-title">LexiFlip Trainer</div></div><div class="lx-lv">Lv.'+p.level+'</div></div>'+
       '<div class="lx-xp-row"><b>'+p.xp+' XP</b><span>'+n+' XPまで</span></div>'+
       '<div class="lx-xp"><i style="width:'+pct+'%"></i></div>'+
       '<div class="lx-next">次のレベルまで '+Math.max(0,n-p.xp)+' XP</div>';
-    const home=document.getElementById('homeScreen');
-    if(home){
-      const goal=home.querySelector('#homeGoal')?.parentElement;
-      if(goal)home.insertBefore(box,goal);
-      else home.appendChild(box);
-    }
   }
   const style=document.createElement('style');
   style.textContent=
