@@ -91,6 +91,8 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
   }
   hook();
   let quizCombo=0,lastResult='';
+  const answers=document.getElementById('answers');
+  if(answers)answers.addEventListener('click',()=>{lastResult=''});
   const result=document.getElementById('result');
   if(result){
     new MutationObserver(()=>{
@@ -107,12 +109,12 @@ const seed=[['話す','speak','I can speak English a little.'],['休む','rest',
   const reset=document.getElementById('reset');
   if(reset&&!reset.__lxReset){
     const oldReset=reset.onclick;
-    reset.onclick=function(e){
+    reset.onclick=function(){
       const ok=confirm('学習履歴とレベル・XPをリセットしますか？');
       if(!ok)return;
+      try{cards.forEach(c=>{c.score=0;c.seen=0});streak=0;save();render()}catch(e){}
       localStorage.removeItem(KEY);p={xp:0,level:1};save();
-      if(oldReset)oldReset.call(this,e);
-      setTimeout(render,0);
+      render();
     };
     reset.__lxReset=true;
   }
