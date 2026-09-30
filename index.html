@@ -1096,4 +1096,23 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   else renderChoices();
 })();
 </script>
-</body></html>
+<script id="lexiflip-boot-safety">
+(()=> {
+  function boot(){
+    const screen=document.getElementById('initialModeSelect');
+    const home=document.getElementById('homeScreen');
+    const top=document.querySelector('.top');
+    const tabs=document.querySelector('.tabs');
+    const layout=document.querySelector('.layout');
+    if(document.body.classList.contains('lf-ready')) return;
+    if(screen) screen.style.display='block';
+    if(home) home.style.display='none';
+    document.body.classList.remove('home-mode');
+    if(top) top.style.display='none';
+    if(tabs) tabs.style.display='none';
+    if(layout) layout.style.display='none';
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+})();
+</script></body></html>
