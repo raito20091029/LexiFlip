@@ -828,7 +828,9 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelect
   return arr;
 }
 function quizKey(c){return String(c?.jp||'')+'|'+String(c?.en||'')}
+function quizPromptKey(v){return String(v??'').trim().toLowerCase()}
 let quizUsedKeys=new Set();
+let quizUsedPromptKeys=new Set();
 function buildQuizPool(){
   const seen=new Set();
   return quizShuffle([...cards]).filter(c=>{
@@ -841,6 +843,7 @@ function buildQuizPool(){
 function makeQuiz(){
   quizCards=buildQuizPool();
   quizUsedKeys=new Set();
+  quizUsedPromptKeys=new Set();
   quizIndex=0;
   quizScore=0;
   showQuiz();
@@ -848,46 +851,64 @@ function makeQuiz(){
 function showQuiz(){
   if(!quizCards.length)return;
 
-  // 現在の周回を最後まで使い切ったら、新しい周回を開始する
   if(quizIndex>=quizCards.length){
     quizCards=buildQuizPool();
     quizUsedKeys=new Set();
+    quizUsedPromptKeys=new Set();
     quizIndex=0;
   }
 
-  // 未出題の問題だけを選ぶ。万一プール内に重複があっても除外する。
   let card=null;
+  let askJP=true;
+  let selectedIndex=-1;
+
+  // 「答え」ではなく、実際に画面へ出す問題文そのものを重複チェックする。
+  // そのため、同じ日本語が別カードに存在する場合や、向きが変わった場合も同じ問題として扱う。
   for(let n=quizIndex;n<quizCards.length;n++){
     const candidate=quizCards[n];
-    if(!quizUsedKeys.has(quizKey(candidate))){
-      card=candidate;
-      quizIndex=n;
-      break;
+    const key=quizKey(candidate);
+    if(quizUsedKeys.has(key))continue;
+
+    const directions=Math.random()<.5?[true,false]:[false,true];
+    for(const dir of directions){
+      const prompt=dir?candidate.jp:candidate.en;
+      const promptKey=quizPromptKey(prompt);
+      if(promptKey && !quizUsedPromptKeys.has(promptKey)){
+        card=candidate;
+        askJP=dir;
+        selectedIndex=n;
+        break;
+      }
     }
+    if(card)break;
   }
 
-  // 現在の周回で未出題がなくなった場合は新しい周回へ
+  // その周回で未使用カードが残っていても、表示できる問題文が重複するなら
+  // 残りを無理に出さず、新しい周回へ移る。
   if(!card){
     quizCards=buildQuizPool();
     quizUsedKeys=new Set();
+    quizUsedPromptKeys=new Set();
     quizIndex=0;
     card=quizCards[0];
+    askJP=true;
+    if(quizCards.length>1 && quizLastKey===quizKey(card)){
+      [quizCards[0],quizCards[1]]=[quizCards[1],quizCards[0]];
+      card=quizCards[0];
+    }
+    selectedIndex=0;
   }
 
+  quizIndex=selectedIndex;
   const currentKey=quizKey(card);
-  // 周回の切り替わりでも、直前と同じ問題が先頭に来ないようにする
-  if(quizUsedKeys.size===0 && quizCards.length>1 && typeof quizLastKey!=='undefined' && quizLastKey===currentKey){
-    [quizCards[0],quizCards[1]]=[quizCards[1],quizCards[0]];
-    card=quizCards[0];
-    quizIndex=0;
-  }
-
-  quizUsedKeys.add(quizKey(card));
-  quizLastKey=quizKey(card);
-
-  const askJP=Math.random()<.5;
   const q=askJP?card.jp:card.en;
   const answer=askJP?card.en:card.jp;
+  const promptKey=quizPromptKey(q);
+
+  quizUsedKeys.add(currentKey);
+  quizUsedPromptKeys.add(promptKey);
+  quizLastKey=currentKey;
+
   let opts=[answer,...cards.filter(x=>x!==card).sort(()=>Math.random()-.5).slice(0,3).map(x=>askJP?x.en:x.jp)]
     .filter((x,i,a)=>x && a.indexOf(x)===i);
   while(opts.length<4){
