@@ -832,6 +832,7 @@ function quizPromptKey(v){return String(v??'').trim().toLowerCase()}
 let quizUsedKeys=new Set();
 let quizUsedPromptKeys=new Set();
 let quizLastPromptKey='';
+let quizLastOptionKey='';
 let quizMode='all';
 let quizStudyCards=cards;
 function buildQuizPool(){
@@ -928,14 +929,33 @@ function showQuiz(){
   quizLastKey=currentKey;
   quizLastPromptKey=promptKey;
 
-  let opts=[answer,...cards.filter(x=>x!==card).sort(()=>Math.random()-.5).slice(0,3).map(x=>askJP?x.en:x.jp)]
-    .filter((x,i,a)=>x && a.indexOf(x)===i);
-  while(opts.length<4){
-    const extra=cards[Math.floor(Math.random()*cards.length)];
-    const value=askJP?extra.en:extra.jp;
-    if(value && !opts.includes(value))opts.push(value);
+  const optionPool=quizStudyCards.length?quizStudyCards:cards;
+  let opts=[];
+  const candidates=quizShuffle(optionPool.filter(x=>x!==card));
+  for(const x of candidates){
+    const value=askJP?x.en:x.jp;
+    if(value && !opts.includes(value) && value!==answer)opts.push(value);
+    if(opts.length>=3)break;
+  }
+  opts=[answer,...opts];
+  if(opts.length<4){
+    const fallbackPool=quizShuffle(cards.filter(x=>x!==card));
+    for(const x of fallbackPool){
+      const value=askJP?x.en:x.jp;
+      if(value && !opts.includes(value) && value!==answer)opts.push(value);
+      if(opts.length>=4)break;
+    }
   }
   opts=quizShuffle(opts);
+  let optionKey=opts.map(x=>String(x)).sort().join('|');
+  if(opts.length===4 && optionKey===quizLastOptionKey){
+    for(let attempt=0;attempt<12;attempt++){
+      const rotated=quizShuffle([...opts]);
+      const rotatedKey=rotated.map(x=>String(x)).sort().join('|');
+      if(rotatedKey!==quizLastOptionKey){opts=rotated;optionKey=rotatedKey;break}
+    }
+  }
+  quizLastOptionKey=optionKey;
   $('#quizScore').textContent=quizScore;
   $('#quizQuestion').textContent=q;
   $('#answers').innerHTML=opts.map(x=>'<button type="button">'+x+'</button>').join('');
