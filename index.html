@@ -1245,8 +1245,15 @@ function showQuiz(){
       const lfShield=Number(lfShopState.__shieldActive||0)>0;
       const lfCombo=Number(lfShopState.__comboActive||0)>0;
       if(lfShield||lfCombo){
-        if(lfCombo)streak=Math.max(1,streak);
-        if(lfShield){card.score=Math.max(0,card.score);card.weak=!!card.weak;}
+        if(lfShield){
+          streak=Math.max(0,streak);
+          card.score=Math.max(0,card.score);
+          card.weak=!!card.weak;
+        }else if(lfCombo){
+          streak=Math.max(1,streak);
+          card.score=Math.max(0,card.score-1);
+          card.weak=true;
+        }
         lfShopState.__shieldActive=0;
         lfShopState.__comboActive=0;
         try{localStorage.setItem('lexiflip_shop_v1',JSON.stringify(lfShopState))}catch(e){}
