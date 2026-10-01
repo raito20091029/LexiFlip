@@ -1638,7 +1638,7 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
 
   document.getElementById('initialStudy')?.addEventListener('click',()=>showCardLevelSelect());
   document.getElementById('initialQuiz')?.addEventListener('click',()=>showQuizLevelSelect());
-  document.getElementById('lfHomeRankHero')?.addEventListener('click',()=>{if(typeof startTest==='function')startTest();});
+  // Rank hero click is handled by the global delegated handler after the rank engine loads.
   document.getElementById('initialRankTest')?.addEventListener('click',()=>{if(typeof startTest==='function')startTest();});
   document.getElementById('initialShop')?.addEventListener('click',()=>{document.body.classList.remove('home-mode');document.body.classList.add('lf-ready');if(screen)screen.style.setProperty('display','none','important');if(home)home.style.setProperty('display','none','important');const shopScreen=document.getElementById('lfShopScreen');if(shopScreen)shopScreen.style.setProperty('display','block','important');const topbar=document.querySelector('.top');if(topbar)topbar.style.setProperty('display','none','important');if(tabs)tabs.style.setProperty('display','none','important');if(layout)layout.style.setProperty('display','none','important');window.scrollTo(0,0);});
   document.getElementById('lfShopBack')?.addEventListener('click',()=>{const shopScreen=document.getElementById('lfShopScreen');if(shopScreen)shopScreen.style.setProperty('display','none','important');if(screen)screen.style.setProperty('display','block','important');document.body.classList.remove('lf-ready','home-mode');const topbar=document.querySelector('.top');if(topbar)topbar.style.setProperty('display','none','important');if(tabs)tabs.style.setProperty('display','none','important');if(layout)layout.style.setProperty('display','none','important');window.scrollTo(0,0);});
@@ -2349,6 +2349,15 @@ function makeQuestion(c,pool){
  shuffle(choices);
  return {card:c,choices:choices};
 }
+// Robust home hero click handler: delegated so it still works if another startup script fails.
+document.addEventListener('click',function(e){
+  var hero=e.target.closest&&e.target.closest('#lfHomeRankHero');
+  if(!hero)return;
+  e.preventDefault();
+  e.stopPropagation();
+  if(typeof window.startTest==='function')window.startTest();
+});
+
 function startTest(){
  var s=rankInfo(),pool=poolForTier(s.tier);
  if(pool.length<4){alert('ランクテストに必要な単語が足りません。');return}
