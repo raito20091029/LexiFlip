@@ -961,7 +961,7 @@ function showQuiz(){
     }
   }
   quizLastOptionKey=optionKey;
-  $('#quizScore').textContent=quizScore;
+  const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
   $('#question').textContent=q;
   $('#answers').innerHTML=opts.map(x=>'<button type="button">'+x+'</button>').join('');
   $('#result').textContent='';
@@ -981,7 +981,7 @@ function showQuiz(){
     save();
     if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok);
     if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
-    $('#quizScore').textContent=quizScore;
+    const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
     $('#result').textContent=ok?'⭕ 正解！':'❌ 不正解';
     quizIndex++;
     setTimeout(()=>showQuiz(),2200);
