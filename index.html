@@ -2379,10 +2379,11 @@ function startTest(){
   }
  }
  if(questions.length<10){alert('ランクテストを開始できませんでした。');return}
+ window.lexiRankTestActive=true;
  var modal=document.createElement('div');modal.className='lf-rank-modal';modal.id='lfRankModal';
  modal.innerHTML='<div class="lf-rank-panel"><div class="lf-rank-modal-head"><b>🎯 ランクテスト</b><button class="lf-rank-close" id="lfRankClose">閉じる</button></div><div class="lf-rank-progress" id="lfRankProgress"></div><div id="lfRankBody"></div></div>';
  document.body.appendChild(modal);
- document.getElementById('lfRankClose').onclick=function(){modal.remove()};
+ document.getElementById('lfRankClose').onclick=function(){window.lexiRankTestActive=false;modal.remove()};
  var state={index:0,correct:0,wrong:0};
  function show(){
   var body=document.getElementById('lfRankBody'),q=questions[state.index];
@@ -2392,7 +2393,16 @@ function startTest(){
    b.onclick=function(){
     body.querySelectorAll('[data-answer]').forEach(function(x){x.disabled=true});
     var answer=decodeURIComponent(b.getAttribute('data-answer')),ok=answer===String(q.card.en||'');
-    if(ok){state.correct++;if(typeof window.lexiAddXP==='function')window.lexiAddXP(2);if(typeof window.lexiAddCoins==='function')window.lexiAddCoins(1);}else state.wrong++;
+    if(ok){
+      state.correct++;
+      if(typeof window.lexiAddXP==='function')window.lexiAddXP(2);
+      if(typeof window.lexiAddCoins==='function'){
+       var rs={};try{rs=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}')}catch(e){}
+       var coinGain=Number(rs.__boostActive)>0?2:1;
+       window.lexiAddCoins(coinGain,'ランクテスト正解');
+       if(Number(rs.__boostActive)>0){rs.__boostActive=Math.max(0,Number(rs.__boostActive)-1);try{localStorage.setItem('lexiflip_shop_v1',JSON.stringify(rs))}catch(e){}}
+      }
+     }else state.wrong++;
     var result=document.getElementById('lfRankResult');
     result.className='lf-rank-result '+(ok?'good':'bad');
     result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+String(q.card.en||'');
@@ -2401,6 +2411,7 @@ function startTest(){
   });
  }
  function finish(){
+  window.lexiRankTestActive=false;
   var before=rankInfo(),delta=state.correct-state.wrong;
   var raw=before.rr+delta,tier=before.tier;
   while(raw>=100&&tier<ranks.length-1){raw-=100;tier++}
