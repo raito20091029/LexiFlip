@@ -2007,4 +2007,126 @@ function hook(){
 function boot(){mount();hook();setInterval(function(){mount();hook()},1000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
-</script></body></html>
+</script>
+<style id="lexiflip-shop-style">
+#lfShop{margin-top:18px}
+.lf-shop-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.lf-shop-title{font-size:18px;font-weight:950}
+.lf-shop-coins{padding:7px 11px;border:1px solid #16445a;border-radius:999px;background:#0b1220;color:#ffd95a;font-weight:900}
+.lf-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lf-shop-item{padding:14px;border:1px solid #16445a;border-radius:16px;background:#0b1220;display:flex;flex-direction:column;gap:7px}
+.lf-shop-item h4{margin:0;font-size:15px}
+.lf-shop-item p{margin:0;color:#79a7b8;font-size:12px;line-height:1.45;min-height:35px}
+.lf-shop-price{color:#ffd95a;font-weight:950}
+.lf-shop-actions{display:flex;gap:7px;margin-top:auto}
+.lf-shop-actions button{flex:1;padding:8px 9px;font-size:12px}
+.lf-shop-use{border-color:#00d9ff!important;color:#e8fbff!important}
+.lf-shop-owned{font-size:11px;color:#79a7b8}
+.lf-shop-active{font-size:11px;color:#22e6a5;font-weight:900}
+#lfShopMsg{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);opacity:0;z-index:200001;padding:11px 16px;border:1px solid #16445a;border-radius:14px;background:#0b1220;color:#e8fbff;font-weight:900;pointer-events:none;transition:.2s;box-shadow:0 0 25px #00d9ff22}
+#lfShopMsg.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){.lf-shop-grid{grid-template-columns:1fr}}
+</style>
+<script id="lexiflip-shop-v1">
+(function(){
+'use strict';
+var KEY='lexiflip_shop_v1';
+var items={
+ xp:{name:'⚡ XPブースト',price:50,desc:'次の10回のXP獲得量が2倍になる。',type:'consumable'},
+ shield:{name:'🛡️ 1ミス保護',price:80,desc:'次の4択クイズの不正解1回だけ、連続正解を維持。',type:'consumable'},
+ ticket:{name:'🎲 ランダム問題券',price:30,desc:'使うと、その場で特別ランダム4択を1問プレイ。',type:'instant'},
+ combo:{name:'🔥 コンボ保険',price:100,desc:'次の4択クイズで1回のミス後、コンボを1だけ残す。',type:'consumable'},
+ effect:{name:'✨ 正解エフェクト',price:150,desc:'正解演出をネオン・パルス仕様に変更。',type:'toggle'},
+ title:{name:'👑 限定称号',price:500,desc:'プロフィール用「COIN HUNTER」称号を解放。',type:'unique'},
+ boost:{name:'🪙 コインブースト',price:300,desc:'次の10回の正解でコイン獲得量が2倍。',type:'consumable'}
+};
+function state(){
+ try{var x=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign({xp:0,shield:0,ticket:0,combo:0,effect:false,title:false,boost:0},x)}catch(e){return {xp:0,shield:0,ticket:0,combo:0,effect:false,title:false,boost:0}}
+}
+function save(x){try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}}
+function coins(){try{return Number(localStorage.getItem('lexiflip_coins'))||0}catch(e){return 0}}
+function setCoins(n){try{localStorage.setItem('lexiflip_coins',String(Math.max(0,Math.floor(n))))}catch(e){}}
+function msg(t){var e=document.getElementById('lfShopMsg');if(!e)return;e.textContent=t;e.classList.add('show');clearTimeout(window.__lfShopMsg);window.__lfShopMsg=setTimeout(function(){e.classList.remove('show')},1300)}
+function render(){
+ var host=document.getElementById('initialModeSelect');if(!host)return;
+ var box=document.getElementById('lfShop');
+ if(!box){box=document.createElement('div');box.id='lfShop';host.appendChild(box)}
+ var s=state();
+ box.innerHTML='<div class="lf-extra-card"><div class="lf-shop-head"><div><div class="lf-shop-title">🛒 コインショップ</div><div class="lf-extra-sub">集めたコインをゲーム内アイテムに交換</div></div><div class="lf-shop-coins">💰 '+coins().toLocaleString()+'</div></div><div class="lf-shop-grid">'+Object.keys(items).map(function(k){var it=items[k],owned=s[k]||0,unique=it.type==='unique'&&owned;return '<div class="lf-shop-item"><h4>'+it.name+'</h4><p>'+it.desc+'</p><div class="lf-shop-price">💰 '+it.price+' コイン</div><div class="lf-shop-owned">'+(it.type==='unique'?(unique?'解放済み':'未解放'):'所持 '+owned+'個')+(s[k]&&((k==='boost'&&s.boost>0)||(k==='xp'&&s.xp>0))?'<span class="lf-shop-active"> ・使用可能</span>':'')+'</div><div class="lf-shop-actions"><button data-buy="'+k+'" '+(unique||coins()<it.price?'disabled':'')+'>購入</button>'+(it.type!=='unique'&&it.type!=='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='toggle'&&owned?' <button class="lf-shop-use" data-use="'+k+'">'+(s[k]?'ON':'使う')+'</button>':'')+'</div></div>'}).join('')+'</div></div>';
+ box.querySelectorAll('[data-buy]').forEach(function(b){b.onclick=function(){buy(b.getAttribute('data-buy'))}});
+ box.querySelectorAll('[data-use]').forEach(function(b){b.onclick=function(){use(b.getAttribute('data-use'))}});
+}
+function buy(k){
+ var it=items[k],s=state();
+ if(!it||coins()<it.price||(it.type==='unique'&&s[k]))return;
+ setCoins(coins()-it.price);
+ if(it.type==='unique')s[k]=true;else s[k]=(Number(s[k])||0)+1;
+ save(s);render();msg(it.name+' を購入！');
+}
+function use(k){
+ var s=state();
+ if(k==='xp'&&s.xp>0){s.xp--;save(s);msg('⚡ XPブーストを発動！次の10回が2倍');}
+ else if(k==='shield'&&s.shield>0){s.shield--;s.__shieldActive=1;save(s);msg('🛡️ 1ミス保護を発動！');}
+ else if(k==='combo'&&s.combo>0){s.combo--;s.__comboActive=1;save(s);msg('🔥 コンボ保険を発動！');}
+ else if(k==='effect'&&s.effect){s.effect=false;save(s);document.documentElement.classList.remove('lf-neon-effect');msg('✨ エフェクトOFF');}
+ else if(k==='boost'&&s.boost>0){s.boost--;s.__boostActive=10;save(s);msg('🪙 コインブーストを発動！10回2倍');}
+ else if(k==='ticket'&&s.ticket>0){s.ticket--;save(s);specialQuiz();}
+ else return;
+ render();
+}
+function specialQuiz(){
+ var cards=window.__lexiCards||[];
+ if(!cards.length){msg('単語データがありません');return}
+ var pool=cards.slice().sort(function(){return Math.random()-.5}),c=pool[0],choices=[c.en];
+ pool.filter(function(x){return x.en!==c.en}).slice(0,3).forEach(function(x){choices.push(x.en)});
+ choices.sort(function(){return Math.random()-.5});
+ var o=document.getElementById('lfSpecialQuiz');if(!o){o=document.createElement('div');o.id='lfSpecialQuiz';o.style.cssText='position:fixed;inset:0;z-index:200000;background:#050812ee;display:grid;place-items:center;padding:18px';o.innerHTML='<div style="width:min(560px,100%);background:#0b1220;border:1px solid #16445a;border-radius:22px;padding:22px"><div style="display:flex;justify-content:space-between;align-items:center"><b>🎲 ランダム問題券</b><button id="lfSqClose">閉じる</button></div><div id="lfSqQ" style="font-size:28px;font-weight:950;text-align:center;margin:30px 0"></div><div id="lfSqA" style="display:grid;gap:9px"></div><div id="lfSqR" style="text-align:center;margin-top:14px;font-weight:900"></div></div>';document.body.appendChild(o);o.querySelector('#lfSqClose').onclick=function(){o.remove()}}
+ o.querySelector('#lfSqQ').textContent=c.jp;o.querySelector('#lfSqR').textContent='';
+ o.querySelector('#lfSqA').innerHTML=choices.map(function(x){return '<button data-x="'+encodeURIComponent(x)+'">'+x+'</button>'}).join('');
+ o.querySelectorAll('[data-x]').forEach(function(b){b.onclick=function(){var ok=decodeURIComponent(b.getAttribute('data-x'))===String(c.en);o.querySelectorAll('[data-x]').forEach(function(x){x.disabled=true});o.querySelector('#lfSqR').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+c.en;if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);setTimeout(function(){o.remove()},1100)}});
+}
+function hookXP(){
+ var f=window.lexiAddXP;if(typeof f!=='function'||f.__lfShopXP)return;
+ var n=function(v){var s=state(),m=1;if(s.xp>0){s.xp--;m=2;save(s)}var out=f.apply(this,[v*m]);render();return out};n.__lfShopXP=true;window.lexiAddXP=n;
+}
+function hookQuiz(){
+ var f=window.lexiProfileRecord;if(typeof f!=='function'||f.__lfShopQuiz)return;
+ var n=function(ok){
+  var s=state(),protect=s.__shieldActive||s.__comboActive,old=Number(window.lexiQuizCombo)||0;
+  var out=f.apply(this,arguments);
+  if(!ok&&protect){
+   var keep=s.__shieldActive?old:Math.max(1,old);
+   window.lexiQuizCombo=keep;
+   try{localStorage.setItem('lexiflip_quiz_streak',String(keep))}catch(e){}
+   s.__shieldActive=0;s.__comboActive=0;save(s);msg(s.__shieldActive?'':'🛡️ ミスを保護！');
+  }
+  render();return out;
+ };
+ n.__lfShopQuiz=true;window.lexiProfileRecord=n;
+}
+function hookCoins(){
+ var f=window.lexiProfileRecord;if(typeof f!=='function'||f.__lfShopCoins)return;
+ var n=function(ok){
+  var before=coins(),out=f.apply(this,arguments),after=coins();
+  var s=state();
+  if(ok&&s.__boostActive>0&&after>before){var gain=after-before;setCoins(after+gain);s.__boostActive--;save(s)}
+  render();return out;
+ };
+ n.__lfShopCoins=true;window.lexiProfileRecord=n;
+}
+function effect(){
+ var s=state();document.documentElement.classList.toggle('lf-neon-effect',!!s.effect);
+}
+function boot(){
+ if(!document.getElementById('lfShopMsg')){var e=document.createElement('div');e.id='lfShopMsg';document.body.appendChild(e)}
+ render();effect();hookXP();hookQuiz();hookCoins();
+ setInterval(function(){render();effect();hookXP();hookQuiz();hookCoins()},1000);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+<style id="lexiflip-shop-effect">
+.lf-neon-effect .quiz.show .answers button:hover,.lf-neon-effect .quiz.show .answers button:focus{box-shadow:0 0 18px #00d9ff66;border-color:#00d9ff!important}
+.lf-neon-effect .quiz.show .result{box-shadow:0 0 24px #00d9ff44}
+</style>
+</body></html>
