@@ -1628,18 +1628,42 @@ function drawChallenge(){
  b.innerHTML='<div class="lf-ch-result">正解 '+ch.ok+'　連続 '+ch.combo+(ch.mode==='timed'?'　残り '+Math.max(0,Math.ceil((ch.end-Date.now())/1000))+'秒':'')+'</div><div class="lf-ch-q">'+esc(c.jp)+'</div><div class="lf-ch-answers">'+choices.map(function(x){return '<button data-a="'+encodeURIComponent(x)+'">'+esc(x)+'</button>'}).join('')+'</div><div id="lfChRes" class="lf-ch-result"></div>';
  b.querySelectorAll('[data-a]').forEach(function(btn){btn.onclick=function(){var ok=decodeURIComponent(btn.getAttribute('data-a'))===String(c.en);ch.i++;if(ok){ch.ok++;ch.combo++}else{ch.combo=0}b.querySelectorAll('[data-a]').forEach(function(x){x.disabled=true});document.getElementById('lfChRes').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+esc(c.en);setTimeout(drawChallenge,500)}});
 }
-function activity(){
- var d=today();d.answered++;S.best.answered=Math.max(S.best.answered,d.answered);
- var ok=false;try{var r=document.getElementById('result');ok=!!r&&r.classList.contains('result-correct')}catch(e){}
- if(ok){d.correct++;S.best.correct=Math.max(S.best.correct,d.correct)}
- var q=document.getElementById('quizStreak');if(q){var m=(q.textContent||'').match(/(\d+)/);if(m)S.best.combo=Math.max(S.best.combo,Number(m[1]))}
- save();render();
+function readProfileStats(){
+ try{
+  var x=JSON.parse(localStorage.getItem('lexiflip_profile_stats')||'{}');
+  return {answers:Number(x.answers)||0,correct:Number(x.correct)||0,bestStreak:Number(x.bestStreak)||0,totalXp:Number(x.totalXp)||0};
+ }catch(e){return {answers:0,correct:0,bestStreak:0,totalXp:0}}
+}
+function syncSource(){
+ var p=readProfileStats(),d=today();
+ if(S.source==null){
+  S.source={answers:p.answers,correct:p.correct,totalXp:p.totalXp,bestStreak:p.bestStreak};
+  save();render();return;
+ }
+ var da=Math.max(0,p.answers-S.source.answers),dc=Math.max(0,p.correct-S.source.correct),dx=Math.max(0,p.totalXp-S.source.totalXp);
+ if(da||dc||dx){
+  d.answered+=da;d.correct+=dc;d.xp+=dx;
+  S.best.answered=Math.max(S.best.answered,d.answered);
+  S.best.correct=Math.max(S.best.correct,d.correct);
+  S.best.combo=Math.max(S.best.combo,p.bestStreak);
+  S.source={answers:p.answers,correct:p.correct,totalXp:p.totalXp,bestStreak:p.bestStreak};
+  save();render();
+ }else if(p.bestStreak>S.best.combo){
+  S.best.combo=p.bestStreak;S.source.bestStreak=p.bestStreak;save();render();
+ }
 }
 function hook(){
- var f=window.lexiProfileRecord;if(typeof f==='function'&&!f.__lf2){var n=function(ok){var out=f.apply(this,arguments);var d=today();d.answered++;if(ok)d.correct++;S.best.answered=Math.max(S.best.answered,d.answered);if(ok)S.best.correct=Math.max(S.best.correct,d.correct);var q=document.getElementById('quizStreak');var m=q&&(q.textContent||'').match(/(\d+)/);if(m)S.best.combo=Math.max(S.best.combo,Number(m[1]));save();render();return out};n.__lf2=true;window.lexiProfileRecord=n}
- var x=window.lexiAddXP;if(typeof x==='function'&&!x.__lf2){var n2=function(v){var d=today();d.xp+=Number(v)||0;save();render();return x.apply(this,arguments)};n2.__lf2=true;window.lexiAddXP=n2}
+ var f=window.lexiProfileRecord;
+ if(typeof f==='function'&&!f.__lf2weak){
+  var n=function(ok){
+   var out=f.apply(this,arguments);
+   if(!ok){var d=today();d.weak++;S.best.weak=Math.max(S.best.weak,d.weak);save();render();}
+   return out;
+  };
+  n.__lf2weak=true;window.lexiProfileRecord=n;
+ }
 }
-function boot(){mount();hook();setInterval(function(){hook();render()},1500)}
+function boot(){mount();hook();syncSource();setInterval(function(){hook();syncSource()},500)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script></body></html>
