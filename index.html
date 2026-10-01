@@ -42,6 +42,7 @@ body.home-mode .layout{display:none!important} body.home-mode .tabs{display:none
 }
 .lf-pronounce-inside:hover{border-color:#00d9ffcc;background:#00d9ff28;box-shadow:0 0 18px #00d9ff44}
 .lf-pronounce-inside:active{transform:scale(.94)}
+.lf-quiz-review{margin-top:12px;padding:12px 14px;border:1px solid #00d9ff44;border-radius:14px;background:#00d9ff0b;text-align:left}.lf-quiz-review-title{font-size:12px;color:#79a7b8;font-weight:800;margin-bottom:7px}.lf-quiz-review-row{display:flex;align-items:center;gap:8px;margin:4px 0}.lf-quiz-review-label{width:48px;flex:0 0 48px;font-size:12px;color:#79a7b8;font-weight:800}.lf-quiz-review-value{font-weight:800;min-width:0;overflow-wrap:anywhere}.lf-quiz-review .lf-pronounce-inline{min-height:38px;height:38px;flex-basis:38px;width:38px;border-radius:10px;font-size:16px;margin-left:auto}
 .lf-pronounce-inline{flex:0 0 46px;width:46px;min-height:58px;padding:0;border:1px solid #00d9ff66;border-radius:14px;background:#00d9ff12;color:var(--text);font-size:19px;display:grid;place-items:center;box-shadow:0 5px 16px #0002,0 0 18px #00d9ff18;z-index:2}
 .lf-pronounce-inline:hover{transform:translateY(-2px);border-color:#00d9ffaa;box-shadow:0 8px 20px #0003,0 0 22px #00d9ff33}
 .lf-pronounce-inline:active{transform:translateY(1px)}
@@ -1428,9 +1429,9 @@ function showQuiz(){
     card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; window.__lfQuizCoinAnswer=true; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
     const quizStreakEl=$('#quizStreak');if(quizStreakEl)quizStreakEl.textContent='🔥 連続正解 '+streak;
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
-    const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40);} if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();
+    const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.innerHTML=(ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40))+'<div class="lf-quiz-review"><div class="lf-quiz-review-title">📚 今回の単語</div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">日本語</span><span class="lf-quiz-review-value">'+cleanDisplayText(card.jp,28)+'</span></div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">英語</span><span class="lf-quiz-review-value">'+cleanDisplayText(card.en,40)+'</span>'+lfPronounceInline(card.en)+'</div></div>';} if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();
     quizIndex++;
-    setTimeout(()=>showQuiz(),ok?1200:2000);
+    setTimeout(()=>showQuiz(),ok?2500:3000);
   });
 }
 
