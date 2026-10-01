@@ -1038,7 +1038,7 @@ function showQuiz(){
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
     const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40);} if(ok)showQuizCorrectOverlay();
     quizIndex++;
-    setTimeout(()=>showQuiz(),ok?1800:2200);
+    setTimeout(()=>showQuiz(),ok?1300:2200);
   });
 }
 
