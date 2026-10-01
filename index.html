@@ -1611,9 +1611,10 @@ function mount(){
  render();theme();
 }
 var ch={mode:'',pool:[],i:0,ok:0,combo:0,end:0};
+function shuffleArray(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function challenge(mode){
- ch={mode:mode,pool:getCards().slice(),i:0,ok:0,combo:0,end:mode==='timed'?Date.now()+30000:0};
- if(mode==='weak')ch.pool=ch.pool.filter(function(c){return c.weak});
+ ch={mode:mode,pool:shuffleArray(getCards().slice()),i:0,ok:0,combo:0,end:mode==='timed'?Date.now()+30000:0};
+ if(mode==='weak')ch.pool=shuffleArray(ch.pool.filter(function(c){return c.weak}));
  if(!ch.pool.length){alert('このモードで使える単語がありません');return}
  var o=document.getElementById('lfChallenge2');if(!o){o=document.createElement('div');o.id='lfChallenge2';o.innerHTML='<div class="lf-ch-panel"><div class="lf-ch-top"><h2 id="lfChTitle">Challenge</h2><button id="lfChClose">閉じる</button></div><div id="lfChBody"></div></div>';document.body.appendChild(o);o.querySelector('#lfChClose').onclick=function(){o.classList.remove('show')}}o.classList.add('show');drawChallenge();
 }
