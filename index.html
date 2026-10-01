@@ -2361,7 +2361,21 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .lf-rank-panel>#lfRankProgress,.lf-rank-panel>#lfRankBody{width:min(980px,100%);margin-left:auto;margin-right:auto}
 .lf-rank-panel>#lfRankProgress{padding-top:14px}
 .lf-rank-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.lf-rank-modal-head b{font-size:20px}.lf-rank-close{padding:8px 11px}
-.lf-rank-progress{margin-top:12px;color:#79a7b8;font-size:12px}.lf-rank-question{margin:22px 0 16px;padding:22px 18px;border:1px solid #16445a;border-radius:18px;background:#07121c;text-align:center;font-size:28px;font-weight:950;overflow-wrap:anywhere}
+.lf-rank-progress{margin-top:12px;color:#79a7b8;font-size:12px}.lf-rank-study{margin:22px 0 0;padding:18px;border:1px solid #16445a;border-radius:18px;background:#06101a}
+.lf-rank-study-label{color:#00d9ff;font-size:13px;font-weight:950;text-align:center}
+.lf-rank-study-title{margin-top:5px;text-align:center;color:#79a7b8;font-size:12px;font-weight:850}
+.lf-rank-study-focus{margin-top:14px;padding:14px;border:1px solid #00d9ff55;border-radius:14px;background:#00d9ff0b;text-align:center}
+.lf-rank-study-focus span{display:block;color:#79a7b8;font-size:11px;font-weight:850}
+.lf-rank-study-focus b{display:block;margin-top:5px;color:#e8fbff;font-size:24px}
+.lf-rank-study-focus strong{display:block;margin-top:3px;color:#00d9ff;font-size:15px}
+.lf-rank-study-list{display:grid;gap:8px;margin-top:12px}
+.lf-rank-study-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px;border:1px solid #16445a;border-radius:12px;background:#07121c}
+.lf-rank-study-en{font-weight:900;color:#e8fbff;display:flex;align-items:center;gap:4px;min-width:0}
+.lf-rank-study-jp{color:#79a7b8;font-weight:800;display:flex;align-items:center}
+.lf-rank-study-row .lf-pronounce-inside{width:30px;height:30px;margin-left:auto;flex:0 0 30px}
+.lf-rank-next{width:100%;margin-top:14px;min-height:48px;border-radius:14px;font-weight:950}
+@media(max-width:600px){.lf-rank-study{padding:13px}.lf-rank-study-row{grid-template-columns:1fr}.lf-rank-study-jp{padding-left:2px}}
+.lf-rank-question{margin:22px 0 16px;padding:22px 18px;border:1px solid #16445a;border-radius:18px;background:#07121c;text-align:center;font-size:28px;font-weight:950;overflow-wrap:anywhere}
 .lf-rank-answers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.lf-rank-answers button{min-height:58px;text-align:left;padding:14px;border-radius:15px;background:#0b1622;border-color:#16445a}.lf-rank-answers button:hover:not(:disabled){border-color:#00d9ff88;box-shadow:0 0 18px #00d9ff22}.lf-rank-answers button:disabled{cursor:default;opacity:.72}
 .lf-rank-result{text-align:center;margin-top:14px;padding:12px;border-radius:14px;font-weight:950}.lf-rank-result.good{border:1px solid #20a66a88;color:#54e6a1;background:#20a66a16}.lf-rank-result.bad{border:1px solid #e0525288;color:#ff8c8c;background:#e0525216}
 .lf-rank-summary{text-align:center;padding:22px 8px}.lf-rank-summary .big{font-size:38px;font-weight:1000;color:#00d9ff}.lf-rank-current-label{margin-top:18px;color:#79a7b8;font-size:13px;font-weight:900}.lf-rank-current{margin-top:6px;font-size:44px;line-height:1.1;font-weight:1000;color:#e8fbff;text-shadow:0 0 24px #00d9ff55}.lf-rank-current-rr{margin-top:7px;font-size:22px;font-weight:950;color:#00d9ff}.lf-rank-summary .delta{font-size:20px;font-weight:950;margin-top:7px}.lf-rank-rr-progress{margin:18px auto 0;max-width:620px;padding:15px 16px;border:1px solid #16445a;border-radius:16px;background:#06101a;text-align:left}.lf-rank-rr-progress>div:first-child{display:flex;justify-content:space-between;align-items:center;gap:12px}.lf-rank-rr-progress span{color:#79a7b8;font-size:12px;font-weight:850}.lf-rank-rr-progress b{font-size:18px;color:#00d9ff}.lf-rank-result-bar{height:12px;margin-top:10px;border-radius:99px;background:#02080d;overflow:hidden;border:1px solid #16445a}.lf-rank-result-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#00d9ff,#7c5cff)}.lf-rank-rr-progress small{display:block;margin-top:7px;color:#79a7b8;font-size:11px}.lf-rank-scoreline{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.lf-rank-scoreline span{padding:10px;border:1px solid #16445a;border-radius:12px;background:#07121c;color:#79a7b8;font-size:11px}.lf-rank-scoreline b{display:block;color:#e8fbff;font-size:16px;margin-top:3px}@media(max-width:600px){.lf-rank-rr-progress{padding:13px}.lf-rank-scoreline{grid-template-columns:1fr}.lf-rank-scoreline span{display:flex;justify-content:space-between;align-items:center}.lf-rank-scoreline b{margin-top:0}}.lf-rank-result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}.lf-rank-result-actions .lf-rank-test-btn{margin-top:0;min-width:180px}.lf-rank-summary .sub{margin-top:8px}.lf-rank-summary button{margin-top:16px}
@@ -2525,7 +2539,28 @@ function startTest(){
     var result=document.getElementById('lfRankResult');
     result.className='lf-rank-result '+(ok?'good':'bad');
     result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+correctAnswer;
-    setTimeout(function(){state.index++;if(state.index<10)show();else finish()},650);
+    setTimeout(function(){
+      var studyTitle=q.askJP?'日本語 → 英語':'英語 → 日本語';
+      var studyEnglish=String(q.card.en||''),studyJapanese=String(q.card.jp||'');
+      var choiceList=q.choices.map(function(v){
+        var jp=q.askJP?'':String(q.card.jp||'');
+        var en=q.askJP?v:String(q.card.en||'');
+        if(q.askJP){
+          var matched=pool.find(function(x){return String(x.en||'')===String(v)});
+          jp=matched?String(matched.jp||''):'';
+        }else{
+          var matchedJP=pool.find(function(x){return String(x.jp||'')===String(v)});
+          en=matchedJP?String(matchedJP.en||''):'';
+          jp=v;
+        }
+        return '<div class="lf-rank-study-row"><div class="lf-rank-study-en">'+en+lfPronounceInside(en)+'</div><div class="lf-rank-study-jp">'+jp+'</div></div>';
+      }).join('');
+      body.innerHTML='<div class="lf-rank-study"><div class="lf-rank-study-label">📚 次の問題の前に復習</div><div class="lf-rank-study-title">'+studyTitle+'</div><div class="lf-rank-study-focus"><div><span>今回の問題</span><b>'+studyEnglish+'</b><strong>'+studyJapanese+'</strong></div></div><div class="lf-rank-study-list">'+choiceList+'</div><button type="button" class="lf-rank-next" id="lfRankNext">'+(state.index+1<10?'次の問題へ →':'結果を見る →')+'</button></div>';
+      document.getElementById('lfRankNext').onclick=function(){
+        state.index++;
+        if(state.index<10)show();else finish();
+      };
+    },650);
    };
   });
  }
