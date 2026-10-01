@@ -1844,39 +1844,24 @@ function render(){
 }
 function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function theme(){
- var t=S.theme||'default';
- var themes={
-  default:{bg:'#f4f6fb',panel:'#ffffff',panel2:'#f7f8fc',text:'#111522',muted:'#687286',accent:'#665cf6',border:'#e3e7ef',good:'#20a66a',bad:'#e05252'},
-  cyber:{bg:'#050812',panel:'#0b1220',panel2:'#101a2c',text:'#e8fbff',muted:'#79a7b8',accent:'#00d9ff',border:'#16445a',good:'#22e6a5',bad:'#ff5577'},
-  rose:{bg:'#fff5f8',panel:'#ffffff',panel2:'#fff0f4',text:'#351724',muted:'#9b7180',accent:'#e85b8a',border:'#f0c8d6',good:'#20a66a',bad:'#e05252'},
-  forest:{bg:'#f2f8f3',panel:'#ffffff',panel2:'#edf6ef',text:'#14251a',muted:'#6b806f',accent:'#3b9b62',border:'#c8ddce',good:'#208a58',bad:'#d9534f'},
-  gold:{bg:'#fffaf0',panel:'#ffffff',panel2:'#fff6df',text:'#2b2110',muted:'#8b7956',accent:'#c99524',border:'#ead7a6',good:'#2b9a63',bad:'#d9534f'}
- };
- if(!themes[t])t='default';
+ var t='cyber';
  S.theme=t;
  save();
- var x=themes[t];
+ var x={bg:'#050812',panel:'#0b1220',panel2:'#101a2c',text:'#e8fbff',muted:'#79a7b8',accent:'#00d9ff',border:'#16445a',good:'#22e6a5',bad:'#ff5577'};
  var root=document.documentElement;
  Object.keys(x).forEach(function(k){root.style.setProperty('--'+k,x[k],'important')});
- root.style.setProperty('color-scheme',t==='cyber'?'dark':'light','important');
- document.body.setAttribute('data-lf-theme',t);
- root.setAttribute('data-lf-theme',t);
+ root.style.setProperty('color-scheme','dark','important');
+ document.body.setAttribute('data-lf-theme','cyber');
+ root.setAttribute('data-lf-theme','cyber');
  document.body.style.setProperty('background-color',x.bg,'important');
  document.body.style.setProperty('color',x.text,'important');
  document.querySelectorAll('.lf-theme').forEach(function(b){
-  b.classList.toggle('active',b.getAttribute('data-t')===t);
+  b.classList.toggle('active',b.getAttribute('data-t')==='cyber');
  });
- if(typeof paintTheme==='function')paintTheme(t);
+ if(typeof paintTheme==='function')paintTheme('cyber');
 }
 function paintTheme(t){
- var m={
-  default:{bg:'#f4f6fb',panel:'#ffffff',panel2:'#f7f8fc',text:'#111522',muted:'#687286',accent:'#665cf6',border:'#e3e7ef'},
-  cyber:{bg:'#050812',panel:'#0b1220',panel2:'#101a2c',text:'#e8fbff',muted:'#79a7b8',accent:'#00d9ff',border:'#16445a'},
-  rose:{bg:'#170911',panel:'#24101b',panel2:'#321522',text:'#ffeaf2',muted:'#d89aae',accent:'#ff4f91',border:'#63213e'},
-  forest:{bg:'#07130c',panel:'#0d2115',panel2:'#12301d',text:'#eaffef',muted:'#8fbaa0',accent:'#35d879',border:'#245d38'},
-  gold:{bg:'#120d04',panel:'#211807',panel2:'#30220a',text:'#fff4cf',muted:'#cbb477',accent:'#f2bd45',border:'#654b18'}
- };
- var x=m[t]||m.default;
+ var x={bg:'#050812',panel:'#0b1220',panel2:'#101a2c',text:'#e8fbff',muted:'#79a7b8',accent:'#00d9ff',border:'#16445a'};
  document.documentElement.style.setProperty('--bg',x.bg,'important');
  document.documentElement.style.setProperty('--panel',x.panel,'important');
  document.documentElement.style.setProperty('--panel2',x.panel2,'important');
@@ -1886,7 +1871,7 @@ function paintTheme(t){
  document.documentElement.style.setProperty('--border',x.border,'important');
  document.body.style.setProperty('background',x.bg,'important');
  document.body.style.setProperty('color',x.text,'important');
- document.documentElement.style.setProperty('color-scheme',t==='default'?'light':'dark','important');
+ document.documentElement.style.setProperty('color-scheme','dark','important');
  document.querySelectorAll('.main,.side,.face,.tabs,.section,.stat,.profile-card,.profile-stat,.lf-extra-card,.lf-mission,.lf-record,.lf-review,.lf-challenge').forEach(function(e){
   e.style.setProperty('background',x.panel,'important');
   e.style.setProperty('color',x.text,'important');
@@ -1896,20 +1881,17 @@ function paintTheme(t){
  document.querySelectorAll('.lf-theme').forEach(function(e){
   e.style.setProperty('border-color',x.border,'important');
   e.style.setProperty('color',x.text,'important');
-  if(e.getAttribute('data-t')===t){e.style.setProperty('background',x.accent,'important');e.style.setProperty('color','#fff','important')}
-  else e.style.setProperty('background',x.panel,'important');
+  e.style.setProperty('background',e.getAttribute('data-t')==='cyber'?x.accent:x.panel,'important');
+  if(e.getAttribute('data-t')==='cyber')e.style.setProperty('color','#fff','important');
  });
  var logo=document.querySelector('.logo');
- if(logo){
-  var grad={default:'linear-gradient(135deg,#766cff,#4c44d9)',cyber:'linear-gradient(135deg,#00d9ff,#6b4cff)',rose:'linear-gradient(135deg,#ff4f91,#b83280)',forest:'linear-gradient(135deg,#35d879,#16804b)',gold:'linear-gradient(135deg,#f6d36b,#b87912)'};
-  logo.style.setProperty('background',grad[t]||grad.default,'important');
- }
+ if(logo)logo.style.setProperty('background','linear-gradient(135deg,#00d9ff,#6b4cff)','important');
 }
 function mount(){
  if(document.getElementById('lfExtra2'))return;
  var host=document.getElementById('initialModeSelect');if(!host)return;
  var w=document.createElement('div');w.id='lfExtra2';w.className='lf-extra';
- w.innerHTML='<div class="lf-extra-card"><div class="lf-extra-title">🎯 今日のミッション</div><div class="lf-extra-sub">達成すると自動でボーナスXP</div><div class="lf-missions"><div class="lf-mission" data-lf-m="a" data-target="10" data-label="10問"><b></b><div class="lf-bar"><i></i></div></div><div class="lf-mission" data-lf-m="c" data-target="20" data-label="20正解"><b></b><div class="lf-bar"><i></i></div></div><div class="lf-mission" data-lf-m="w" data-target="3" data-label="苦手3問"><b></b><div class="lf-bar"><i></i></div></div><div class="lf-mission" data-lf-m="x" data-target="50" data-label="50XP"><b></b><div class="lf-bar"><i></i></div></div></div></div><div class="lf-extra-card"><div class="lf-extra-title">📊 今日の記録</div><div class="lf-extra-sub"><span id="lfTodayA">0</span>問 ・ <span id="lfTodayC">0</span>正解 ・ <span id="lfTodayXP">0</span>XP</div><div class="lf-records"><div class="lf-record"><b id="lfbanswered">0</b><span>総問題数</span></div><div class="lf-record"><b id="lfbcorrect">0</b><span>総正解</span></div><div class="lf-record"><b id="lfbcombo">0</b><span>最長コンボ</span></div><div class="lf-record"><b id="lfbweak">0</b><span>苦手克服</span></div></div></div><div class="lf-extra-card"><div class="lf-extra-title">📚 復習おすすめ</div><div class="lf-extra-sub">苦手・低熟練度の単語を優先</div><div id="lfReview" class="lf-review-grid"></div></div><div class="lf-extra-card"><div class="lf-extra-title">🎨 テーマ</div><div class="lf-extra-sub">好きな雰囲気に変更</div><div class="lf-themes"><button class="lf-theme" data-t="default">💜 Default</button><button class="lf-theme" data-t="cyber">⚡ Cyber</button><button class="lf-theme" data-t="rose">🌸 Rose</button><button class="lf-theme" data-t="forest">🌿 Forest</button><button class="lf-theme" data-t="gold">✨ Gold</button></div></div><div class="lf-extra-card"><div class="lf-extra-title">⚔️ チャレンジ</div><div class="lf-extra-sub">特別ルールで挑戦</div><div class="lf-challenges"><button class="lf-challenge" data-ch="survival"><b>☠️ サバイバル</b><small>1ミスまで何問続けられる？</small></button><button class="lf-challenge" data-ch="timed"><b>⏱️ 30秒タイムアタック</b><small>30秒で何問正解できる？</small></button><button class="lf-challenge" data-ch="100"><b>💯 100問チャレンジ</b><small>100問のスコアを記録</small></button><button class="lf-challenge" data-ch="weak"><b>😣 苦手克服</b><small>苦手単語だけで10問</small></button></div></div>';
+ w.innerHTML='<div class="lf-extra-card"><div class="lf-extra-title">🎯 今日のミッション</div><div class="lf-extra-sub">達成すると自動でボーナスXP</div><div class="lf-missions"><div class="lf-mission" data-lf-m="a" data-target="10" data-label="10問"><b></b><div class="lf-bar"><i></i></div></div><div class="lf-mission" data-lf-m="c" data-target="20" data-label="20正解"><b></b><div class="lf-bar"><i></i></div></div><div class="lf-mission" data-lf-m="w" data-target="3" data-label="苦手3問"><b></b><div class="lf-bar"><i></i></div></div><div class="lf-mission" data-lf-m="x" data-target="50" data-label="50XP"><b></b><div class="lf-bar"><i></i></div></div></div></div><div class="lf-extra-card"><div class="lf-extra-title">📊 今日の記録</div><div class="lf-extra-sub"><span id="lfTodayA">0</span>問 ・ <span id="lfTodayC">0</span>正解 ・ <span id="lfTodayXP">0</span>XP</div><div class="lf-records"><div class="lf-record"><b id="lfbanswered">0</b><span>総問題数</span></div><div class="lf-record"><b id="lfbcorrect">0</b><span>総正解</span></div><div class="lf-record"><b id="lfbcombo">0</b><span>最長コンボ</span></div><div class="lf-record"><b id="lfbweak">0</b><span>苦手克服</span></div></div></div><div class="lf-extra-card"><div class="lf-extra-title">📚 復習おすすめ</div><div class="lf-extra-sub">苦手・低熟練度の単語を優先</div><div id="lfReview" class="lf-review-grid"></div></div><div class="lf-extra-card"><div class="lf-extra-title">🎨 テーマ</div><div class="lf-extra-sub">Cyberテーマのみ使用できます</div><div class="lf-themes"><button class="lf-theme active" data-t="cyber">⚡ Cyber</button></div></div><div class="lf-extra-card"><div class="lf-extra-title">⚔️ チャレンジ</div><div class="lf-extra-sub">特別ルールで挑戦</div><div class="lf-challenges"><button class="lf-challenge" data-ch="survival"><b>☠️ サバイバル</b><small>1ミスまで何問続けられる？</small></button><button class="lf-challenge" data-ch="timed"><b>⏱️ 30秒タイムアタック</b><small>30秒で何問正解できる？</small></button><button class="lf-challenge" data-ch="100"><b>💯 100問チャレンジ</b><small>100問のスコアを記録</small></button><button class="lf-challenge" data-ch="weak"><b>😣 苦手克服</b><small>苦手単語だけで10問</small></button></div></div>';
  host.appendChild(w);
  w.querySelectorAll('.lf-theme').forEach(function(b){b.onclick=function(){S.theme=b.getAttribute('data-t');save();theme();paintTheme(S.theme);}});
  w.querySelectorAll('[data-ch]').forEach(function(b){b.onclick=function(){challenge(b.getAttribute('data-ch'))}});
