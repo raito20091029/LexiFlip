@@ -1429,9 +1429,9 @@ function showQuiz(){
     card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; window.__lfQuizCoinAnswer=true; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
     const quizStreakEl=$('#quizStreak');if(quizStreakEl)quizStreakEl.textContent='🔥 連続正解 '+streak;
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
-    const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.innerHTML=(ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40))+'<div class="lf-quiz-review"><div class="lf-quiz-review-title">📚 今回の単語</div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">日本語</span><span class="lf-quiz-review-value">'+cleanDisplayText(card.jp,28)+'</span></div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">英語</span><span class="lf-quiz-review-value">'+cleanDisplayText(card.en,40)+'</span>'+lfPronounceInline(card.en)+'</div></div>';} if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();
+    const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.style.setProperty('display','block','important');resultEl.style.visibility='visible';resultEl.innerHTML='<div>'+(ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40))+'</div><div class="lf-quiz-review"><div class="lf-quiz-review-title">📚 今回の単語</div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">日本語</span><span class="lf-quiz-review-value">'+cleanDisplayText(card.jp,28)+'</span></div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">英語</span><span class="lf-quiz-review-value">'+cleanDisplayText(card.en,40)+'</span>'+lfPronounceInline(card.en)+'</div></div>';resultEl.scrollIntoView({behavior:'smooth',block:'nearest'});} if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();
     quizIndex++;
-    setTimeout(()=>showQuiz(),ok?2500:3000);
+    setTimeout(()=>showQuiz(),ok?3500:3500);
   });
 }
 
