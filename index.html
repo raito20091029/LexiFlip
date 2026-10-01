@@ -2418,6 +2418,8 @@ function startTest(){
  }
  show();
 }
+window.startTest=startTest;
+
 function boot(){render();var hb=document.getElementById('lfHomeRankTestBtn');if(hb&&!hb.__bound){hb.__bound=true;hb.onclick=startTest}setInterval(function(){render();var b=document.getElementById('lfHomeRankTestBtn');if(b&&!b.__bound){b.__bound=true;b.onclick=startTest}},900)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
