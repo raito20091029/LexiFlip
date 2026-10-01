@@ -1144,6 +1144,7 @@ function makeQuiz(){
   if(quizMode==='weak')quizStudyCards=cards.filter(c=>c.weak);
   else if(quizMode==='common')quizStudyCards=cards.filter(c=>c.common);
   else if(quizMode==='beginner'||quizMode==='intermediate'||quizMode==='advanced')quizStudyCards=cards.filter(c=>c.level===quizMode);
+  else if(quizMode==='furniture')quizStudyCards=cards.filter(c=>c.category==='furniture_only');
   else quizStudyCards=cards;
   if(!Array.isArray(quizStudyCards)||!quizStudyCards.length)quizStudyCards=cards;
   quizCards=buildQuizPool();
