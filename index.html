@@ -1989,6 +1989,10 @@ function hook(){
  var n=function(ok){
   var out=f.apply(this,arguments);
   if(ok){
+   var now=Date.now();
+   /* 同一正解処理の重複呼び出しを防止。通常の次問までは十分に間隔がある */
+   if(window.__lfCoinLastAwardAt&&now-window.__lfCoinLastAwardAt<300)return out;
+   window.__lfCoinLastAwardAt=now;
    var combo=Number(window.lexiQuizCombo)||0;
    add(1,'正解');
    if(combo>0&&combo%5===0)add(4,'5連続ボーナス');
