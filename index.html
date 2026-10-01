@@ -772,10 +772,12 @@ window.lexiMergeVocabulary=()=>cards.length;
 let i=0,dir='jp',quizIndex=0,quizScore=0,streak=0,quizCards=[],quizLastKey='';const COMMON_WORDS=new Set(('a an and are as at be been but by can could did do does doing done for from get give go had has have he her here him his how i if in into is it its just know like look make me more most my need no not now of on one only or our out over please say see she so some take than that the their them then there they think this time to too up us use very want was we were what when where which who will with would yes you'+(typeof seed!=='undefined'?' '+seed.map(x=>String(x[1]).toLowerCase()).join(' '):'')).split(/\s+/).filter(Boolean));const normalizeLevelWord=w=>String(w??'').toLowerCase().replace(/[^a-z]+/g,' ').trim().replace(/\\s+/g,' ');const difficultyScore=w=>{const s=normalizeLevelWord(w).replace(/ /g,'');const syll=(s.match(/[aeiouy]+/g)||[]).length;const rare=(s.match(/[jqxz]/g)||[]).length;return s.length+syll*1.15+rare*2.5};const levelGroups=[...new Set(cards.map(c=>normalizeLevelWord(c.en)).filter(Boolean))].sort((a,b)=>difficultyScore(a)-difficultyScore(b));const levelByWord=new Map();const levelCount=levelGroups.length;levelGroups.forEach((w,n)=>{const ratio=n/Math.max(1,levelCount-1);levelByWord.set(w,ratio<.34?'beginner':ratio<.67?'intermediate':'advanced')});cards.forEach(c=>{const w=normalizeLevelWord(c.en);c.common=COMMON_WORDS.has(w);c.level=levelByWord.get(w)||'advanced'});let studyCards=cards;
 const $=s=>document.querySelector(s);
 function cleanDisplayText(value,max=80){
-  let s=String(value??'');
-  const pairs=[['(',')'],['（','）']];
+  let s=String(value??'').replace(/\r?\n/g,' ').trim();
+  // 辞書由来の補足情報は表示せず、意味として必要な部分だけ残す。
+  const pairs=[['《','》'],['〈','〉'],['【','】'],['（','）'],['(',')']];
   for(const [open,close] of pairs){
-    while(s.includes(open)){
+    let guard=0;
+    while(s.includes(open)&&guard++<20){
       const start=s.lastIndexOf(open);
       const end=s.indexOf(close,start+open.length);
       if(end<0) break;
@@ -783,7 +785,18 @@ function cleanDisplayText(value,max=80){
     }
   }
   s=s.replace(/\s{2,}/g,' ').replace(/\s*\/\s*/g,' / ').replace(/\s*([,、;；])\s*/g,'$1 ').trim();
-  s=s.replace(/^\s*[/]\s*/,'').replace(/\s*[/]\s*$/,'').trim();
+  s=s.replace(/^\s*[/・、,;；]\s*/,'').replace(/\s*[/・、,;；]\s*$/,'').trim();
+
+  // 日本語の長い辞書説明は、最初の意味までに絞る。
+  const isJapanese=/[\u3040-\u30ff\u3400-\u9fff]/.test(s);
+  if(isJapanese){
+    const parts=s.split(/\s*\/\s*|\s*[;；]\s*/).map(x=>x.trim()).filter(Boolean);
+    if(parts.length>1) s=parts[0];
+  }else{
+    const parts=s.split(/\s*\/\s*|\s*;\s*/).map(x=>x.trim()).filter(Boolean);
+    if(parts.length>1) s=parts[0];
+  }
+
   const limit=Math.max(1,Number(max)||80);
   if(s.length<=limit)return s;
   const cut=s.slice(0,limit);
@@ -1360,7 +1373,7 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
 </style><script id="lexiflip-update-guard">
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  var BUILD='0.9.105';
+  var BUILD='0.9.106';
   var reloaded=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){
     if(reloaded)return;
