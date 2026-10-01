@@ -1632,7 +1632,47 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
 })();
-</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script><style id="lexiflip-theme-pack">
+</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script><style id="lexiflip-theme-strong">
+:root{--lf-shadow-color:#0002}
+body[data-lf-theme="cyber"]{color-scheme:dark}
+body[data-lf-theme="rose"],body[data-lf-theme="forest"],body[data-lf-theme="gold"],body[data-lf-theme="default"]{color-scheme:light}
+body[data-lf-theme]{background:var(--bg)!important;color:var(--text)!important}
+body[data-lf-theme] #app,
+body[data-lf-theme] .main,
+body[data-lf-theme] .side,
+body[data-lf-theme] .face,
+body[data-lf-theme] .tabs,
+body[data-lf-theme] .section,
+body[data-lf-theme] .stat,
+body[data-lf-theme] .profile-card,
+body[data-lf-theme] .profile-stat,
+body[data-lf-theme] .growth-row>div,
+body[data-lf-theme] .achievement,
+body[data-lf-theme] .title-collection-item,
+body[data-lf-theme] .lf-extra-card,
+body[data-lf-theme] .lf-mission,
+body[data-lf-theme] .lf-record,
+body[data-lf-theme] .lf-review,
+body[data-lf-theme] .lf-challenge,
+body[data-lf-theme] input,
+body[data-lf-theme] select,
+body[data-lf-theme] textarea{background:var(--panel)!important;color:var(--text)!important;border-color:var(--border)!important}
+body[data-lf-theme] .lf-extra-card,
+body[data-lf-theme] .profile-card,
+body[data-lf-theme] .profile-stat{box-shadow:0 12px 30px #0002}
+body[data-lf-theme] .lf-extra-sub,
+body[data-lf-theme] .profile-muted,
+body[data-lf-theme] .profile-setting small{color:var(--muted)!important}
+body[data-lf-theme] .tab.active,
+body[data-lf-theme] .tabs button.active,
+body[data-lf-theme] .primary,
+body[data-lf-theme] .lf-theme.active{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+body[data-lf-theme] button:hover{border-color:var(--accent)!important}
+body[data-lf-theme="cyber"] .logo{box-shadow:0 8px 30px #00d9ff55}
+body[data-lf-theme="rose"] .logo{box-shadow:0 8px 30px #e85b8a55}
+body[data-lf-theme="forest"] .logo{box-shadow:0 8px 30px #3b9b6255}
+body[data-lf-theme="gold"] .logo{box-shadow:0 8px 30px #c9952455}
+</style><style id="lexiflip-theme-pack">
 body[data-lf-theme="cyber"]{--bg:#050812;--panel:#0b1220;--panel2:#101a2c;--text:#e8fbff;--muted:#79a7b8;--accent:#00d9ff;--border:#16445a;--good:#22e6a5;--bad:#ff5577}
 body[data-lf-theme="rose"]{--bg:#fff5f8;--panel:#fff;--panel2:#fff0f4;--text:#351724;--muted:#9b7180;--accent:#e85b8a;--border:#f0c8d6;--good:#20a66a;--bad:#e05252}
 body[data-lf-theme="forest"]{--bg:#f2f8f3;--panel:#fff;--panel2:#edf6ef;--text:#14251a;--muted:#6b806f;--accent:#3b9b62;--border:#c8ddce;--good:#208a58;--bad:#d9534f}
