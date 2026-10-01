@@ -2036,12 +2036,12 @@ var items={
  shield:{name:'🛡️ 1ミス保護',price:80,desc:'次の4択クイズの不正解1回だけ、連続正解を維持。',type:'consumable'},
  ticket:{name:'🎲 ランダム問題券',price:30,desc:'使うと、その場で特別ランダム4択を1問プレイ。',type:'instant'},
  combo:{name:'🔥 コンボ保険',price:100,desc:'次の4択クイズで1回のミス後、コンボを1だけ残す。',type:'consumable'},
- effect:{name:'✨ 正解エフェクト',price:150,desc:'正解演出をネオン・パルス仕様に変更。',type:'toggle'},
+ effect:{name:'✨ 正解エフェクト',price:150,desc:'正解演出をネオン・パルス仕様に変更。',type:'effect'},
  title:{name:'👑 限定称号',price:500,desc:'プロフィール用「COIN HUNTER」称号を解放。',type:'unique'},
  boost:{name:'🪙 コインブースト',price:300,desc:'次の10回の正解でコイン獲得量が2倍。',type:'consumable'}
 };
 function state(){
- try{var x=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign({xp:0,shield:0,ticket:0,combo:0,effect:false,title:false,boost:0},x)}catch(e){return {xp:0,shield:0,ticket:0,combo:0,effect:false,title:false,boost:0}}
+ try{var x=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign({xp:0,shield:0,ticket:0,combo:0,effect:false,effectOwned:false,title:false,boost:0,__xpActive:0,__shieldActive:0,__comboActive:0,__boostActive:0},x)}catch(e){return {xp:0,shield:0,ticket:0,combo:0,effect:false,effectOwned:false,title:false,boost:0,__xpActive:0,__shieldActive:0,__comboActive:0,__boostActive:0}}
 }
 function save(x){try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}}
 function coins(){try{return Number(localStorage.getItem('lexiflip_coins'))||0}catch(e){return 0}}
@@ -2052,7 +2052,8 @@ function render(){
  var box=document.getElementById('lfShop');
  if(!box){box=document.createElement('div');box.id='lfShop';host.appendChild(box)}
  var s=state();
- box.innerHTML='<div class="lf-extra-card"><div class="lf-shop-head"><div><div class="lf-shop-title">🛒 コインショップ</div><div class="lf-extra-sub">集めたコインをゲーム内アイテムに交換</div></div><div class="lf-shop-coins">💰 '+coins().toLocaleString()+'</div></div><div class="lf-shop-grid">'+Object.keys(items).map(function(k){var it=items[k],owned=s[k]||0,unique=it.type==='unique'&&owned;return '<div class="lf-shop-item"><h4>'+it.name+'</h4><p>'+it.desc+'</p><div class="lf-shop-price">💰 '+it.price+' コイン</div><div class="lf-shop-owned">'+(it.type==='unique'?(unique?'解放済み':'未解放'):'所持 '+owned+'個')+(s[k]&&((k==='boost'&&s.boost>0)||(k==='xp'&&s.xp>0))?'<span class="lf-shop-active"> ・使用可能</span>':'')+'</div><div class="lf-shop-actions"><button data-buy="'+k+'" '+(unique||coins()<it.price?'disabled':'')+'>購入</button>'+(it.type!=='unique'&&it.type!=='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='toggle'&&owned?' <button class="lf-shop-use" data-use="'+k+'">'+(s[k]?'ON':'使う')+'</button>':'')+'</div></div>'}).join('')+'</div></div>';
+ var effectOwned=!!s.effectOwned;
+ box.innerHTML='<div class="lf-extra-card"><div class="lf-shop-head"><div><div class="lf-shop-title">🛒 コインショップ</div><div class="lf-extra-sub">集めたコインをゲーム内アイテムに交換</div></div><div class="lf-shop-coins">💰 '+coins().toLocaleString()+'</div></div><div class="lf-shop-grid">'+Object.keys(items).map(function(k){var it=items[k],owned=s[k]||0,unique=it.type==='unique'&&owned;return '<div class="lf-shop-item"><h4>'+it.name+'</h4><p>'+it.desc+'</p><div class="lf-shop-price">💰 '+it.price+' コイン</div><div class="lf-shop-owned">'+(it.type==='unique'?(unique?'解放済み':'未解放'):(it.type==='effect'?(effectOwned?'解放済み':'未解放'):'所持 '+owned+'個'))+(s[k]&&((k==='boost'&&s.boost>0)||(k==='xp'&&s.xp>0))?'<span class="lf-shop-active"> ・使用可能</span>':'')+'</div><div class="lf-shop-actions"><button data-buy="'+k+'" '+((unique||(it.type==='effect'&&effectOwned))||coins()<it.price?'disabled':'')+'>購入</button>'+(it.type!=='unique'&&it.type!=='effect'&&it.type!=='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='effect'&&effectOwned?' <button class="lf-shop-use" data-use="effect">'+(s.effect?'OFF':'ON')+'</button>':'')+'</div></div>'}).join('')+'</div></div>';
  box.querySelectorAll('[data-buy]').forEach(function(b){b.onclick=function(){buy(b.getAttribute('data-buy'))}});
  box.querySelectorAll('[data-use]').forEach(function(b){b.onclick=function(){use(b.getAttribute('data-use'))}});
 }
@@ -2060,15 +2061,15 @@ function buy(k){
  var it=items[k],s=state();
  if(!it||coins()<it.price||(it.type==='unique'&&s[k]))return;
  setCoins(coins()-it.price);
- if(it.type==='unique')s[k]=true;else s[k]=(Number(s[k])||0)+1;
+ if(k==='effect'){s.effectOwned=true;s.effect=true}else if(it.type==='unique'){s[k]=true;if(k==='title'){try{localStorage.setItem('lexiflip_title','COIN HUNTER')}catch(e){}}}else s[k]=(Number(s[k])||0)+1;
  save(s);render();msg(it.name+' を購入！');
 }
 function use(k){
  var s=state();
- if(k==='xp'&&s.xp>0){s.xp--;save(s);msg('⚡ XPブーストを発動！次の10回が2倍');}
+ if(k==='xp'&&s.xp>0){s.xp--;s.__xpActive=10;save(s);msg('⚡ XPブーストを発動！次の10回が2倍');}
  else if(k==='shield'&&s.shield>0){s.shield--;s.__shieldActive=1;save(s);msg('🛡️ 1ミス保護を発動！');}
  else if(k==='combo'&&s.combo>0){s.combo--;s.__comboActive=1;save(s);msg('🔥 コンボ保険を発動！');}
- else if(k==='effect'&&s.effect){s.effect=false;save(s);document.documentElement.classList.remove('lf-neon-effect');msg('✨ エフェクトOFF');}
+ else if(k==='effect'&&s.effectOwned){s.effect=!s.effect;save(s);document.documentElement.classList.toggle('lf-neon-effect',s.effect);msg(s.effect?'✨ エフェクトON':'✨ エフェクトOFF');}
  else if(k==='boost'&&s.boost>0){s.boost--;s.__boostActive=10;save(s);msg('🪙 コインブーストを発動！10回2倍');}
  else if(k==='ticket'&&s.ticket>0){s.ticket--;save(s);specialQuiz();}
  else return;
@@ -2087,7 +2088,7 @@ function specialQuiz(){
 }
 function hookXP(){
  var f=window.lexiAddXP;if(typeof f!=='function'||f.__lfShopXP)return;
- var n=function(v){var s=state(),m=1;if(s.xp>0){s.xp--;m=2;save(s)}var out=f.apply(this,[v*m]);render();return out};n.__lfShopXP=true;window.lexiAddXP=n;
+ var n=function(v){var s=state(),m=1;if(s.__xpActive>0){s.__xpActive--;m=2;save(s)}var out=f.apply(this,[v*m]);render();return out};n.__lfShopXP=true;window.lexiAddXP=n;
 }
 function hookQuiz(){
  var f=window.lexiProfileRecord;if(typeof f!=='function'||f.__lfShopQuiz)return;
@@ -2098,7 +2099,7 @@ function hookQuiz(){
    var keep=s.__shieldActive?old:Math.max(1,old);
    window.lexiQuizCombo=keep;
    try{localStorage.setItem('lexiflip_quiz_streak',String(keep))}catch(e){}
-   s.__shieldActive=0;s.__comboActive=0;save(s);msg(s.__shieldActive?'':'🛡️ ミスを保護！');
+   var usedName=s.__shieldActive?'🛡️ 1ミス保護':'🔥 コンボ保険';s.__shieldActive=0;s.__comboActive=0;save(s);msg(usedName+' が発動！');
   }
   render();return out;
  };
