@@ -2296,10 +2296,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 .lf-rank-panel>#lfRankProgress{padding-top:14px}
 .lf-rank-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.lf-rank-modal-head b{font-size:20px}.lf-rank-close{padding:8px 11px}
 .lf-rank-progress{margin-top:12px;color:#79a7b8;font-size:12px}.lf-rank-question{margin:22px 0 16px;padding:22px 18px;border:1px solid #16445a;border-radius:18px;background:#07121c;text-align:center;font-size:28px;font-weight:950;overflow-wrap:anywhere}
-.lf-rank-answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lf-rank-answers button{min-height:58px;text-align:left;padding:14px;border-radius:15px;background:#0b1622;border-color:#16445a}.lf-rank-answers button:hover:not(:disabled){border-color:#00d9ff88;box-shadow:0 0 18px #00d9ff22}.lf-rank-answers button:disabled{cursor:default;opacity:.72}
+.lf-rank-answers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.lf-rank-answers button{min-height:58px;text-align:left;padding:14px;border-radius:15px;background:#0b1622;border-color:#16445a}.lf-rank-answers button:hover:not(:disabled){border-color:#00d9ff88;box-shadow:0 0 18px #00d9ff22}.lf-rank-answers button:disabled{cursor:default;opacity:.72}
 .lf-rank-result{text-align:center;margin-top:14px;padding:12px;border-radius:14px;font-weight:950}.lf-rank-result.good{border:1px solid #20a66a88;color:#54e6a1;background:#20a66a16}.lf-rank-result.bad{border:1px solid #e0525288;color:#ff8c8c;background:#e0525216}
 .lf-rank-summary{text-align:center;padding:22px 8px}.lf-rank-summary .big{font-size:38px;font-weight:1000;color:#00d9ff}.lf-rank-summary .delta{font-size:20px;font-weight:950;margin-top:7px}.lf-rank-summary .sub{margin-top:8px}.lf-rank-summary button{margin-top:16px}
-@media(max-width:600px){.lf-rank-panel{padding:18px 12px}.lf-rank-panel>.lf-rank-modal-head{padding-bottom:14px}.lf-rank-card{padding:15px}.lf-rank-name{font-size:21px}.lf-rank-rr{font-size:16px}.lf-rank-panel{padding:16px;border-radius:20px}.lf-rank-question{font-size:23px;padding:20px 14px}.lf-rank-answers{grid-template-columns:1fr}.lf-rank-answers button{min-height:56px}}
+@media(max-width:900px){.lf-rank-answers{grid-template-columns:repeat(2,minmax(0,1fr))}@media(max-width:600px){.lf-rank-panel{padding:18px 12px}.lf-rank-panel>.lf-rank-modal-head{padding-bottom:14px}.lf-rank-card{padding:15px}.lf-rank-name{font-size:21px}.lf-rank-rr{font-size:16px}.lf-rank-panel{padding:16px;border-radius:20px}.lf-rank-question{font-size:23px;padding:20px 14px}.lf-rank-answers{grid-template-columns:repeat(2,minmax(0,1fr))}.lf-rank-answers button{min-height:56px}}
 </style>
 <script id="lexiflip-rank-v1">
 (function(){
@@ -2361,9 +2361,9 @@ function makeQuestion(c,pool){
  shuffle(pool.slice()).some(function(x){
   var v=String(x.en||'');
   if(v&& !seen[v]&&v!==String(c.en||'')){seen[v]=1;choices.push(v)}
-  return choices.length>=4;
+  return choices.length>=8;
  });
- if(choices.length<4)return null;
+ if(choices.length<8)return null;
  shuffle(choices);
  return {card:c,choices:choices};
 }
