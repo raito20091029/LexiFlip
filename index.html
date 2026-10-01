@@ -1961,48 +1961,47 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #lfCoinToast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:600px){#lfCoinBadge{padding:7px 10px;font-size:12px}.lf-coin-icon{font-size:16px!important}}
 </style>
-<script id="lexiflip-coins-v1">
+<script id="lexiflip-coins-v2">
 (function(){
 'use strict';
 var KEY='lexiflip_coins';
 function get(){try{return Number(localStorage.getItem(KEY))||0}catch(e){return 0}}
-function set(v){try{localStorage.setItem(KEY,String(Math.max(0,Math.floor(v))))}catch(e){}render()}
+function render(){var e=document.getElementById('lfCoinValue');if(e)e.textContent=get().toLocaleString()}
 function add(n,reason){
  if(!n)return;
- set(get()+n);
+ try{localStorage.setItem(KEY,String(Math.max(0,Math.floor(get()+n))))}catch(e){}
+ render();
  var t=document.getElementById('lfCoinToast');
  if(t){t.textContent='💰 +'+n+' コイン'+(reason?' ・ '+reason:'');t.classList.add('show');clearTimeout(window.__lfCoinTimer);window.__lfCoinTimer=setTimeout(function(){t.classList.remove('show')},1100)}
 }
-function render(){var e=document.getElementById('lfCoinValue');if(e)e.textContent=get().toLocaleString()}
 function mount(){
- if(document.getElementById('lfCoinBadge')){render();return}
- var top=document.querySelector('.top');
- if(!top)return;
- var badge=document.createElement('div');badge.id='lfCoinBadge';badge.innerHTML='<span class="lf-coin-icon">💰</span><span><b id="lfCoinValue">0</b> コイン</span>';
- top.appendChild(badge);
- var toast=document.createElement('div');toast.id='lfCoinToast';document.body.appendChild(toast);
+ if(!document.getElementById('lfCoinBadge')){
+  var top=document.querySelector('.top');
+  if(top){
+   var badge=document.createElement('div');badge.id='lfCoinBadge';badge.innerHTML='<span class="lf-coin-icon">💰</span><span><b id="lfCoinValue">0</b> コイン</span>';top.appendChild(badge);
+  }
+ }
+ if(!document.getElementById('lfCoinToast')){var toast=document.createElement('div');toast.id='lfCoinToast';document.body.appendChild(toast)}
  render();
+}
+function awardFromQuiz(ok){
+ if(!ok)return;
+ var combo=Number(window.lexiQuizCombo)||0;
+ add(1,'正解');
+ if(combo>0&&combo%5===0)add(4,'5連続ボーナス');
 }
 function hook(){
  var f=window.lexiProfileRecord;
- if(typeof f!=='function'||f.__lfCoin)return;
+ if(typeof f!=='function'||f.__lfCoinV2)return;
  var n=function(ok){
   var out=f.apply(this,arguments);
-  if(ok){
-   var now=Date.now();
-   /* 同一正解処理の重複呼び出しを防止。通常の次問までは十分に間隔がある */
-   if(window.__lfCoinLastAwardAt&&now-window.__lfCoinLastAwardAt<300)return out;
-   window.__lfCoinLastAwardAt=now;
-   var combo=Number(window.lexiQuizCombo)||0;
-   add(1,'正解');
-   if(combo>0&&combo%5===0)add(4,'5連続ボーナス');
-  }
+  awardFromQuiz(!!ok);
   return out;
  };
- n.__lfCoin=true;
+ n.__lfCoinV2=true;
  window.lexiProfileRecord=n;
 }
-function boot(){mount();hook();setInterval(function(){mount();hook()},500)}
+function boot(){mount();hook();setInterval(function(){mount();hook()},1000)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script></body></html>
