@@ -1172,9 +1172,9 @@ document.addEventListener('click',function(e){
   const b=e.target.closest&&e.target.closest('.lf-pronounce-inline,.lf-pronounce-inside');
   if(!b)return;
   e.preventDefault();
-  e.stopPropagation();
+  e.stopImmediatePropagation();
   try{speakEnglishWord(decodeURIComponent(b.getAttribute('data-pronounce-word')||''));}catch(err){}
-});
+},true);
 document.addEventListener('keydown',function(e){
   const b=e.target.closest&&e.target.closest('.lf-pronounce-inside');
   if(!b)return;
