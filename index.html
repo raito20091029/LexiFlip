@@ -1240,9 +1240,21 @@ function showQuiz(){
         card.quizWeakCorrectStreak=0;
       }
     }else{
-      streak=0;
-      card.score=Math.max(0,card.score-1);
-      card.weak=true;
+      let lfShopState={};
+      try{lfShopState=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}')}catch(e){}
+      const lfShield=Number(lfShopState.__shieldActive||0)>0;
+      const lfCombo=Number(lfShopState.__comboActive||0)>0;
+      if(lfShield||lfCombo){
+        if(lfCombo)streak=Math.max(1,streak);
+        if(lfShield){card.score=Math.max(0,card.score);card.weak=!!card.weak;}
+        lfShopState.__shieldActive=0;
+        lfShopState.__comboActive=0;
+        try{localStorage.setItem('lexiflip_shop_v1',JSON.stringify(lfShopState))}catch(e){}
+      }else{
+        streak=0;
+        card.score=Math.max(0,card.score-1);
+        card.weak=true;
+      }
       card.quizWeakCorrectStreak=0;
     }
     card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; window.__lfQuizCoinAnswer=true; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
@@ -1261,6 +1273,9 @@ function showQuizCorrectOverlay(){
     el=document.createElement('div');el.id='quizCorrectOverlay';el.setAttribute('aria-hidden','true');
     el.innerHTML='<div class="quiz-correct-mark">○</div>';document.body.appendChild(el);
   }
+  let lfShopEffect='default';
+  try{const ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');if(ss.effect)lfShopEffect='neon'}catch(e){}
+  el.setAttribute('data-shop-effect',lfShopEffect);
   el.classList.remove('show');el.style.display='grid';void el.offsetWidth;el.style.opacity='1';
   el.classList.add('show');
   clearTimeout(window.__lexiQuizCorrectOverlayTimer);
@@ -2129,5 +2144,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <style id="lexiflip-shop-effect">
 .lf-neon-effect .quiz.show .answers button:hover,.lf-neon-effect .quiz.show .answers button:focus{box-shadow:0 0 18px #00d9ff66;border-color:#00d9ff!important}
 .lf-neon-effect .quiz.show .result{box-shadow:0 0 24px #00d9ff44}
+#quizCorrectOverlay[data-shop-effect="neon"] .quiz-correct-mark{animation:lfCoinNeonCorrect .72s cubic-bezier(.2,1.4,.3,1)}
+@keyframes lfCoinNeonCorrect{0%{transform:scale(.35);filter:brightness(1);text-shadow:0 0 0 transparent}45%{transform:scale(1.28);filter:brightness(2);text-shadow:0 0 28px #00d9ff,0 0 58px #00d9ff66}100%{transform:scale(1);filter:brightness(1);text-shadow:0 0 10px #00d9ff66}}
 </style>
 </body></html>
