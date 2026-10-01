@@ -1735,7 +1735,8 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   document.getElementById('initialManage')?.addEventListener('click',()=>enter('manage'));(function(){
   var rScreen=document.getElementById('lfRouletteScreen'), rWheel=document.getElementById('lfRouletteWheel'), rSpin=document.getElementById('lfRouletteSpin'), rCount=document.getElementById('lfRouletteCount'), rReward=document.getElementById('lfRouletteReward');
   var RKEY='lexiflip_roulette_v1', rewards=[5,10,15,25,50,100];
-  function rState(){try{var x=JSON.parse(localStorage.getItem(RKEY)||'{}'),d=new Date().toISOString().slice(0,10);if(x.date!==d)x={date:d,spins:0};return x}catch(e){return {date:new Date().toISOString().slice(0,10),spins:0}}}
+  function rLocalDate(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  function rState(){try{var x=JSON.parse(localStorage.getItem(RKEY)||'{}'),d=rLocalDate();if(x.date!==d)x={date:d,spins:0};return x}catch(e){return {date:rLocalDate(),spins:0}}}
   function rSave(x){try{localStorage.setItem(RKEY,JSON.stringify(x))}catch(e){}}
   function rCoins(){try{return Number(localStorage.getItem('lexiflip_coins'))||0}catch(e){return 0}}
   function rAdd(n){try{if(typeof window.lexiAddCoins==='function'){window.lexiAddCoins(Number(n)||0,'ルーレット');return}localStorage.setItem('lexiflip_coins',String(Math.max(0,Math.floor(rCoins()+n))))}catch(e){}}
