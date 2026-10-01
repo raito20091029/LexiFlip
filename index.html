@@ -23,6 +23,25 @@ body.home-mode .layout{display:none!important} body.home-mode .tabs{display:none
 .lf-answer-row,.lf-rank-answer-row,.lf-ch-answer-row,.lf-sq-answer-row{display:flex;gap:8px;align-items:stretch}
 .lf-answer-row{min-width:0}
 .lf-answer-main,.lf-rank-answer-main,.lf-ch-answer-main,.lf-sq-answer-main{flex:1;min-width:0}
+.lf-pronounce-inside{
+  display:inline-grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  margin-left:9px;
+  vertical-align:middle;
+  border:1px solid #00d9ff88;
+  border-radius:10px;
+  background:#00d9ff18;
+  color:#dffaff;
+  font-size:17px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 0 14px #00d9ff22;
+  user-select:none
+}
+.lf-pronounce-inside:hover{border-color:#00d9ffcc;background:#00d9ff28;box-shadow:0 0 18px #00d9ff44}
+.lf-pronounce-inside:active{transform:scale(.94)}
 .lf-pronounce-inline{flex:0 0 46px;width:46px;min-height:58px;padding:0;border:1px solid #00d9ff66;border-radius:14px;background:#00d9ff12;color:var(--text);font-size:19px;display:grid;place-items:center;box-shadow:0 5px 16px #0002,0 0 18px #00d9ff18;z-index:2}
 .lf-pronounce-inline:hover{transform:translateY(-2px);border-color:#00d9ffaa;box-shadow:0 8px 20px #0003,0 0 22px #00d9ff33}
 .lf-pronounce-inline:active{transform:translateY(1px)}
@@ -1146,9 +1165,20 @@ function speakEnglishWord(word){
 function lfPronounceInline(word){
   return '<button type="button" class="lf-pronounce-inline" data-pronounce-word="'+encodeURIComponent(String(word||''))+'" aria-label="発音を聞く">🔊</button>';
 }
+function lfPronounceInside(word){
+  return '<span class="lf-pronounce-inside" data-pronounce-word="'+encodeURIComponent(String(word||''))+'" aria-label="発音を聞く" role="button" tabindex="0">🔊</span>';
+}
 document.addEventListener('click',function(e){
-  const b=e.target.closest&&e.target.closest('.lf-pronounce-inline');
+  const b=e.target.closest&&e.target.closest('.lf-pronounce-inline,.lf-pronounce-inside');
   if(!b)return;
+  e.preventDefault();
+  e.stopPropagation();
+  try{speakEnglishWord(decodeURIComponent(b.getAttribute('data-pronounce-word')||''));}catch(err){}
+});
+document.addEventListener('keydown',function(e){
+  const b=e.target.closest&&e.target.closest('.lf-pronounce-inside');
+  if(!b)return;
+  if(e.key!=='Enter'&&e.key!==' ')return;
   e.preventDefault();
   e.stopPropagation();
   try{speakEnglishWord(decodeURIComponent(b.getAttribute('data-pronounce-word')||''));}catch(err){}
@@ -2473,7 +2503,7 @@ function startTest(){
   var body=document.getElementById('lfRankBody'),q=questions[state.index];
   document.getElementById('lfRankProgress').textContent=(state.index+1)+' / 10問 ・ '+s.name;
   var rankPrompt=q.askJP?String(q.card.jp||''):String(q.card.en||'');
-  body.innerHTML='<div class="lf-rank-question">'+rankPrompt+(q.askJP?'':lfPronounceInline(q.card.en))+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+v+'</button>'+(q.askJP?lfPronounceInline(v):'')+'</div>'}).join('')+'</div><div id="lfRankResult"></div>';
+  body.innerHTML='<div class="lf-rank-question">'+rankPrompt+(q.askJP?'':lfPronounceInline(q.card.en))+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+v+(q.askJP?lfPronounceInside(v):'')+'</button></div>'}).join('')+'</div><div id="lfRankResult"></div>';
   body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(b){
    b.onclick=function(){
     body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(x){x.disabled=true});
