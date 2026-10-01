@@ -2517,7 +2517,7 @@ function startTest(){
   var body=document.getElementById('lfRankBody'),q=questions[state.index];
   document.getElementById('lfRankProgress').textContent=(state.index+1)+' / 10問 ・ '+s.name;
   var rankPrompt=q.askJP?String(q.card.jp||''):String(q.card.en||'');
-  body.innerHTML='<div class="lf-rank-question">'+rankPrompt+(q.askJP?'':lfPronounceInline(q.card.en))+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button type="button" data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+v+'</button>'+(q.askJP?lfPronounceInline(v):'')+'</div>'}).join('')+'</div><div id="lfRankResult"></div>';
+  body.innerHTML='<div class="lf-rank-question">'+rankPrompt+(q.askJP?'':lfPronounceInline(q.card.en))+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button type="button" data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+cleanDisplayText(v,q.askJP?24:32)+'</button>'+(q.askJP?lfPronounceInline(v):'')+'</div>'}).join('')+'</div><div id="lfRankResult"></div>';
   body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(b){
    b.onclick=function(){
     body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(x){x.disabled=true});
