@@ -2263,35 +2263,141 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <style id="lexiflip-profile-xp-display">.profile-xp-value{display:block!important;visibility:visible!important;opacity:1!important;margin-top:4px;font-size:18px;font-weight:1000;line-height:1.2;color:var(--text)!important}.profile-identity-main{min-width:0}@media(max-width:520px){#profilePage .profile-xp-value{display:block!important;font-size:16px;margin-top:3px}}</style><style id="lexiflip-profile-xp-force">#profileXP{display:block!important;visibility:visible!important;opacity:1!important;color:#fff!important;font-size:18px!important;font-weight:1000!important;line-height:1.4!important;min-height:25px!important}.profile-level{display:flex!important;visibility:visible!important}.profile-level span{display:inline-block!important;visibility:visible!important;opacity:1!important;color:var(--text)!important}</style><script id="lexiflip-profile-xp-sync">(function(){function need(l){return 100+20*(l-1)*(l-1)}function sync(){var el=document.getElementById("profileXP"),lv=document.getElementById("profileLevel"),bar=document.getElementById("profileXPBar"),next=document.getElementById("profileNext");if(!el)return;try{var raw=localStorage.getItem("lexiflip_progress")||localStorage.getItem("lexiflip_progress_backup"),x=raw?JSON.parse(raw):{xp:0,level:1},p={xp:Math.max(0,Number(x.xp)||0),level:Math.max(1,Math.floor(Number(x.level)||1))},n=need(p.level);el.textContent=p.xp+" / "+n+" XP";if(lv)lv.textContent="Lv."+p.level;if(bar)bar.style.width=Math.min(100,p.xp/n*100)+"%";if(next)next.textContent="次のレベルまで "+Math.max(0,n-p.xp)+" XP"}catch(e){}}sync();setInterval(sync,500)})();</script><style id="lexiflip-rank-style">
 .lf-rank-card{margin-top:16px;padding:18px;border:1px solid #16445a;border-radius:20px;background:linear-gradient(145deg,#0b1220,#07141d);box-shadow:0 10px 30px #0003}
 .lf-rank-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.lf-rank-name{font-size:25px;font-weight:1000;color:#e8fbff}.lf-rank-tier{font-size:12px;color:#79a7b8;margin-top:3px}.lf-rank-rr{font-size:18px;font-weight:1000;color:#00d9ff;white-space:nowrap}.lf-rank-bar{height:10px;margin-top:13px;border-radius:99px;background:#06101a;overflow:hidden;border:1px solid #16445a}.lf-rank-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#00d9ff,#7c5cff);border-radius:99px;transition:width .35s}.lf-rank-next{margin-top:7px;color:#79a7b8;font-size:11px}
-@media(max-width:600px){.lf-rank-card{padding:15px}.lf-rank-name{font-size:21px}.lf-rank-rr{font-size:16px}}
+.lf-rank-name{font-size:25px;font-weight:1000;color:#e8fbff}.lf-rank-tier{font-size:12px;color:#79a7b8;margin-top:3px}.lf-rank-rr{font-size:18px;font-weight:1000;color:#00d9ff;white-space:nowrap}.lf-rank-bar{height:10px;margin-top:13px;border-radius:99px;background:#06101a;overflow:hidden;border:1px solid #16445a}.lf-rank-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#00d9ff,#7c5cff);border-radius:99px;transition:width .35s}.lf-rank-next{margin-top:7px;color:#79a7b8;font-size:11px}.lf-rank-test-btn{width:100%;margin-top:14px;border:1px solid #00d9ff66!important;background:linear-gradient(135deg,#00d9ff22,#7c5cff22)!important;color:#e8fbff!important;font-weight:950;box-shadow:0 0 18px #00d9ff14}
+.lf-rank-modal{position:fixed;inset:0;z-index:210000;background:#03070eee;display:grid;place-items:center;padding:18px}
+.lf-rank-panel{width:min(680px,100%);max-height:92vh;overflow:auto;border:1px solid #16445a;border-radius:24px;background:linear-gradient(145deg,#0b1220,#07141d);box-shadow:0 20px 70px #0008;padding:22px}
+.lf-rank-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.lf-rank-modal-head b{font-size:20px}.lf-rank-close{padding:8px 11px}
+.lf-rank-progress{margin-top:12px;color:#79a7b8;font-size:12px}.lf-rank-question{margin:22px 0 16px;padding:22px 18px;border:1px solid #16445a;border-radius:18px;background:#07121c;text-align:center;font-size:28px;font-weight:950;overflow-wrap:anywhere}
+.lf-rank-answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lf-rank-answers button{min-height:58px;text-align:left;padding:14px;border-radius:15px;background:#0b1622;border-color:#16445a}.lf-rank-answers button:hover:not(:disabled){border-color:#00d9ff88;box-shadow:0 0 18px #00d9ff22}.lf-rank-answers button:disabled{cursor:default;opacity:.72}
+.lf-rank-result{text-align:center;margin-top:14px;padding:12px;border-radius:14px;font-weight:950}.lf-rank-result.good{border:1px solid #20a66a88;color:#54e6a1;background:#20a66a16}.lf-rank-result.bad{border:1px solid #e0525288;color:#ff8c8c;background:#e0525216}
+.lf-rank-summary{text-align:center;padding:22px 8px}.lf-rank-summary .big{font-size:38px;font-weight:1000;color:#00d9ff}.lf-rank-summary .delta{font-size:20px;font-weight:950;margin-top:7px}.lf-rank-summary .sub{margin-top:8px}.lf-rank-summary button{margin-top:16px}
+@media(max-width:600px){.lf-rank-card{padding:15px}.lf-rank-name{font-size:21px}.lf-rank-rr{font-size:16px}.lf-rank-panel{padding:16px;border-radius:20px}.lf-rank-question{font-size:23px;padding:20px 14px}.lf-rank-answers{grid-template-columns:1fr}.lf-rank-answers button{min-height:56px}}
 </style>
 <script id="lexiflip-rank-v1">
 (function(){
 'use strict';
 var KEY='lexiflip_rank_v1';
-var ranks=['BRONZE I','BRONZE II','BRONZE III','SILVER I','SILVER II','SILVER III','GOLD I','GOLD II','GOLD III','PLATINUM I','PLATINUM II','PLATINUM III','DIAMOND I','DIAMOND II','DIAMOND III','ASCENDANT I','ASCENDANT II','ASCENDANT III','IMMORTAL I','IMMORTAL II','IMMORTAL III','RADIANT'];
-function get(){try{return Object.assign({tier:0,rr:0},JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){return {tier:0,rr:0}}}
-function save(s){try{localStorage.setItem(KEY,JSON.stringify({tier:Math.max(0,Math.min(ranks.length-1,Math.floor(Number(s.tier)||0))),rr:Math.max(0,Math.min(99,Math.floor(Number(s.rr)||0)))}))}catch(e){}}
-function change(ok){
- var s=get();s.rr+=ok?10:-8;
- if(s.rr>=100&&s.tier<ranks.length-1){s.rr-=100;s.tier++}
- if(s.rr<0){if(s.tier>0){s.tier--;s.rr=92}else s.rr=0}
- save(s);render();
+var ranks=[
+ 'SPARK I','SPARK II','SPARK III',
+ 'PULSE I','PULSE II','PULSE III',
+ 'DRIVE I','DRIVE II','DRIVE III',
+ 'CORE I','CORE II','CORE III',
+ 'NOVA I','NOVA II','NOVA III',
+ 'VOLT I','VOLT II','VOLT III',
+ 'FLUX I','FLUX II','FLUX III',
+ 'QUANTUM I','QUANTUM II','QUANTUM III',
+ 'NEXUS I','NEXUS II','NEXUS III',
+ 'INFINITE'
+];
+function get(){
+ try{
+  var x=JSON.parse(localStorage.getItem(KEY)||'{}');
+  return {tier:Math.max(0,Math.min(ranks.length-1,Math.floor(Number(x.tier)||0))),rr:Math.max(0,Math.min(99,Math.floor(Number(x.rr)||0)))};
+ }catch(e){return {tier:0,rr:0}}
+}
+function save(s){
+ try{localStorage.setItem(KEY,JSON.stringify({tier:Math.max(0,Math.min(ranks.length-1,Math.floor(Number(s.tier)||0))),rr:Math.max(0,Math.min(99,Math.floor(Number(s.rr)||0)))}))}catch(e){}
+}
+function rankInfo(){
+ var s=get();
+ return {tier:s.tier,rr:s.rr,name:ranks[s.tier],max:s.tier===ranks.length-1};
 }
 function render(){
  var box=document.getElementById('lfRankCard');
- if(!box){var host=document.querySelector('#profilePage .profile-hero');if(!host)return;box=document.createElement('div');box.id='lfRankCard';box.className='lf-rank-card';host.appendChild(box)}
- var s=get(),name=ranks[s.tier],next=s.tier<ranks.length-1?100-s.rr:0;
- box.innerHTML='<div class="lf-rank-head"><div><div class="lf-rank-tier">🏆 RANK RATING</div><div class="lf-rank-name">'+name+'</div></div><div class="lf-rank-rr">'+s.rr+' RR</div></div><div class="lf-rank-bar"><i style="width:'+s.rr+'%"></i></div><div class="lf-rank-next">'+(s.tier===ranks.length-1?'✨ 最高ランク':'次のランクまで '+next+' RR')+'</div>';
+ if(!box){
+  var host=document.querySelector('#profilePage .profile-hero');
+  if(!host)return;
+  box=document.createElement('div');box.id='lfRankCard';box.className='lf-rank-card';host.appendChild(box);
+ }
+ var s=rankInfo(),next=s.max?0:100-s.rr;
+ box.innerHTML='<div class="lf-rank-head"><div><div class="lf-rank-tier">🏆 LEXIFLIP RANK</div><div class="lf-rank-name">'+s.name+'</div></div><div class="lf-rank-rr">'+s.rr+' RR</div></div><div class="lf-rank-bar"><i style="width:'+s.rr+'%"></i></div><div class="lf-rank-next">'+(s.max?'✨ 最高ランク':'次のランクまで '+next+' RR')+'</div>'+(s.max?'':'<button class="lf-rank-test-btn" id="lfRankTestBtn">🎯 ランクテストを受ける</button>');
+ var btn=document.getElementById('lfRankTestBtn');
+ if(btn&&!btn.__bound){btn.__bound=true;btn.onclick=startTest}
 }
-function hook(){
- var f=window.lexiProfileRecord;
- if(typeof f!=='function'||f.__lfRank)return;
- var n=function(ok){var out=f.apply(this,arguments);change(!!ok);return out};
- n.__lfRank=true;window.lexiProfileRecord=n;
+function poolForTier(tier){
+ var all=Array.isArray(window.__lexiCards)?window.__lexiCards:[];
+ if(!all.length)return [];
+ var maxLevel=tier<=2?'beginner':tier<=5?'intermediate':'advanced';
+ var order={beginner:0,intermediate:1,advanced:2};
+ return all.filter(function(c){return order[c.level]!==undefined&&order[c.level]<=order[maxLevel]});
 }
-function boot(){render();hook();setInterval(function(){render();hook()},700)}
+function shuffle(a){
+ for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}
+ return a;
+}
+function key(c){return String(c.jp||'')+'|'+String(c.en||'')}
+function makeQuestion(c,pool){
+ var choices=[String(c.en||'')],seen={};seen[String(c.en||'')]=1;
+ shuffle(pool.slice()).some(function(x){
+  var v=String(x.en||'');
+  if(v&& !seen[v]&&v!==String(c.en||'')){seen[v]=1;choices.push(v)}
+  return choices.length>=4;
+ });
+ if(choices.length<4)return null;
+ shuffle(choices);
+ return {card:c,choices:choices};
+}
+function startTest(){
+ var s=rankInfo(),pool=poolForTier(s.tier);
+ if(pool.length<4){alert('ランクテストに必要な単語が足りません。');return}
+ var questions=[],used={};
+ var attempts=0;
+ while(questions.length<10&&attempts++<300){
+  var c=pool[Math.floor(Math.random()*pool.length)];
+  var k=key(c);
+  if(used[k])continue;
+  var q=makeQuestion(c,pool);
+  if(!q)continue;
+  used[k]=1;questions.push(q);
+ }
+ if(questions.length<10){
+  var shuffled=shuffle(pool.slice());
+  for(var i=0;i<shuffled.length&&questions.length<10;i++){
+   var q=makeQuestion(shuffled[i],pool);
+   if(q&&!used[key(shuffled[i])]){used[key(shuffled[i])]=1;questions.push(q)}
+  }
+ }
+ if(questions.length<10){alert('ランクテストを開始できませんでした。');return}
+ var modal=document.createElement('div');modal.className='lf-rank-modal';modal.id='lfRankModal';
+ modal.innerHTML='<div class="lf-rank-panel"><div class="lf-rank-modal-head"><b>🎯 ランクテスト</b><button class="lf-rank-close" id="lfRankClose">閉じる</button></div><div class="lf-rank-progress" id="lfRankProgress"></div><div id="lfRankBody"></div></div>';
+ document.body.appendChild(modal);
+ document.getElementById('lfRankClose').onclick=function(){modal.remove()};
+ var state={index:0,correct:0,wrong:0};
+ function show(){
+  var body=document.getElementById('lfRankBody'),q=questions[state.index];
+  document.getElementById('lfRankProgress').textContent=(state.index+1)+' / 10問 ・ '+s.name;
+  body.innerHTML='<div class="lf-rank-question">'+String(q.card.jp||'')+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<button data-answer="'+encodeURIComponent(v)+'">'+v+'</button>'}).join('')+'</div><div id="lfRankResult"></div>';
+  body.querySelectorAll('[data-answer]').forEach(function(b){
+   b.onclick=function(){
+    body.querySelectorAll('[data-answer]').forEach(function(x){x.disabled=true});
+    var answer=decodeURIComponent(b.getAttribute('data-answer')),ok=answer===String(q.card.en||'');
+    if(ok)state.correct++;else state.wrong++;
+    var result=document.getElementById('lfRankResult');
+    result.className='lf-rank-result '+(ok?'good':'bad');
+    result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+String(q.card.en||'');
+    setTimeout(function(){state.index++;if(state.index<10)show();else finish()},650);
+   };
+  });
+ }
+ function finish(){
+  var before=rankInfo(),delta=state.correct-state.wrong;
+  var raw=before.rr+delta,tier=before.tier;
+  while(raw>=100&&tier<ranks.length-1){raw-=100;tier++}
+  while(raw<0&&tier>0){tier--;raw+=100}
+  if(tier===ranks.length-1&&raw>=100)raw=99;
+  if(tier===0&&raw<0)raw=0;
+  save({tier:tier,rr:Math.max(0,Math.min(99,raw))});
+  var after=rankInfo(),promoted=after.tier>before.tier,demoted=after.tier<before.tier;
+  var changeText=(delta>=0?'+':'')+delta+' RR';
+  var event=promoted?'🎉 ランクアップ！':demoted?'📉 ランクダウン':'';
+  document.getElementById('lfRankProgress').textContent='テスト完了';
+  document.getElementById('lfRankBody').innerHTML='<div class="lf-rank-summary"><div class="big">'+state.correct+' / 10</div><div>正解 '+state.correct+' ・ 不正解 '+state.wrong+'</div><div class="delta">'+changeText+'</div><div class="sub">'+before.name+' '+before.rr+' RR → <b>'+after.name+' '+after.rr+' RR</b>'+(event?' · '+event:'')+'</div><button class="lf-rank-test-btn" id="lfRankDone">プロフィールへ戻る</button></div>';
+  document.getElementById('lfRankDone').onclick=function(){modal.remove();render()};
+  render();
+ }
+ show();
+}
+function boot(){render();setInterval(render,900)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script></body></html>
