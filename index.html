@@ -1644,9 +1644,6 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
     window.scrollTo(0,0);
   }
 
-  document.getElementById('initialStudy')?.addEventListener('click',()=>{if(typeof window.showCardLevelSelect==='function')window.showCardLevelSelect();});
-  document.getElementById('initialQuiz')?.addEventListener('click',()=>{if(typeof window.showQuizLevelSelect==='function')window.showQuizLevelSelect();});
-  document.getElementById('initialRankTest')?.addEventListener('click',()=>{if(typeof window.startTest==='function')window.startTest();});
   document.addEventListener('click',function(e){
     const study=e.target.closest&&e.target.closest('#initialStudy');
     if(study&&typeof window.showCardLevelSelect==='function'){e.preventDefault();window.showCardLevelSelect();return;}
