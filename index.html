@@ -1232,6 +1232,10 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
         showQuizLevelSelect();
         return;
       }
+      if(page==='cards' && typeof showCardLevelSelect==='function'){
+        showCardLevelSelect();
+        return;
+      }
       showPage(page);
       window.scrollTo(0,0);
     });
