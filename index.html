@@ -1743,6 +1743,7 @@ function theme(){
  document.querySelectorAll('.lf-theme').forEach(function(b){
   b.classList.toggle('active',b.getAttribute('data-t')===t);
  });
+ if(typeof paintTheme==='function')paintTheme(t);
 }
 function paintTheme(t){
  var m={
