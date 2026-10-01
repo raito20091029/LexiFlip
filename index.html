@@ -1286,6 +1286,13 @@ function updateQuizActiveItems(){
   el.innerHTML=a.map(x=>'<span class="quiz-active-item">'+x+'</span>').join('');
 }
 function showQuiz(){
+  // 4択テストへ戻ったときに、画面側の表示状態が残っていても必ず問題エリアを表示する。
+  const quizPage=document.getElementById('quizPage');
+  if(quizPage){quizPage.classList.remove('hide');quizPage.classList.add('show');quizPage.style.setProperty('display','block','important');}
+  const questionEl=document.getElementById('question');
+  const answersEl=document.getElementById('answers');
+  if(questionEl)questionEl.style.display='';
+  if(answersEl)answersEl.style.display='';
   const quizCorrectOverlay=document.getElementById('quizCorrectOverlay');
   if(quizCorrectOverlay){quizCorrectOverlay.classList.remove('show');quizCorrectOverlay.style.opacity='0';quizCorrectOverlay.style.display='none';}
   const quizWrongOverlay=document.getElementById('quizWrongOverlay');
