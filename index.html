@@ -1038,6 +1038,7 @@ function showQuiz(){
       quizScore++;
       streak++;
       card.score++;
+      if(card.weak)card.weak=false;
     }else{
       streak=0;
       card.score=Math.max(0,card.score-1);
