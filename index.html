@@ -2201,6 +2201,7 @@ function buy(k,qty){
  save(s);render();msg(n===1?it.name+' を購入！':it.name+' を'+n+'個購入！');
 }
 function use(k){
+ if(window.lexiRankTestActive&&k!=='xp'&&k!=='boost'){msg('🏆 ランクテストではXP・コイン増加アイテムのみ使用できます');return}
  var s=state();
  if(k==='xp'&&s.xp>0){s.xp--;s.__xpActive=Number(s.__xpActive)||0;s.__xpActive+=10;save(s);msg('⚡ XPブーストを発動！残り'+s.__xpActive+'回が2倍');}
  else if(k==='shield'&&s.shield>0){s.shield--;s.__shieldActive=Number(s.__shieldActive)||0;s.__shieldActive+=1;save(s);msg('🛡️ 1ミス保護を発動！残り'+s.__shieldActive+'ミス');}
