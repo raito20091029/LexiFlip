@@ -2451,15 +2451,49 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 </script><script id="lexiflip-home-action-guard">
 (function(){
+  function openMode(mode){
+    try{
+      var initial=document.getElementById('initialModeSelect');
+      if(mode==='study' && typeof window.showCardLevelSelect==='function'){
+        window.showCardLevelSelect();
+        var s=document.querySelector('[data-card-level]');
+        if(s)return;
+      }
+      if(mode==='quiz' && typeof window.showQuizLevelSelect==='function'){
+        window.showQuizLevelSelect();
+        var q=document.querySelector('[data-quiz-level]');
+        if(q)return;
+      }
+      if(mode==='rank' && typeof window.startTest==='function'){
+        window.startTest();
+        if(document.getElementById('lfRankModal'))return;
+      }
+    }catch(err){console.error('LexiFlip home action failed:',err)}
+    var top=document.querySelector('.top'),tabs=document.querySelector('.tabs'),layout=document.querySelector('.layout'),home=document.getElementById('homeScreen');
+    if(initial)initial.style.display='none';
+    if(home)home.style.display='none';
+    document.body.classList.remove('home-mode');
+    document.body.classList.add('lf-ready');
+    if(top)top.style.setProperty('display','flex','important');
+    if(tabs)tabs.style.setProperty('display','flex','important');
+    if(layout)layout.style.setProperty('display','grid','important');
+    if(mode==='study'){
+      document.querySelectorAll('.tab[data-page]').forEach(function(b){b.classList.toggle('active',b.dataset.page==='cards')});
+      document.querySelectorAll('#cardsPage,#quizPage,#managePage,#profilePage').forEach(function(p){p.classList.toggle('hide',p.id!=='cardsPage')});
+    }else if(mode==='quiz'){
+      document.querySelectorAll('.tab[data-page]').forEach(function(b){b.classList.toggle('active',b.dataset.page==='quiz')});
+      document.querySelectorAll('#cardsPage,#quizPage,#managePage,#profilePage').forEach(function(p){p.classList.toggle('hide',p.id!=='quizPage')});
+      if(typeof window.makeQuiz==='function')window.makeQuiz();
+    }
+    window.scrollTo(0,0);
+  }
+  window.lexiOpenHomeMode=openMode;
   function bind(){
-    var study=document.getElementById('initialStudy');
-    var quiz=document.getElementById('initialQuiz');
-    var rank=document.getElementById('initialRankTest');
-    var hero=document.getElementById('lfHomeRankHero');
-    if(study){study.onclick=function(e){e.preventDefault();if(typeof window.showCardLevelSelect==='function')window.showCardLevelSelect();};}
-    if(quiz){quiz.onclick=function(e){e.preventDefault();if(typeof window.showQuizLevelSelect==='function')window.showQuizLevelSelect();};}
-    if(rank){rank.onclick=function(e){e.preventDefault();if(typeof window.startTest==='function')window.startTest();};}
-    if(hero){hero.onclick=function(e){e.preventDefault();if(typeof window.startTest==='function')window.startTest();};}
+    var study=document.getElementById('initialStudy'),quiz=document.getElementById('initialQuiz'),rank=document.getElementById('initialRankTest'),hero=document.getElementById('lfHomeRankHero');
+    if(study)study.onclick=function(e){e.preventDefault();e.stopPropagation();openMode('study')};
+    if(quiz)quiz.onclick=function(e){e.preventDefault();e.stopPropagation();openMode('quiz')};
+    if(rank)rank.onclick=function(e){e.preventDefault();e.stopPropagation();openMode('rank')};
+    if(hero)hero.onclick=function(e){e.preventDefault();e.stopPropagation();openMode('rank')};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
   setTimeout(bind,300);
