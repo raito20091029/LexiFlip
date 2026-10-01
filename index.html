@@ -1126,17 +1126,27 @@ function cleanDisplayText(value,max=80){
   s=s.replace(/\s{2,}/g,' ').replace(/\s*\/\s*/g,' / ').replace(/\s*([,、;；])\s*/g,'$1 ').trim();
   s=s.replace(/^\s*[/・、,;；]\s*/,'').replace(/\s*[/・、,;；]\s*$/,'').trim();
 
-  // 日本語の長い辞書説明は、最初の意味までに絞る。
+  // 日本語は「短く切る」のではなく、意味の区切りから必要な部分を残す。
   const isJapanese=/[\u3040-\u30ff\u3400-\u9fff]/.test(s);
+  const limit=Math.max(1,Number(max)||80);
   if(isJapanese){
-    const parts=s.split(/\s*\/\s*|\s*[;；]\s*/).map(x=>x.trim()).filter(Boolean);
-    if(parts.length>1) s=parts[0];
+    s=s.replace(/することを可能にする/g,'可能にする')
+      .replace(/することができる/g,'できる')
+      .replace(/すること/g,'こと');
+    const parts=s.split(/\s*\/\s*|\s*[;；]\s*|\s*,\s*|\s*、\s*/).map(x=>x.trim()).filter(Boolean);
+    if(parts.length>1){
+      let compact=parts[0];
+      for(let j=1;j<parts.length;j++){
+        const next=compact+'、'+parts[j];
+        if(next.length<=limit) compact=next;
+        else break;
+      }
+      s=compact;
+    }
   }else{
     const parts=s.split(/\s*\/\s*|\s*;\s*/).map(x=>x.trim()).filter(Boolean);
     if(parts.length>1) s=parts[0];
   }
-
-  const limit=Math.max(1,Number(max)||80);
   if(s.length<=limit)return s;
   const cut=s.slice(0,limit);
   const boundary=Math.max(
