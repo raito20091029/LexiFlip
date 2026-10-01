@@ -1038,11 +1038,17 @@ function showQuiz(){
       quizScore++;
       streak++;
       card.score++;
-      if(card.weak)card.weak=false;
+      if(card.weak){
+        card.quizWeakCorrectStreak=(Number(card.quizWeakCorrectStreak)||0)+1;
+        if(card.quizWeakCorrectStreak>=3)card.weak=false;
+      }else{
+        card.quizWeakCorrectStreak=0;
+      }
     }else{
       streak=0;
       card.score=Math.max(0,card.score-1);
       card.weak=true;
+      card.quizWeakCorrectStreak=0;
     }
     card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
     const quizStreakEl=$('#quizStreak');if(quizStreakEl)quizStreakEl.textContent='🔥 連続正解 '+streak;
