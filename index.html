@@ -2260,4 +2260,38 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #quizCorrectOverlay[data-shop-effect="neon"] .quiz-correct-mark{animation:lfCoinNeonCorrect .72s cubic-bezier(.2,1.4,.3,1)}
 @keyframes lfCoinNeonCorrect{0%{transform:scale(.35);filter:brightness(1);text-shadow:0 0 0 transparent}45%{transform:scale(1.28);filter:brightness(2);text-shadow:0 0 28px #00d9ff,0 0 58px #00d9ff66}100%{transform:scale(1);filter:brightness(1);text-shadow:0 0 10px #00d9ff66}}
 </style>
-<style id="lexiflip-profile-xp-display">.profile-xp-value{display:block!important;visibility:visible!important;opacity:1!important;margin-top:4px;font-size:18px;font-weight:1000;line-height:1.2;color:var(--text)!important}.profile-identity-main{min-width:0}@media(max-width:520px){#profilePage .profile-xp-value{display:block!important;font-size:16px;margin-top:3px}}</style><style id="lexiflip-profile-xp-force">#profileXP{display:block!important;visibility:visible!important;opacity:1!important;color:#fff!important;font-size:18px!important;font-weight:1000!important;line-height:1.4!important;min-height:25px!important}.profile-level{display:flex!important;visibility:visible!important}.profile-level span{display:inline-block!important;visibility:visible!important;opacity:1!important;color:var(--text)!important}</style><script id="lexiflip-profile-xp-sync">(function(){function need(l){return 100+20*(l-1)*(l-1)}function sync(){var el=document.getElementById("profileXP"),lv=document.getElementById("profileLevel"),bar=document.getElementById("profileXPBar"),next=document.getElementById("profileNext");if(!el)return;try{var raw=localStorage.getItem("lexiflip_progress")||localStorage.getItem("lexiflip_progress_backup"),x=raw?JSON.parse(raw):{xp:0,level:1},p={xp:Math.max(0,Number(x.xp)||0),level:Math.max(1,Math.floor(Number(x.level)||1))},n=need(p.level);el.textContent=p.xp+" / "+n+" XP";if(lv)lv.textContent="Lv."+p.level;if(bar)bar.style.width=Math.min(100,p.xp/n*100)+"%";if(next)next.textContent="次のレベルまで "+Math.max(0,n-p.xp)+" XP"}catch(e){}}sync();setInterval(sync,500)})();</script></body></html>
+<style id="lexiflip-profile-xp-display">.profile-xp-value{display:block!important;visibility:visible!important;opacity:1!important;margin-top:4px;font-size:18px;font-weight:1000;line-height:1.2;color:var(--text)!important}.profile-identity-main{min-width:0}@media(max-width:520px){#profilePage .profile-xp-value{display:block!important;font-size:16px;margin-top:3px}}</style><style id="lexiflip-profile-xp-force">#profileXP{display:block!important;visibility:visible!important;opacity:1!important;color:#fff!important;font-size:18px!important;font-weight:1000!important;line-height:1.4!important;min-height:25px!important}.profile-level{display:flex!important;visibility:visible!important}.profile-level span{display:inline-block!important;visibility:visible!important;opacity:1!important;color:var(--text)!important}</style><script id="lexiflip-profile-xp-sync">(function(){function need(l){return 100+20*(l-1)*(l-1)}function sync(){var el=document.getElementById("profileXP"),lv=document.getElementById("profileLevel"),bar=document.getElementById("profileXPBar"),next=document.getElementById("profileNext");if(!el)return;try{var raw=localStorage.getItem("lexiflip_progress")||localStorage.getItem("lexiflip_progress_backup"),x=raw?JSON.parse(raw):{xp:0,level:1},p={xp:Math.max(0,Number(x.xp)||0),level:Math.max(1,Math.floor(Number(x.level)||1))},n=need(p.level);el.textContent=p.xp+" / "+n+" XP";if(lv)lv.textContent="Lv."+p.level;if(bar)bar.style.width=Math.min(100,p.xp/n*100)+"%";if(next)next.textContent="次のレベルまで "+Math.max(0,n-p.xp)+" XP"}catch(e){}}sync();setInterval(sync,500)})();</script><style id="lexiflip-rank-style">
+.lf-rank-card{margin-top:16px;padding:18px;border:1px solid #16445a;border-radius:20px;background:linear-gradient(145deg,#0b1220,#07141d);box-shadow:0 10px 30px #0003}
+.lf-rank-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lf-rank-name{font-size:25px;font-weight:1000;color:#e8fbff}.lf-rank-tier{font-size:12px;color:#79a7b8;margin-top:3px}.lf-rank-rr{font-size:18px;font-weight:1000;color:#00d9ff;white-space:nowrap}.lf-rank-bar{height:10px;margin-top:13px;border-radius:99px;background:#06101a;overflow:hidden;border:1px solid #16445a}.lf-rank-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#00d9ff,#7c5cff);border-radius:99px;transition:width .35s}.lf-rank-next{margin-top:7px;color:#79a7b8;font-size:11px}
+@media(max-width:600px){.lf-rank-card{padding:15px}.lf-rank-name{font-size:21px}.lf-rank-rr{font-size:16px}}
+</style>
+<script id="lexiflip-rank-v1">
+(function(){
+'use strict';
+var KEY='lexiflip_rank_v1';
+var ranks=['BRONZE I','BRONZE II','BRONZE III','SILVER I','SILVER II','SILVER III','GOLD I','GOLD II','GOLD III','PLATINUM I','PLATINUM II','PLATINUM III','DIAMOND I','DIAMOND II','DIAMOND III','ASCENDANT I','ASCENDANT II','ASCENDANT III','IMMORTAL I','IMMORTAL II','IMMORTAL III','RADIANT'];
+function get(){try{return Object.assign({tier:0,rr:0},JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){return {tier:0,rr:0}}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify({tier:Math.max(0,Math.min(ranks.length-1,Math.floor(Number(s.tier)||0))),rr:Math.max(0,Math.min(99,Math.floor(Number(s.rr)||0)))}))}catch(e){}}
+function change(ok){
+ var s=get();s.rr+=ok?10:-8;
+ if(s.rr>=100&&s.tier<ranks.length-1){s.rr-=100;s.tier++}
+ if(s.rr<0){if(s.tier>0){s.tier--;s.rr=92}else s.rr=0}
+ save(s);render();
+}
+function render(){
+ var box=document.getElementById('lfRankCard');
+ if(!box){var host=document.querySelector('#profilePage .profile-hero');if(!host)return;box=document.createElement('div');box.id='lfRankCard';box.className='lf-rank-card';host.appendChild(box)}
+ var s=get(),name=ranks[s.tier],next=s.tier<ranks.length-1?100-s.rr:0;
+ box.innerHTML='<div class="lf-rank-head"><div><div class="lf-rank-tier">🏆 RANK RATING</div><div class="lf-rank-name">'+name+'</div></div><div class="lf-rank-rr">'+s.rr+' RR</div></div><div class="lf-rank-bar"><i style="width:'+s.rr+'%"></i></div><div class="lf-rank-next">'+(s.tier===ranks.length-1?'✨ 最高ランク':'次のランクまで '+next+' RR')+'</div>';
+}
+function hook(){
+ var f=window.lexiProfileRecord;
+ if(typeof f!=='function'||f.__lfRank)return;
+ var n=function(ok){var out=f.apply(this,arguments);change(!!ok);return out};
+ n.__lfRank=true;window.lexiProfileRecord=n;
+}
+function boot(){render();hook();setInterval(function(){render();hook()},700)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script></body></html>
