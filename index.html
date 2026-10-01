@@ -1753,9 +1753,9 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
     var finalAngle=Math.floor(Math.random()*360);
     var turns=6+Math.floor(Math.random()*4);
     var target=base+turns*360+finalAngle;
-    var normalized=((finalAngle%360)+360)%360;
-    var wheelAngle=(360-normalized)%360;
-    var index=Math.floor(((((wheelAngle+30)%360)+360)%360)/60);
+    /* ポインター(12時)に実際に表示される数字を基準に報酬を決定 */
+    var pointerAngle=(((-target-90)%360)+360)%360;
+    var index=Math.round(pointerAngle/60)%6;
     var reward=rewards[index];
     rWheel.dataset.rotation=String(target);rWheel.style.transform='rotate('+target+'deg)';
     setTimeout(function(){s.spins=(Number(s.spins)||0)+1;rSave(s);rAdd(reward);if(rReward)rReward.textContent='🎉 +'+reward+' コイン！';if(typeof window.lexiCoinRender==='function')window.lexiCoinRender();rSpin.dataset.busy='0';rRender()},4100);
