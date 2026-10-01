@@ -2134,11 +2134,17 @@ function hookQuiz(){
  var n=function(ok){
   var s=state(),protect=s.__shieldActive>0||s.__comboActive>0,old=Number(window.lexiQuizCombo)||0;
   var out=f.apply(this,arguments);
-  if(!ok&&protect){
+  /* 同じ1回答に対する保護処理は必ず1回だけ */
+  var now=Date.now(),handled=Number(window.__lfShopProtectionHandledAt)||0;
+  if(!ok&&protect&&(now!==handled)){
+   window.__lfShopProtectionHandledAt=now;
    var keep=s.__shieldActive?old:Math.max(1,old);
    window.lexiQuizCombo=keep;
    try{localStorage.setItem('lexiflip_quiz_streak',String(keep))}catch(e){}
-   var usedName=s.__shieldActive?'🛡️ 1ミス保護':'🔥 コンボ保険';if(s.__shieldActive){s.__shieldActive=Math.max(0,Number(s.__shieldActive)-1)}else{s.__comboActive=Math.max(0,Number(s.__comboActive)-1)}save(s);msg(usedName+' が発動！残り'+(s.__shieldActive||s.__comboActive||0)+'ミス');
+   var usedName=s.__shieldActive?'🛡️ 1ミス保護':'🔥 コンボ保険';
+   if(s.__shieldActive){s.__shieldActive=Math.max(0,Number(s.__shieldActive)-1)}
+   else{s.__comboActive=Math.max(0,Number(s.__comboActive)-1)}
+   save(s);msg(usedName+' が発動！残り'+(s.__shieldActive||s.__comboActive||0)+'ミス');
   }
   render();return out;
  };
