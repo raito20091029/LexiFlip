@@ -1070,8 +1070,19 @@ const versionBadge=document.createElement('span');versionBadge.id='appVersionBad
 </script><script id="lexiflip-level-persistence-guard">
 (()=>{const K='lexiflip_progress',B=K+'_backup';try{
   const raw=localStorage.getItem(K),bak=localStorage.getItem(B);
-  if(raw){localStorage.setItem(B,raw)}
-  else if(bak){localStorage.setItem(K,bak)}
+  let useBackup=false;
+  if(bak){
+    const b=JSON.parse(bak);
+    if(!raw) useBackup=true;
+    else{
+      const x=JSON.parse(raw);
+      const rawLooksFresh=Number(x.xp||0)===0&&Math.max(1,Math.floor(Number(x.level)||1))===1;
+      const backupHasProgress=Number(b.xp||0)>0||Math.max(1,Math.floor(Number(b.level)||1))>1;
+      if(rawLooksFresh&&backupHasProgress)useBackup=true;
+    }
+  }
+  if(useBackup)localStorage.setItem(K,bak);
+  else if(raw)localStorage.setItem(B,raw);
 }catch(e){}})();
 </script><script id="lexiflip-profile-backup-guard">
 (()=>{const keys=['lexiflip_player_name','lexiflip_avatar','lexiflip_title','lexiflip_profile_stats','lexiflip_study_days'];try{
