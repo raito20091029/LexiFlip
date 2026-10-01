@@ -1344,7 +1344,7 @@ function randomCard(){if(studyCards.length<2)return 0;let n=i;while(n===i)n=Math
     const d=document.createElement('div');
     d.id='lexiLevelUp';
     d.innerHTML='<div class="lx-levelup-backdrop"></div><div class="lx-levelup-rays"></div><div class="lx-levelup-particles">'+Array.from({length:18},(_,i)=>'<i style="--i:'+i+'"></i>').join('')+'</div><div class="lx-levelup-box"><div class="lx-levelup-ring"></div><div class="lx-stars">✦</div><div class="lx-small">LEVEL UP</div><div class="lx-level">Lv.'+to+'</div><div class="lx-from">Lv.'+from+' <span>→</span> Lv.'+to+'</div><div class="lx-levelup-line"></div><div class="lx-levelup-sub">NEW LEVEL REACHED</div></div>';
-    document.body.appendChild(d);
+    document.documentElement.appendChild(d);
     requestAnimationFrame(()=>d.classList.add('show'));
     setTimeout(()=>d.classList.remove('show'),2600);
     setTimeout(()=>d.remove(),3000);
@@ -1391,6 +1391,9 @@ function randomCard(){if(studyCards.length<2)return 0;let n=i;while(n===i)n=Math
   '#lexiLevelUp .lx-levelup-line{width:0;height:2px;margin:18px auto 10px;background:linear-gradient(90deg,#ffffff00,#fff,#ffffff00);box-shadow:0 0 18px #fff;animation:lxLULine .8s .45s ease-out forwards}'+
   '#lexiLevelUp .lx-levelup-sub{font-size:10px;letter-spacing:.25em;color:#9fa7bc;font-weight:900;opacity:0;animation:lxLUFade .5s .65s ease forwards}'+
   '#lexiLevelUp .lx-levelup-particles{position:absolute;inset:0;pointer-events:none}'+
+  '#lexiLevelUp{width:100vw;height:100vh;height:100dvh;max-width:100vw;max-height:100vh;isolation:isolate}'+
+  '#lexiLevelUp .lx-levelup-box{max-width:calc(100vw - 28px);box-sizing:border-box}'+
+  '@media(max-width:600px){#lexiLevelUp{position:fixed!important;left:0!important;top:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;min-height:100vh!important;z-index:2147483647!important;display:grid!important;place-items:center!important}#lexiLevelUp .lx-levelup-box{width:calc(100vw - 28px)!important;padding:34px 18px 28px!important;border-radius:24px!important}#lexiLevelUp .lx-level{font-size:clamp(52px,18vw,78px)!important}#lexiLevelUp .lx-stars{font-size:48px!important}}'+
   '#lexiLevelUp .lx-levelup-particles i{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 14px #8b7cff;transform:rotate(calc(var(--i)*20deg)) translateY(0) scale(.2);animation:lxLUParticle 1.5s calc(var(--i)*.035s) ease-out forwards}'+
   '@keyframes lxLUBackdrop{0%,100%{opacity:0}12%,82%{opacity:1}100%{opacity:0}}'+
   '@keyframes lxLURays{to{transform:rotate(360deg)}}'+
