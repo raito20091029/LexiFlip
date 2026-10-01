@@ -2127,7 +2127,7 @@ function hookXP(){
  var n=function(v){var s=state(),m=1;if(s.__xpActive>0){s.__xpActive--;m=2;save(s)}var out=f.apply(this,[v*m]);render();return out};n.__lfShopXP=true;window.lexiAddXP=n;
 }
 function hookQuiz(){
- var f=window.lexiProfileRecord;if(typeof f!=='function'||f.__lfShopQuiz)return;
+ var f=window.lexiProfileRecord;if(typeof f!=='function'||f.__lfShopQuiz||f.__lfShopCoins)return;
  var n=function(ok){
   var s=state(),protect=s.__shieldActive>0,old=Number(window.lexiQuizCombo)||0;
   var out=f.apply(this,arguments);
