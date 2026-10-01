@@ -2413,6 +2413,7 @@ function startTest(){
     var answer=decodeURIComponent(b.getAttribute('data-answer')),ok=answer===String(q.card.en||'');
     if(ok){
       state.correct++;
+      if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(true);
       if(typeof window.lexiAddXP==='function')window.lexiAddXP(2);
       if(typeof window.lexiAddCoins==='function'){
        var rs={};try{rs=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}')}catch(e){}
@@ -2420,7 +2421,10 @@ function startTest(){
        window.lexiAddCoins(coinGain,'ランクテスト正解');
        if(Number(rs.__boostActive)>0){rs.__boostActive=Math.max(0,Number(rs.__boostActive)-1);try{localStorage.setItem('lexiflip_shop_v1',JSON.stringify(rs))}catch(e){}}
       }
-     }else state.wrong++;
+     }else{
+      state.wrong++;
+      if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(false);
+     }
     var result=document.getElementById('lfRankResult');
     result.className='lf-rank-result '+(ok?'good':'bad');
     result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+String(q.card.en||'');
