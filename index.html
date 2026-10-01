@@ -1374,7 +1374,7 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
 </style><script id="lexiflip-update-guard">
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  var BUILD='0.9.109';
+  var BUILD='0.9.111';
   var reloaded=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){
     if(reloaded)return;
@@ -1461,4 +1461,4 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
 })();
-</script></body></html>
+</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script></body></html>
