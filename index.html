@@ -1975,9 +1975,11 @@ function add(n,reason){
  if(t){t.textContent='💰 +'+n+' コイン'+(reason?' ・ '+reason:'');t.classList.add('show');clearTimeout(window.__lfCoinTimer);window.__lfCoinTimer=setTimeout(function(){t.classList.remove('show')},1100)}
 }
 function mount(){
- if(!document.getElementById('lfCoinBadge')){
-  var badge=document.createElement('div');badge.id='lfCoinBadge';badge.innerHTML='<span class="lf-coin-icon">💰</span><span><b id="lfCoinValue">0</b> コイン</span>';document.body.appendChild(badge);
+ var badge=document.getElementById('lfCoinBadge');
+ if(!badge){
+  badge=document.createElement('div');badge.id='lfCoinBadge';badge.innerHTML='<span class="lf-coin-icon">💰</span><span><b id="lfCoinValue">0</b> コイン</span>';
  }
+ if(badge.parentNode!==document.body)document.body.appendChild(badge);
  if(!document.getElementById('lfCoinToast')){var toast=document.createElement('div');toast.id='lfCoinToast';document.body.appendChild(toast)}
  render();
 }
