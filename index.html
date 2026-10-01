@@ -19,7 +19,21 @@ body.home-mode .layout{display:none!important} body.home-mode .tabs{display:none
 .main,.side{backdrop-filter:blur(10px)}
 @keyframes lfResultIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.quiz-streak-visible{min-width:132px;min-height:44px;padding:9px 14px;font-size:14px}.question{min-height:112px;font-size:32px;padding:22px 16px;border-radius:20px}.answers button{min-height:62px;padding:15px 17px}.result{font-size:17px}}
-<style id="lexiflip-pronunciation-style">.lf-pronounce-btn{margin:0 0 8px;width:48px;height:40px;padding:0;border:1px solid #665cf688;border-radius:12px;background:#665cf615;color:var(--text);font-size:20px;display:grid;place-items:center;box-shadow:0 5px 16px #0002,0 0 18px #665cf622;z-index:3}.lf-pronounce-btn:hover{transform:translateY(-2px);border-color:#665cf6aa;box-shadow:0 8px 20px #0003,0 0 22px #665cf633}.lf-pronounce-btn:active{transform:translateY(1px)}.lf-pronounce-btn.hide{display:none!important}</style></style><style id="lexiflip-ui-polish">
+<style id="lexiflip-pronunciation-all-modes-style">
+.lf-answer-row,.lf-rank-answer-row,.lf-ch-answer-row,.lf-sq-answer-row{display:flex;gap:8px;align-items:stretch}
+.lf-answer-row{min-width:0}
+.lf-answer-main,.lf-rank-answer-main,.lf-ch-answer-main,.lf-sq-answer-main{flex:1;min-width:0}
+.lf-pronounce-inline{flex:0 0 46px;width:46px;min-height:58px;padding:0;border:1px solid #00d9ff66;border-radius:14px;background:#00d9ff12;color:var(--text);font-size:19px;display:grid;place-items:center;box-shadow:0 5px 16px #0002,0 0 18px #00d9ff18;z-index:2}
+.lf-pronounce-inline:hover{transform:translateY(-2px);border-color:#00d9ffaa;box-shadow:0 8px 20px #0003,0 0 22px #00d9ff33}
+.lf-pronounce-inline:active{transform:translateY(1px)}
+#question .lf-pronounce-inline{display:inline-grid;vertical-align:middle;margin-left:10px;width:44px;min-height:44px;height:44px;border-radius:12px}
+.lf-rank-answer-row .lf-pronounce-inline{min-height:58px}
+.lf-ch-answer-row .lf-pronounce-inline,.lf-sq-answer-row .lf-pronounce-inline{min-height:58px}
+@media(max-width:600px){
+  .lf-pronounce-inline{flex-basis:44px;width:44px}
+  #question .lf-pronounce-inline{width:42px;height:42px;min-height:42px}
+}
+</style><style id="lexiflip-pronunciation-style">.lf-pronounce-btn{margin:0 0 8px;width:48px;height:40px;padding:0;border:1px solid #665cf688;border-radius:12px;background:#665cf615;color:var(--text);font-size:20px;display:grid;place-items:center;box-shadow:0 5px 16px #0002,0 0 18px #665cf622;z-index:3}.lf-pronounce-btn:hover{transform:translateY(-2px);border-color:#665cf6aa;box-shadow:0 8px 20px #0003,0 0 22px #665cf633}.lf-pronounce-btn:active{transform:translateY(1px)}.lf-pronounce-btn.hide{display:none!important}</style></style><style id="lexiflip-ui-polish">
 :root{--lf-glow:#665cf6}
 .logo{box-shadow:0 10px 30px #665cf655,0 0 0 1px #ffffff18 inset;transition:transform .2s ease,box-shadow .2s ease}
 .logo:hover{transform:translateY(-2px) rotate(-2deg);box-shadow:0 14px 36px #665cf677,0 0 0 1px #ffffff22 inset}
@@ -1129,6 +1143,16 @@ function speakEnglishWord(word){
     window.speechSynthesis.speak(u);
   }catch(e){console.warn('LexiFlip pronunciation failed:',e)}
 }
+function lfPronounceInline(word){
+  return '<button type="button" class="lf-pronounce-inline" data-pronounce-word="'+encodeURIComponent(String(word||''))+'" aria-label="発音を聞く">🔊</button>';
+}
+document.addEventListener('click',function(e){
+  const b=e.target.closest&&e.target.closest('.lf-pronounce-inline');
+  if(!b)return;
+  e.preventDefault();
+  e.stopPropagation();
+  try{speakEnglishWord(decodeURIComponent(b.getAttribute('data-pronounce-word')||''));}catch(err){}
+});
 function render(){if(!studyCards.length)return;const c=studyCards[i],inner=$('#card .inner');inner.style.transition='none';$('#card').classList.remove('flipped');const frontIsEnglish=dir==='en';$('#front').textContent=cleanDisplayText(frontIsEnglish?c.en:c.jp,frontIsEnglish?40:24);$('#back').textContent=cleanDisplayText(frontIsEnglish?c.jp:c.en,frontIsEnglish?24:40);$('#frontLabel').textContent=frontIsEnglish?'English':'日本語';$('#backLabel').textContent=frontIsEnglish?'日本語':'English';$('#frontPronounce').classList.toggle('hide',!frontIsEnglish);$('#backPronounce').classList.toggle('hide',frontIsEnglish);$('#frontPronounce').dataset.word=frontIsEnglish?c.en:'';$('#backPronounce').dataset.word=frontIsEnglish?'':c.en;$('#example').textContent=cleanDisplayText(dir==='jp'?c.ex:(c.jp+' — '+c.en),70);$('#count').textContent='無限学習 • '+(i+1)+'枚目';$('#directionTitle').textContent=dir==='jp'?'日本語 → 英語':'英語 → 日本語';requestAnimationFrame(()=>{inner.style.transition='';});updateStats()}function updateStats(){const known=studyCards.filter(c=>c.score>=2).length;$('#total').textContent=studyCards.length;$('#known').textContent=studyCards.length?Math.round(known/studyCards.length*100)+'%':'0%';const studyStreakEl=$('#streak');if(studyStreakEl)studyStreakEl.textContent=streak;$('#progress').style.width=(studyCards.length?known/studyCards.length*100:0)+'%';renderWeakList()}function setWeak(c,isWeak){if(!c)return;c.weak=!!isWeak}function rate(v){const c=studyCards[i];c.score=Math.max(0,c.score+v);c.seen++;setWeak(c,v<0);streak=v>0?streak+1:0;save();if(typeof daily!=='undefined'){daily.count++;if(typeof renderDailyGoal==='function')renderDailyGoal()}i=(i+1)%studyCards.length;render()}function setDir(d){dir=d;$('#jpMode').classList.toggle('active',d==='jp');$('#enMode').classList.toggle('active',d==='en');render()}$('#frontPronounce').onclick=e=>{e.stopPropagation();speakEnglishWord(e.currentTarget.dataset.word)};$('#backPronounce').onclick=e=>{e.stopPropagation();speakEnglishWord(e.currentTarget.dataset.word)};$('#card').onclick=()=>$('#card').classList.toggle('flipped');$('#next').onclick=()=>{i=(i+1)%studyCards.length;render()};$('#prev').onclick=()=>{i=(i-1+studyCards.length)%studyCards.length;render()};/* unified card-answer controller handles this */$('#direction').onclick=()=>setDir(dir==='jp'?'en':'jp');$('#jpMode').onclick=()=>setDir('jp');$('#enMode').onclick=()=>setDir('en');const cardLevelLabels={common:['📘','常用英語','日常会話で特によく使う英単語'],beginner:['🌱','初級','英検5級・4級レベルを目安にした基本語彙'],intermediate:['🔥','中級','英検3級・準2級・準2級プラスレベルを目安にした語彙'],advanced:['👑','上級','英検2級・準1級・1級レベル以上を目安にした高度な語彙'],furniture:['🪑','家具・家の中','ベッド・椅子・キッチンなど身近な家の単語']};function ensureCardLevelSelector(){let el=document.getElementById('cardLevelSelect');if(el)return el;el=document.createElement('div');el.id='cardLevelSelect';el.innerHTML='<div class="card-level-panel"><div class="card-level-brand">LEXIFLIP</div><h2>📚 カード学習</h2><p>学習する単語レベルを選択してください</p><div id="cardLevelGrid" class="card-level-grid"></div><button id="cardLevelCancel" class="card-level-cancel">← ホーム画面に戻る</button></div>';document.body.appendChild(el);const st=document.createElement('style');st.textContent='#cardLevelSelect{position:fixed;inset:0;z-index:9999;display:none;overflow:auto;padding:24px 14px;background:linear-gradient(160deg,var(--bg),var(--panel2))}.card-level-panel{width:min(720px,100%);margin:auto;padding:26px 18px;border:1px solid var(--border);border-radius:24px;background:var(--panel);box-shadow:0 20px 60px #0005}.card-level-brand{font-size:11px;letter-spacing:.18em;font-weight:950;color:var(--muted);text-align:center}.card-level-panel h2{text-align:center;margin:8px 0 4px;font-size:26px}.card-level-panel>p{text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px}.card-level-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card-level-btn{min-height:145px;text-align:left;padding:18px;border:1px solid var(--border);border-radius:20px;background:var(--panel2);color:var(--text);cursor:pointer;box-shadow:0 6px 0 #0002}.card-level-btn:active{transform:translateY(2px);box-shadow:0 3px 0 #0002}.card-level-icon{font-size:30px}.card-level-name{display:block;font-size:20px;font-weight:950;margin-top:8px}.card-level-desc{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:4px}.card-level-count{display:block;margin-top:10px;font-size:12px;font-weight:900}.card-level-cancel{display:block;width:100%;margin-top:16px;padding:13px;border:1px solid var(--border);border-radius:14px;background:transparent;color:var(--text);font-weight:850}.@media(max-width:560px){.card-level-grid{grid-template-columns:1fr}.card-level-btn{min-height:120px}}';document.head.appendChild(st);el.querySelector('#cardLevelCancel').onclick=()=>{el.style.display='none';if(typeof goHome==='function')goHome()};return el}const CARD_LEVEL_UNLOCKS={common:1,beginner:5,intermediate:15,advanced:30,furniture:1};
 function currentPlayerLevel(){try{const raw=localStorage.getItem('lexiflip_progress')||localStorage.getItem('lexiflip_progress_backup');const x=raw?JSON.parse(raw):{};return Math.max(1,Math.floor(Number(x.level)||1))}catch(e){return 1}}
 window.showCardLevelSelect=showCardLevelSelect;
@@ -1328,11 +1352,11 @@ function showQuiz(){
   const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
   const quizStreakEl=$('#quizStreak');if(quizStreakEl)quizStreakEl.textContent='🔥 連続正解 '+streak;
   updateQuizActiveItems();
-  $('#question').textContent=cleanDisplayText(q,askJP?24:40);
-  $('#answers').innerHTML=opts.map(x=>'<button type="button" data-full-answer="'+String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+cleanDisplayText(x,askJP?24:32)+'</button>').join('');
+  $('#question').innerHTML=cleanDisplayText(q,askJP?24:40)+(askJP?'':lfPronounceInline(q));
+  $('#answers').innerHTML=opts.map(x=>'<div class="lf-answer-row"><button type="button" class="lf-answer-main" data-full-answer="'+String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+cleanDisplayText(x,askJP?24:32)+'</button>'+(askJP?lfPronounceInline(x):'')+'</div>').join('');
   const resultEl=$('#result');if(resultEl){resultEl.className='result hide';resultEl.textContent='';}
-  [...$('#answers').children].forEach(btn=>btn.onclick=()=>{
-    [...$('#answers').children].forEach(b=>b.disabled=true);
+  [...$('#answers').querySelectorAll('[data-full-answer]')].forEach(btn=>btn.onclick=()=>{
+    [...$('#answers').querySelectorAll('[data-full-answer]')].forEach(b=>b.disabled=true);
     const ok=(btn.dataset.fullAnswer||btn.textContent)===answer;
     if(ok){
       quizScore++;
@@ -2073,8 +2097,8 @@ function drawChallenge(){
  ch.pool.filter(function(x){return x.en!==c.en}).sort(function(){return Math.random()-.5}).slice(0,3).forEach(function(x){choices.push(x.en)});
  choices.sort(function(){return Math.random()-.5});
  document.getElementById('lfChTitle').textContent=ch.mode==='survival'?'☠️ サバイバル':ch.mode==='timed'?'⏱️ タイムアタック':ch.mode==='100'?'💯 100問チャレンジ':'😣 苦手克服';
- b.innerHTML='<div class="lf-ch-result">正解 '+ch.ok+'　連続 '+ch.combo+(ch.mode==='timed'?'　残り '+Math.max(0,Math.ceil((ch.end-Date.now())/1000))+'秒':'')+'</div><div class="lf-ch-q">'+esc(c.jp)+'</div><div class="lf-ch-answers">'+choices.map(function(x){return '<button data-a="'+encodeURIComponent(x)+'">'+esc(x)+'</button>'}).join('')+'</div><div id="lfChRes" class="lf-ch-result"></div>';
- b.querySelectorAll('[data-a]').forEach(function(btn){btn.onclick=function(){var ok=decodeURIComponent(btn.getAttribute('data-a'))===String(c.en);ch.i++;if(ok){ch.ok++;ch.combo++}else{ch.combo=0}b.querySelectorAll('[data-a]').forEach(function(x){x.disabled=true});document.getElementById('lfChRes').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+esc(c.en);try{var td=today();td.answered++;if(ok)td.correct++;if(!ok)td.weak++;S.best.answered=Math.max(S.best.answered,td.answered);S.best.correct=Math.max(S.best.correct,td.correct);S.best.weak=Math.max(S.best.weak,td.weak);if(ok){td.xp+=2}if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok);if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);var pp=readProfileStats();S.source={answers:pp.answers,correct:pp.correct,totalXp:pp.totalXp,bestStreak:pp.bestStreak};save();render()}catch(e){}setTimeout(drawChallenge,500)}});
+ b.innerHTML='<div class="lf-ch-result">正解 '+ch.ok+'　連続 '+ch.combo+(ch.mode==='timed'?'　残り '+Math.max(0,Math.ceil((ch.end-Date.now())/1000))+'秒':'')+'</div><div class="lf-ch-q">'+esc(c.jp)+'</div><div class="lf-ch-answers">'+choices.map(function(x){return '<div class="lf-ch-answer-row"><button data-a="'+encodeURIComponent(x)+'" class="lf-ch-answer-main">'+esc(x)+'</button>'+lfPronounceInline(x)+'</div>'}).join('')+'</div><div id="lfChRes" class="lf-ch-result"></div>';
+ b.querySelectorAll('.lf-ch-answer-main[data-a]').forEach(function(btn){btn.onclick=function(){var ok=decodeURIComponent(btn.getAttribute('data-a'))===String(c.en);ch.i++;if(ok){ch.ok++;ch.combo++}else{ch.combo=0}b.querySelectorAll('[data-a]').forEach(function(x){x.disabled=true});document.getElementById('lfChRes').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+esc(c.en);try{var td=today();td.answered++;if(ok)td.correct++;if(!ok)td.weak++;S.best.answered=Math.max(S.best.answered,td.answered);S.best.correct=Math.max(S.best.correct,td.correct);S.best.weak=Math.max(S.best.weak,td.weak);if(ok){td.xp+=2}if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok);if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);var pp=readProfileStats();S.source={answers:pp.answers,correct:pp.correct,totalXp:pp.totalXp,bestStreak:pp.bestStreak};save();render()}catch(e){}setTimeout(drawChallenge,500)}});
 }
 function readProfileStats(){
  try{
@@ -2243,8 +2267,8 @@ function specialQuiz(){
  choices.sort(function(){return Math.random()-.5});
  var o=document.getElementById('lfSpecialQuiz');if(!o){o=document.createElement('div');o.id='lfSpecialQuiz';o.style.cssText='position:fixed;inset:0;z-index:200000;background:#050812ee;display:grid;place-items:center;padding:18px';o.innerHTML='<div style="width:min(560px,100%);background:#0b1220;border:1px solid #16445a;border-radius:22px;padding:22px"><div style="display:flex;justify-content:space-between;align-items:center"><b>🎲 ランダム問題券</b><button id="lfSqClose">閉じる</button></div><div id="lfSqQ" style="font-size:28px;font-weight:950;text-align:center;margin:30px 0"></div><div id="lfSqA" style="display:grid;gap:9px"></div><div id="lfSqR" style="text-align:center;margin-top:14px;font-weight:900"></div></div>';document.body.appendChild(o);o.querySelector('#lfSqClose').onclick=function(){o.remove()}}
  o.querySelector('#lfSqQ').textContent=c.jp;o.querySelector('#lfSqR').textContent='';
- o.querySelector('#lfSqA').innerHTML=choices.map(function(x){return '<button data-x="'+encodeURIComponent(x)+'">'+x+'</button>'}).join('');
- o.querySelectorAll('[data-x]').forEach(function(b){b.onclick=function(){var ok=decodeURIComponent(b.getAttribute('data-x'))===String(c.en);o.querySelectorAll('[data-x]').forEach(function(x){x.disabled=true});o.querySelector('#lfSqR').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+c.en;if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);setTimeout(function(){o.remove()},1100)}});
+ o.querySelector('#lfSqA').innerHTML=choices.map(function(x){return '<div class="lf-sq-answer-row"><button data-x="'+encodeURIComponent(x)+'" class="lf-sq-answer-main">'+x+'</button>'+lfPronounceInline(x)+'</div>'}).join('');
+ o.querySelectorAll('.lf-sq-answer-main[data-x]').forEach(function(b){b.onclick=function(){var ok=decodeURIComponent(b.getAttribute('data-x'))===String(c.en);o.querySelectorAll('[data-x]').forEach(function(x){x.disabled=true});o.querySelector('#lfSqR').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+c.en;if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);setTimeout(function(){o.remove()},1100)}});
 }
 function hookXP(){
  var f=window.lexiAddXP;if(typeof f!=='function'||f.__lfShopXP)return;
@@ -2438,10 +2462,10 @@ function startTest(){
  function show(){
   var body=document.getElementById('lfRankBody'),q=questions[state.index];
   document.getElementById('lfRankProgress').textContent=(state.index+1)+' / 10問 ・ '+s.name;
-  body.innerHTML='<div class="lf-rank-question">'+String(q.card.jp||'')+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<button data-answer="'+encodeURIComponent(v)+'">'+v+'</button>'}).join('')+'</div><div id="lfRankResult"></div>';
-  body.querySelectorAll('[data-answer]').forEach(function(b){
+  body.innerHTML='<div class="lf-rank-question">'+String(q.card.jp||'')+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+v+'</button>'+lfPronounceInline(v)+'</div>'}).join('')+'</div><div id="lfRankResult"></div>';
+  body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(b){
    b.onclick=function(){
-    body.querySelectorAll('[data-answer]').forEach(function(x){x.disabled=true});
+    body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(x){x.disabled=true});
     var answer=decodeURIComponent(b.getAttribute('data-answer')),ok=answer===String(q.card.en||'');
     if(ok){
       state.correct++;
