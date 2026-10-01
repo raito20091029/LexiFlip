@@ -2404,7 +2404,24 @@ function startTest(){
  var modal=document.createElement('div');modal.className='lf-rank-modal';modal.id='lfRankModal';
  modal.innerHTML='<div class="lf-rank-panel"><div class="lf-rank-modal-head"><b>🎯 ランクテスト</b><button class="lf-rank-close" id="lfRankClose">閉じる</button></div><div class="lf-rank-progress" id="lfRankProgress"></div><div id="lfRankBody"></div></div>';
  document.body.appendChild(modal);
- document.getElementById('lfRankClose').onclick=function(){window.lexiRankTestActive=false;modal.remove()};
+ var rankClosed=false;
+ function applyRankDelta(correct,wrong){
+  var before=rankInfo(),delta=correct-wrong,raw=before.rr+delta,tier=before.tier;
+  while(raw>=100&&tier<ranks.length-1){raw-=100;tier++}
+  while(raw<0&&tier>0){tier--;raw+=100}
+  if(tier===ranks.length-1&&raw>=100)raw=99;
+  if(tier===0&&raw<0)raw=0;
+  save({tier:tier,rr:Math.max(0,Math.min(99,raw))});
+  render();
+  return {before:before,after:rankInfo(),delta:delta};
+ }
+ document.getElementById('lfRankClose').onclick=function(){
+  if(rankClosed)return;
+  rankClosed=true;
+  var partial=applyRankDelta(state.correct,state.wrong);
+  window.lexiRankTestActive=false;
+  modal.remove();
+ };
  var state={index:0,correct:0,wrong:0};
  function show(){
   var body=document.getElementById('lfRankBody'),q=questions[state.index];
@@ -2437,14 +2454,10 @@ function startTest(){
  }
  function finish(){
   window.lexiRankTestActive=false;
-  var before=rankInfo(),delta=state.correct-state.wrong;
-  var raw=before.rr+delta,tier=before.tier;
-  while(raw>=100&&tier<ranks.length-1){raw-=100;tier++}
-  while(raw<0&&tier>0){tier--;raw+=100}
-  if(tier===ranks.length-1&&raw>=100)raw=99;
-  if(tier===0&&raw<0)raw=0;
-  save({tier:tier,rr:Math.max(0,Math.min(99,raw))});
-  var after=rankInfo(),promoted=after.tier>before.tier,demoted=after.tier<before.tier;
+  var partialResult=applyRankDelta(state.correct,state.wrong);
+  var before=partialResult.before,delta=partialResult.delta,after=partialResult.after;
+  var promoted=after.tier>before.tier,demoted=after.tier<before.tier;
+  rankClosed=true;
   var changeText=(delta>=0?'+':'')+delta+' RR';
   var event=promoted?'🎉 ランクアップ！':demoted?'📉 ランクダウン':'';
   document.getElementById('lfRankProgress').textContent='テスト完了';
