@@ -2077,16 +2077,17 @@ function render(){
  var box=document.getElementById('lfShop');if(!box)return;
  var s=state();
  var effectOwned=!!s.effectOwned;
- box.innerHTML='<div class="lf-extra-card"><div class="lf-shop-head"><div><div class="lf-shop-title">🛒 コインショップ</div><div class="lf-extra-sub">集めたコインをゲーム内アイテムに交換</div></div><div class="lf-shop-coins">💰 '+coins().toLocaleString()+'</div></div><div class="lf-shop-grid">'+Object.keys(items).map(function(k){var it=items[k],owned=s[k]||0,unique=it.type==='unique'&&owned;return '<div class="lf-shop-item"><h4>'+it.name+'</h4><p>'+it.desc+'</p><div class="lf-shop-price">💰 '+it.price+' コイン</div><div class="lf-shop-owned">'+(it.type==='unique'?(unique?'解放済み':'未解放'):(it.type==='effect'?(effectOwned?'解放済み':'未解放'):'所持 '+owned+'個'))+(s[k]&&((k==='boost'&&s.boost>0)||(k==='xp'&&s.xp>0))?'<span class="lf-shop-active"> ・使用可能</span>':'')+'</div><div class="lf-shop-actions"><button data-buy="'+k+'" '+((unique||(it.type==='effect'&&effectOwned))||coins()<it.price?'disabled':'')+'>購入</button>'+(it.type!=='unique'&&it.type!=='effect'&&it.type!=='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='effect'&&effectOwned?' <button class="lf-shop-use" data-use="effect">'+(s.effect?'OFF':'ON')+'</button>':'')+'</div></div>'}).join('')+'</div></div>';
- box.querySelectorAll('[data-buy]').forEach(function(b){b.onclick=function(){buy(b.getAttribute('data-buy'))}});
+ box.innerHTML='<div class="lf-extra-card"><div class="lf-shop-head"><div><div class="lf-shop-title">🛒 コインショップ</div><div class="lf-extra-sub">集めたコインをゲーム内アイテムに交換</div></div><div class="lf-shop-coins">💰 '+coins().toLocaleString()+'</div></div><div class="lf-shop-grid">'+Object.keys(items).map(function(k){var it=items[k],owned=s[k]||0,unique=it.type==='unique'&&owned;return '<div class="lf-shop-item"><h4>'+it.name+'</h4><p>'+it.desc+'</p><div class="lf-shop-price">💰 '+it.price+' コイン</div><div class="lf-shop-owned">'+(it.type==='unique'?(unique?'解放済み':'未解放'):(it.type==='effect'?(effectOwned?'解放済み':'未解放'):'所持 '+owned+'個'))+(s[k]&&((k==='boost'&&s.boost>0)||(k==='xp'&&s.xp>0))?'<span class="lf-shop-active"> ・使用可能</span>':'')+'</div><div class="lf-shop-actions"><button data-buy="'+k+'" '+((unique||(it.type==='effect'&&effectOwned))||coins()<it.price?'disabled':'')+'>購入</button>'+(it.type!=='unique'&&it.type!=='effect'&&it.type!=='instant'&&coins()<it.price*10?'':('<button data-buy10="'+k+'" '+(coins()<it.price*10?'disabled':'')+'>10個まとめて買う</button>'))+'+(it.type!=='unique'&&it.type!=='effect'&&it.type!=='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='instant'&&owned>0?'<button class="lf-shop-use" data-use="'+k+'">使う</button>':'')+(it.type==='effect'&&effectOwned?' <button class="lf-shop-use" data-use="effect">'+(s.effect?'OFF':'ON')+'</button>':'')+'</div></div>'}).join('')+'</div></div>';
+ box.querySelectorAll('[data-buy]').forEach(function(b){b.onclick=function(){buy(b.getAttribute('data-buy'),1)}});box.querySelectorAll('[data-buy10]').forEach(function(b){b.onclick=function(){buy(b.getAttribute('data-buy10'),10)}});
  box.querySelectorAll('[data-use]').forEach(function(b){b.onclick=function(){use(b.getAttribute('data-use'))}});
 }
-function buy(k){
- var it=items[k],s=state();
- if(!it||coins()<it.price||(it.type==='unique'&&s[k]))return;
- setCoins(coins()-it.price);
- if(k==='effect'){s.effectOwned=true;s.effect=true}else if(it.type==='unique'){s[k]=true;if(k==='title'){try{localStorage.setItem('lexiflip_title','COIN HUNTER')}catch(e){}}}else s[k]=(Number(s[k])||0)+1;
- save(s);render();msg(it.name+' を購入！');
+function buy(k,qty){
+ var it=items[k],s=state(),n=Math.max(1,Number(qty)||1),cost=it?it.price*n:0;
+ if(!it||coins()<cost||(it.type==='unique'&&s[k])||(it.type==='effect'&&s.effectOwned))return;
+ if(n>1&&(it.type==='unique'||it.type==='effect'))return;
+ setCoins(coins()-cost);
+ if(k==='effect'){s.effectOwned=true;s.effect=true}else if(it.type==='unique'){s[k]=true;if(k==='title'){try{localStorage.setItem('lexiflip_title','COIN HUNTER')}catch(e){}}}else s[k]=(Number(s[k])||0)+n;
+ save(s);render();msg(n===1?it.name+' を購入！':it.name+' を'+n+'個購入！');
 }
 function use(k){
  var s=state();
