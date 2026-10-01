@@ -1620,7 +1620,7 @@ function challenge(mode){
 }
 function drawChallenge(){
  var b=document.getElementById('lfChBody');if(!b)return;
- if(ch.mode==='100'&&ch.i>=100||ch.mode==='weak'&&ch.i>=10||ch.mode==='timed'&&Date.now()>=ch.end||ch.mode==='survival'&&ch.i>0&&ch.combo===0){b.innerHTML='<div class="lf-ch-result">🏁 完了！<br><strong>正解 '+ch.ok+' / '+ch.i+'</strong><br><button id="lfAgain">もう一度</button></div>';document.getElementById('lfAgain').onclick=function(){challenge(ch.mode)};return}
+ if(ch.mode==='100'&&ch.i>=100||ch.mode==='weak'&&ch.i>=10||ch.mode==='timed'&&Date.now()>=ch.end||ch.mode==='survival'&&ch.i>0&&ch.combo===0){b.innerHTML='<div class="lf-ch-result">🏁 完了！<br><strong>正解 '+ch.ok+(ch.mode==='survival'||ch.mode==='timed'?'':' / '+ch.i)+'</strong><br><button id="lfAgain">もう一度</button></div>';document.getElementById('lfAgain').onclick=function(){challenge(ch.mode)};return}
  var c=ch.pool[ch.i%ch.pool.length],choices=[c.en];
  ch.pool.filter(function(x){return x.en!==c.en}).sort(function(){return Math.random()-.5}).slice(0,3).forEach(function(x){choices.push(x.en)});
  choices.sort(function(){return Math.random()-.5});
