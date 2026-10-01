@@ -1,5 +1,5 @@
-const CACHE='lexiflip-v0.9.168';
-const ASSETS=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./vocabulary-pack-1.js','./vocabulary-pack-2.js','./vocabulary-pack-3.js','./vocabulary-pack-4.js'];
+const CACHE='lexiflip-v0.9.169';
+const ASSETS=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./vocabulary-pack-1.js','./vocabulary-pack-2.js','./vocabulary-pack-3.js','./vocabulary-pack-4.js','./vocabulary-pack-5.js'];
 
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
