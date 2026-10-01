@@ -1560,4 +1560,138 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
 })();
-</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script></body></html>
+</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script><style id="lexiflip-all-features-v1">
+:root{--lf-gold:#f5b942;--lf-blue:#4da3ff;--lf-purple:#8b7cff}
+body[data-lf-theme="cyber"]{--accent:#00d9ff;--lf-glow:#00d9ff}
+body[data-lf-theme="rose"]{--accent:#ff5fa2;--lf-glow:#ff5fa2}
+body[data-lf-theme="forest"]{--accent:#39b86f;--lf-glow:#39b86f}
+body[data-lf-theme="gold"]{--accent:#d89b24;--lf-glow:#f5b942}
+.lf-extra{margin:18px auto 0;max-width:1100px;display:grid;gap:14px}
+.lf-extra-card{border:1px solid var(--border);background:linear-gradient(145deg,var(--panel),var(--panel2));border-radius:22px;padding:18px;box-shadow:0 12px 30px #0002}
+.lf-extra-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.lf-extra-head b{font-size:17px}.lf-muted{color:var(--muted);font-size:12px}
+.lf-mission-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.lf-mission{padding:12px;border:1px solid var(--border);border-radius:15px;background:var(--bg)}
+.lf-mission b{display:block;font-size:12px}.lf-mission small{display:block;color:var(--muted);margin-top:4px}.lf-mission-bar{height:6px;border-radius:99px;background:var(--panel2);margin-top:9px;overflow:hidden}.lf-mission-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#b06cff)}
+.lf-records{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.lf-record{padding:12px;border:1px solid var(--border);border-radius:14px;text-align:center;background:var(--bg)}.lf-record b{display:block;font-size:21px}.lf-record span{font-size:10px;color:var(--muted)}
+.lf-calendar{display:grid;grid-template-columns:repeat(14,1fr);gap:4px}.lf-day{aspect-ratio:1;border-radius:4px;background:var(--panel2);position:relative}.lf-day[data-n="1"]{background:#d9d5ff}.lf-day[data-n="2"]{background:#aaa2ff}.lf-day[data-n="3"]{background:#766cff}.lf-day[data-n="4"]{background:#4e44d8}.lf-day[data-n="5"]{background:#30289d}
+.lf-theme-row{display:flex;gap:7px;flex-wrap:wrap}.lf-theme{padding:9px 12px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-weight:850}.lf-theme.active{border-color:var(--accent);box-shadow:0 0 0 2px #665cf633}
+.lf-challenge-btn{min-height:54px;text-align:left}.lf-challenge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+#lfChallenge{position:fixed;inset:0;z-index:120000;display:none;place-items:center;padding:16px;background:#0009;backdrop-filter:blur(12px)}
+#lfChallenge.show{display:grid}
+.lf-challenge-panel{width:min(760px,100%);max-height:92vh;overflow:auto;border:1px solid var(--border);border-radius:26px;background:var(--panel);box-shadow:0 30px 90px #0007;padding:22px}
+.lf-challenge-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.lf-challenge-top h2{margin:0}.lf-challenge-question{font-size:clamp(25px,6vw,48px);font-weight:950;text-align:center;padding:30px 15px;margin:18px 0;border:1px solid var(--border);border-radius:20px;background:var(--panel2);overflow-wrap:anywhere}
+.lf-challenge-answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lf-challenge-answers button{min-height:62px}.lf-challenge-status{display:flex;justify-content:space-between;color:var(--muted);font-weight:800}.lf-challenge-result{text-align:center;font-size:22px;font-weight:950;padding:14px}
+.lf-challenge-menu{display:grid;gap:10px}.lf-challenge-menu button{padding:16px;text-align:left}.lf-challenge-menu b{display:block}.lf-challenge-menu small{display:block;color:var(--muted);margin-top:4px}
+.lf-badge{display:inline-block;padding:3px 7px;border-radius:99px;background:#665cf61c;border:1px solid #665cf644;font-size:10px;font-weight:900}
+.lf-mastery{margin-left:6px}
+@media(max-width:700px){.lf-mission-grid{grid-template-columns:1fr 1fr}.lf-records{grid-template-columns:repeat(2,1fr)}.lf-calendar{grid-template-columns:repeat(10,1fr)}.lf-challenge-grid,.lf-challenge-answers{grid-template-columns:1fr}}
+</style><script id="lexiflip-all-features-v1">
+(()=> {
+  const KEY='lexiflip_plus_v1';
+  const today=()=>new Date().toISOString().slice(0,10);
+  const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}};
+  const state=load();
+  state.days=state.days||{}; state.records=state.records||{}; state.theme=state.theme||'default';
+  state.records.bestCombo=Number(state.records.bestCombo)||0;
+  state.records.bestDay=Number(state.records.bestDay)||0;
+  state.records.totalAnswered=Number(state.records.totalAnswered)||0;
+  state.records.totalCorrect=Number(state.records.totalCorrect)||0;
+  state.records.totalWeakCleared=Number(state.records.totalWeakCleared)||0;
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+  function day(){const d=today();state.days[d]=state.days[d]||{answered:0,correct:0,xp:0,weakCorrect:0,minutes:0};return state.days[d]}
+  function mastery(c){const s=Number(c?.score)||0, seen=Number(c?.seen)||0, weak=c?.weak?1:0;return Math.max(0,Math.min(100,Math.round((seen?Math.min(1,s/Math.max(1,seen))*70:0)+(seen?Math.min(1,seen/8)*30:0)-weak*25)))}
+  function cardKey(c){return String(c?.jp||'')+'|'+String(c?.en||'')}
+  function refresh(){
+    const d=day(), xpEl=document.getElementById('lfTodayXP'), aEl=document.getElementById('lfTodayAnswered'), cEl=document.getElementById('lfTodayCorrect');
+    if(xpEl)xpEl.textContent=d.xp; if(aEl)aEl.textContent=d.answered;if(cEl)cEl.textContent=d.correct;
+    const m=document.querySelectorAll('[data-lf-mission]');
+    m.forEach(el=>{const type=el.dataset.lfMission, target=Number(el.dataset.target)||1;let v=type==='answered'?d.answered:type==='correct'?d.correct:type==='xp'?d.xp:d.weakCorrect;const pct=Math.min(100,Math.round(v/target*100));el.querySelector('b').textContent=el.dataset.label+' '+Math.min(v,target)+'/'+target;el.querySelector('i').style.width=pct+'%'});
+    const cal=document.getElementById('lfCalendar');if(cal){let h='';for(let i=83;i>=0;i--){const dt=new Date();dt.setDate(dt.getDate()-i);const k=dt.toISOString().slice(0,10),n=Math.min(5,Math.ceil((state.days[k]?.answered||0)/5));h+='<span class="lf-day" data-n="'+n+'" title="'+k+' '+(state.days[k]?.answered||0)+'問"></span>'}cal.innerHTML=h}
+    const vals={totalAnswered:state.records.totalAnswered,totalCorrect:state.records.totalCorrect,bestCombo:state.records.bestCombo,bestDay:state.records.bestDay,weakCleared:state.records.totalWeakCleared};
+    Object.entries(vals).forEach(([k,v])=>{const e=document.getElementById('lfRec'+k);if(e)e.textContent=v});
+    save();
+  }
+  function addActivity(ok,xp,weak){
+    const d=day();d.answered++;if(ok)d.correct++;d.xp+=Number(xp)||0;if(weak&&ok)d.weakCorrect++;
+    state.records.totalAnswered++;if(ok)state.records.totalCorrect++;state.records.bestCombo=Math.max(state.records.bestCombo,Number(window.lexiQuizCombo)||0);
+    state.records.bestDay=Math.max(state.records.bestDay,d.answered);
+    refresh();
+  }
+  function mount(){
+    if(document.getElementById('lfExtra'))return;
+    const host=document.getElementById('initialModeSelect')||document.body;
+    const wrap=document.createElement('div');wrap.id='lfExtra';wrap.className='lf-extra';
+    wrap.innerHTML='<div class="lf-extra-card"><div class="lf-extra-head"><div><b>🎯 今日のトレーニング</b><div class="lf-muted">毎日の目標をクリアしてXPを獲得しよう</div></div><span class="lf-badge">TODAY</span></div><div class="lf-mission-grid"><div class="lf-mission" data-lf-mission="answered" data-target="10" data-label="10問"><b></b><small>まずは10問</small><div class="lf-mission-bar"><i></i></div></div><div class="lf-mission" data-lf-mission="correct" data-target="20" data-label="20正解"><b></b><small>正解を20個</small><div class="lf-mission-bar"><i></i></div></div><div class="lf-mission" data-lf-mission="weak" data-target="3" data-label="苦手3問"><b></b><small>苦手を克服</small><div class="lf-mission-bar"><i></i></div></div><div class="lf-mission" data-lf-mission="xp" data-target="50" data-label="50XP"><b></b><small>XPを50獲得</small><div class="lf-mission-bar"><i></i></div></div></div></div>
+    <div class="lf-extra-card"><div class="lf-extra-head"><div><b>📊 今日の記録</b><div class="lf-muted">過去84日間の学習状況</div></div><span><b id="lfTodayAnswered">0</b>問 / <b id="lfTodayCorrect">0</b>正解 / <b id="lfTodayXP">0</b>XP</span></div><div id="lfCalendar" class="lf-calendar"></div></div>
+    <div class="lf-extra-card"><div class="lf-extra-head"><div><b>🏆 自己ベスト</b><div class="lf-muted">あなた自身の最高記録</div></div></div><div class="lf-records"><div class="lf-record"><b id="lfRectotalAnswered">0</b><span>総問題数</span></div><div class="lf-record"><b id="lfRectotalCorrect">0</b><span>総正解</span></div><div class="lf-record"><b id="lfRecbestCombo">0</b><span>最長コンボ</span></div><div class="lf-record"><b id="lfRecbestDay">0</b><span>1日の問題数</span></div><div class="lf-record"><b id="lfRecweakCleared">0</b><span>苦手克服</span></div></div></div>
+    <div class="lf-extra-card"><div class="lf-extra-head"><div><b>🎨 テーマ</b><div class="lf-muted">LexiFlipの雰囲気を変更</div></div></div><div class="lf-theme-row"><button class="lf-theme" data-theme="default">💜 Default</button><button class="lf-theme" data-theme="cyber">⚡ Cyber</button><button class="lf-theme" data-theme="rose">🌸 Rose</button><button class="lf-theme" data-theme="forest">🌿 Forest</button><button class="lf-theme" data-theme="gold">✨ Gold</button></div></div>
+    <div class="lf-extra-card"><div class="lf-extra-head"><div><b>⚔️ チャレンジモード</b><div class="lf-muted">いつもの4択とは違う特別ルール</div></div></div><div class="lf-challenge-grid"><button class="lf-challenge-btn" data-challenge="survival"><b>☠️ サバイバル</b><small>1回でも間違えるまで連続挑戦</small></button><button class="lf-challenge-btn" data-challenge="timed"><b>⏱️ タイムアタック</b><small>30秒で何問正解できる？</small></button><button class="lf-challenge-btn" data-challenge="100"><b>💯 100問チャレンジ</b><small>100問の最終スコアを記録</small></button><button class="lf-challenge-btn" data-challenge="weak"><b>😣 苦手克服チャレンジ</b><small>苦手単語だけで10問</small></button></div></div>';
+    host.appendChild(wrap);
+    refresh();
+    wrap.querySelectorAll('.lf-theme').forEach(b=>b.onclick=()=>{state.theme=b.dataset.theme;applyTheme();refresh()});
+    wrap.querySelectorAll('[data-challenge]').forEach(b=>b.onclick=()=>openChallenge(b.dataset.challenge));
+  }
+  function applyTheme(){document.body.dataset.lfTheme=state.theme==='default'?'':state.theme;document.querySelectorAll('.lf-theme').forEach(b=>b.classList.toggle('active',b.dataset.theme===state.theme));save()}
+  let challenge={mode:'',pool:[],index:0,correct:0,combo:0,best:0,end:0,active:false};
+  function makePool(mode){
+    let p=Array.isArray(window.__lexiCards)?window.__lexiCards.slice():[];
+    try{if(!p.length && typeof cards!=='undefined')p=cards.slice()}catch(e){}
+    if(mode==='weak')p=p.filter(c=>c.weak);
+    if(!p.length)return [];
+    return p.sort(()=>Math.random()-.5);
+  }
+  function openChallenge(mode){
+    const ov=document.getElementById('lfChallenge')||createChallenge();
+    challenge={mode,pool:makePool(mode),index:0,correct:0,combo:0,best:0,end:mode==='timed'?Date.now()+30000:0,active:true};
+    ov.classList.add('show');renderChallenge();
+  }
+  function createChallenge(){
+    const ov=document.createElement('div');ov.id='lfChallenge';ov.innerHTML='<div class="lf-challenge-panel"><div class="lf-challenge-top"><h2 id="lfChTitle">Challenge</h2><button id="lfChClose">閉じる</button></div><div id="lfChBody"></div></div>';document.body.appendChild(ov);
+    ov.querySelector('#lfChClose').onclick=()=>{challenge.active=false;ov.classList.remove('show')};return ov;
+  }
+  function renderChallenge(){
+    const body=document.getElementById('lfChBody');if(!body)return;
+    if(!challenge.pool.length){body.innerHTML='<div class="lf-challenge-result">😣 苦手な単語がありません</div>';return}
+    if(challenge.mode==='survival'&&challenge.index>0&&challenge.combo===0)return finishChallenge();
+    if(challenge.mode==='100'&&challenge.index>=100)return finishChallenge();
+    if(challenge.mode==='weak'&&challenge.index>=10)return finishChallenge();
+    if(challenge.mode==='timed'&&Date.now()>=challenge.end)return finishChallenge();
+    const c=challenge.pool[challenge.index%challenge.pool.length], ans=c.en, choices=[ans];
+    const all=challenge.pool.filter(x=>x.en!==ans).sort(()=>Math.random()-.5).slice(0,3);choices.push(...all.map(x=>x.en));choices.sort(()=>Math.random()-.5);
+    const left=challenge.mode==='timed'?Math.max(0,Math.ceil((challenge.end-Date.now())/1000)):(challenge.mode==='survival'?challenge.combo:(challenge.index));
+    const title=challenge.mode==='survival'?'☠️ サバイバル':challenge.mode==='timed'?'⏱️ タイムアタック':challenge.mode==='100'?'💯 100問チャレンジ':'😣 苦手克服';
+    document.getElementById('lfChTitle').textContent=title;
+    body.innerHTML='<div class="lf-challenge-status"><span>正解 '+challenge.correct+'</span><span>'+(challenge.mode==='timed'?left+'秒':challenge.mode==='survival'?'連続 '+challenge.combo:'問題 '+Math.min(challenge.index+1,(challenge.mode==='100'?100:10))+'/'+(challenge.mode==='100'?100:10))+'</span></div><div class="lf-challenge-question">'+String(c.jp||'').replace(/</g,'&lt;')+'</div><div class="lf-challenge-answers">'+choices.map((x,n)=>'<button data-a="'+encodeURIComponent(x)+'">'+String(x).replace(/</g,'&lt;')+'</button>').join('')+'</div><div id="lfChResult" class="lf-challenge-result"></div>';
+    body.querySelectorAll('button[data-a]').forEach(b=>b.onclick=()=>{const ok=decodeURIComponent(b.dataset.a)===String(c.en);challenge.index++;if(ok){challenge.correct++;challenge.combo++;challenge.best=Math.max(challenge.best,challenge.combo)}else challenge.combo=0;body.querySelectorAll('button[data-a]').forEach(x=>x.disabled=true);document.getElementById('lfChResult').textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+c.en;setTimeout(renderChallenge,mode==='survival'&&!ok?700:400)});
+  }
+  function finishChallenge(){
+    const body=document.getElementById('lfChBody');const mode=challenge.mode;
+    const label=mode==='survival'?'最高連続':mode==='timed'?'30秒正解数':mode==='100'?'100問スコア':'10問スコア';
+    const score=mode==='survival'?challenge.best:challenge.correct;
+    if(mode==='survival'){const old=Number(localStorage.getItem('lexiflip_best_survival')||0);localStorage.setItem('lexiflip_best_survival',String(Math.max(old,score)))}
+    if(mode==='timed'){const old=Number(localStorage.getItem('lexiflip_best_timed')||0);localStorage.setItem('lexiflip_best_timed',String(Math.max(old,score)))}
+    if(mode==='100'){const old=Number(localStorage.getItem('lexiflip_best_100')||0);localStorage.setItem('lexiflip_best_100',String(Math.max(old,score)))}
+    if(mode==='weak'){const old=Number(localStorage.getItem('lexiflip_best_weak')||0);localStorage.setItem('lexiflip_best_weak',String(Math.max(old,score)))}
+    body.innerHTML='<div class="lf-challenge-result">🏁 完了！<br><strong>'+label+'：'+score+'</strong><br><button id="lfChAgain" class="primary">もう一度</button></div>';document.getElementById('lfChAgain').onclick=()=>openChallenge(mode);
+  }
+  function decorateMastery(){
+    try{
+      document.querySelectorAll('.item').forEach(el=>{
+        if(el.querySelector('.lf-mastery'))return;
+        const t=el.textContent||'';const c=(typeof cards!=='undefined')?cards.find(x=>t.includes(String(x.jp))||t.includes(String(x.en))):null;
+        if(c){const s=mastery(c);const b=document.createElement('span');b.className='lf-badge lf-mastery';b.textContent='熟練 '+s+'%';el.appendChild(b)}
+      })
+    }catch(e){}
+  }
+  function hookActivity(){
+    const orig=window.lexiProfileRecord;
+    if(typeof orig==='function'&&!orig.__lfWrapped){const w=function(ok){addActivity(!!ok,0,false);return orig.apply(this,arguments)};w.__lfWrapped=true;window.lexiProfileRecord=w}
+    const origXP=window.lexiAddXP;
+    if(typeof origXP==='function'&&!origXP.__lfWrapped){const w=function(n){const d=day();d.xp+=Number(n)||0;refresh();return origXP.apply(this,arguments)};w.__lfWrapped=true;window.lexiAddXP=w}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();applyTheme();hookActivity();setInterval(()=>{hookActivity();decorateMastery();refresh()},1000)});
+  else {mount();applyTheme();hookActivity();setInterval(()=>{hookActivity();decorateMastery();refresh()},1000)}
+  window.lexiPlusRefresh=refresh;
+})();
+</script></body></html>
