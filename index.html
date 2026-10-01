@@ -832,6 +832,7 @@ function quizPromptKey(v){return String(v??'').trim().toLowerCase()}
 let quizUsedKeys=new Set();
 let quizUsedPromptKeys=new Set();
 let quizLastPromptKey='';
+let quizLastKey='';
 let quizLastOptionKey='';
 let quizMode='all';
 let quizStudyCards=cards;
@@ -962,9 +963,9 @@ function showQuiz(){
   }
   quizLastOptionKey=optionKey;
   $('#quizScore').textContent=quizScore;
-  $('#quizQuestion').textContent=q;
+  $('#question').textContent=q;
   $('#answers').innerHTML=opts.map(x=>'<button type="button">'+x+'</button>').join('');
-  $('#quizResult').textContent='';
+  $('#result').textContent='';
   [...$('#answers').children].forEach(btn=>btn.onclick=()=>{
     [...$('#answers').children].forEach(b=>b.disabled=true);
     const ok=btn.textContent===answer;
@@ -982,7 +983,7 @@ function showQuiz(){
     if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok);
     if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
     $('#quizScore').textContent=quizScore;
-    $('#quizResult').textContent=ok?'⭕ 正解！':'❌ 不正解';
+    $('#result').textContent=ok?'⭕ 正解！':'❌ 不正解';
     quizIndex++;
     setTimeout(()=>showQuiz(),2200);
   });
