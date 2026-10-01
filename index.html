@@ -1560,7 +1560,16 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
 })();
-</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script><style id="lexiflip-all-features-v2">
+</script><script id="lexiflip-remove-old-streak-achievement">(function(){function clean(){var root=document.getElementById('profileAchievements');if(!root)return;Array.from(root.querySelectorAll('.achievement')).forEach(function(el){if((el.textContent||'').includes('5連続正解'))el.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();setTimeout(clean,500);})();</script><style id="lexiflip-theme-pack">
+body[data-lf-theme="cyber"]{--bg:#050812;--panel:#0b1220;--panel2:#101a2c;--text:#e8fbff;--muted:#79a7b8;--accent:#00d9ff;--border:#16445a;--good:#22e6a5;--bad:#ff5577}
+body[data-lf-theme="rose"]{--bg:#fff5f8;--panel:#fff;--panel2:#fff0f4;--text:#351724;--muted:#9b7180;--accent:#e85b8a;--border:#f0c8d6;--good:#20a66a;--bad:#e05252}
+body[data-lf-theme="forest"]{--bg:#f2f8f3;--panel:#fff;--panel2:#edf6ef;--text:#14251a;--muted:#6b806f;--accent:#3b9b62;--border:#c8ddce;--good:#208a58;--bad:#d9534f}
+body[data-lf-theme="gold"]{--bg:#fffaf0;--panel:#fff;--panel2:#fff6df;--text:#2b2110;--muted:#8b7956;--accent:#c99524;--border:#ead7a6;--good:#2b9a63;--bad:#d9534f}
+body[data-lf-theme="cyber"] .logo{background:linear-gradient(135deg,#00d9ff,#6b4cff)}
+body[data-lf-theme="rose"] .logo{background:linear-gradient(135deg,#ff6b9d,#c94dff)}
+body[data-lf-theme="forest"] .logo{background:linear-gradient(135deg,#55b978,#237a4a)}
+body[data-lf-theme="gold"] .logo{background:linear-gradient(135deg,#f0c44d,#b87912)}
+</style><style id="lexiflip-all-features-v2">
 .lf-extra{margin:20px auto;max-width:1000px;display:grid;gap:14px}
 .lf-extra-card{padding:18px;border:1px solid var(--border);border-radius:20px;background:var(--panel);box-shadow:0 12px 30px #0002}
 .lf-extra-title{font-size:18px;font-weight:950;margin-bottom:5px}.lf-extra-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
@@ -1599,7 +1608,7 @@ function render(){
  save();
 }
 function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function theme(){document.body.dataset.lfTheme=S.theme==='default'?'':S.theme;document.querySelectorAll('.lf-theme').forEach(function(b){b.classList.toggle('active',b.dataset.theme===S.theme)})}
+function theme(){document.body.dataset.lfTheme=S.theme==='default'?'':S.theme;document.querySelectorAll('.lf-theme').forEach(function(b){b.classList.toggle('active',b.dataset.t===S.theme)})}
 function mount(){
  if(document.getElementById('lfExtra2'))return;
  var host=document.getElementById('initialModeSelect');if(!host)return;
