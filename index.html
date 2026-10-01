@@ -1722,21 +1722,27 @@ function render(){
 function esc(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function theme(){
  var t=S.theme||'default';
- document.body.setAttribute('data-lf-theme',t);
- document.documentElement.setAttribute('data-lf-theme',t);
- var root=document.documentElement;
  var themes={
-  default:{bg:'#f4f6fb',panel:'#fff',panel2:'#f7f8fc',text:'#111522',muted:'#687286',accent:'#665cf6',border:'#e3e7ef',good:'#20a66a',bad:'#e05252'},
+  default:{bg:'#f4f6fb',panel:'#ffffff',panel2:'#f7f8fc',text:'#111522',muted:'#687286',accent:'#665cf6',border:'#e3e7ef',good:'#20a66a',bad:'#e05252'},
   cyber:{bg:'#050812',panel:'#0b1220',panel2:'#101a2c',text:'#e8fbff',muted:'#79a7b8',accent:'#00d9ff',border:'#16445a',good:'#22e6a5',bad:'#ff5577'},
-  rose:{bg:'#fff5f8',panel:'#fff',panel2:'#fff0f4',text:'#351724',muted:'#9b7180',accent:'#e85b8a',border:'#f0c8d6',good:'#20a66a',bad:'#e05252'},
-  forest:{bg:'#f2f8f3',panel:'#fff',panel2:'#edf6ef',text:'#14251a',muted:'#6b806f',accent:'#3b9b62',border:'#c8ddce',good:'#208a58',bad:'#d9534f'},
-  gold:{bg:'#fffaf0',panel:'#fff',panel2:'#fff6df',text:'#2b2110',muted:'#8b7956',accent:'#c99524',border:'#ead7a6',good:'#2b9a63',bad:'#d9534f'}
+  rose:{bg:'#fff5f8',panel:'#ffffff',panel2:'#fff0f4',text:'#351724',muted:'#9b7180',accent:'#e85b8a',border:'#f0c8d6',good:'#20a66a',bad:'#e05252'},
+  forest:{bg:'#f2f8f3',panel:'#ffffff',panel2:'#edf6ef',text:'#14251a',muted:'#6b806f',accent:'#3b9b62',border:'#c8ddce',good:'#208a58',bad:'#d9534f'},
+  gold:{bg:'#fffaf0',panel:'#ffffff',panel2:'#fff6df',text:'#2b2110',muted:'#8b7956',accent:'#c99524',border:'#ead7a6',good:'#2b9a63',bad:'#d9534f'}
  };
- var x=themes[t]||themes.default;
- Object.keys(x).forEach(function(k){root.style.setProperty('--'+k,x[k])});
- document.body.style.background=x.bg;
- document.body.style.color=x.text;
- document.querySelectorAll('.lf-theme').forEach(function(b){b.classList.toggle('active',b.dataset.t===t)});
+ if(!themes[t])t='default';
+ S.theme=t;
+ save();
+ var x=themes[t];
+ var root=document.documentElement;
+ Object.keys(x).forEach(function(k){root.style.setProperty('--'+k,x[k],'important')});
+ root.style.setProperty('color-scheme',t==='cyber'?'dark':'light','important');
+ document.body.setAttribute('data-lf-theme',t);
+ root.setAttribute('data-lf-theme',t);
+ document.body.style.setProperty('background-color',x.bg,'important');
+ document.body.style.setProperty('color',x.text,'important');
+ document.querySelectorAll('.lf-theme').forEach(function(b){
+  b.classList.toggle('active',b.getAttribute('data-t')===t);
+ });
 }
 function mount(){
  if(document.getElementById('lfExtra2'))return;
