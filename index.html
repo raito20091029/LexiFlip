@@ -292,7 +292,7 @@ input,select{background:#080b12!important;color:#fff!important;border-color:#303
 </style>\n<style id="lexiflip-quiz-streak-visible">#quizPage .quiz-streak-visible{display:inline-flex!important;align-items:center;justify-content:center;visibility:visible!important;opacity:1!important;min-width:132px;padding:8px 12px;border:1px solid var(--accent)!important;border-radius:999px;background:var(--panel2)!important;color:var(--text)!important;font-size:13px;font-weight:900;line-height:1.2;white-space:nowrap;box-shadow:0 4px 14px #0002,0 0 0 1px #ffffff08 inset;flex:0 0 auto}@media(max-width:600px){#quizPage .bar{align-items:center;gap:8px}#quizPage .quiz-streak-visible{min-width:0;max-width:48%;padding:7px 9px;font-size:11px;overflow:hidden;text-overflow:ellipsis}}\n</style><style id="lexiflip-quiz-correct-overlay">
 /* Quiz correct center feedback */
 #quizCorrectOverlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;pointer-events:none;opacity:0}
-#quizCorrectOverlay.show{opacity:1!important;animation:lfQuizCorrectPop .9s ease-out forwards}
+#quizCorrectOverlay.show{opacity:1!important;animation:lfQuizCorrectPop 1.25s ease-out forwards}
 #quizCorrectOverlay .quiz-correct-mark{font-size:clamp(110px,24vw,230px);font-weight:1000;line-height:1;color:#20a66a;text-shadow:0 8px 30px #0004,0 0 45px #20a66a66;transform:scale(.45)}
 @keyframes lfQuizCorrectPop{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
 @keyframes lfQuizCorrectMark{0%{transform:scale(.45) rotate(-8deg)}35%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
@@ -1038,7 +1038,7 @@ function showQuiz(){
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
     const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40);} if(ok)showQuizCorrectOverlay();
     quizIndex++;
-    setTimeout(()=>showQuiz(),2200);
+    setTimeout(()=>showQuiz(),ok?1800:2200);
   });
 }
 
@@ -1052,7 +1052,7 @@ function showQuizCorrectOverlay(){
   el.classList.remove('show');void el.offsetWidth;el.style.opacity='1';
   el.classList.add('show');
   clearTimeout(window.__lexiQuizCorrectOverlayTimer);
-  window.__lexiQuizCorrectOverlayTimer=setTimeout(()=>el.classList.remove('show'),800);
+  window.__lexiQuizCorrectOverlayTimer=setTimeout(()=>el.classList.remove('show'),1250);
 }
 
 function list(q='',target='#list'){const arr=cards.filter(c=>(c.jp+' '+c.en).toLowerCase().includes(q.toLowerCase()));$(target).innerHTML=arr.map(c=>'<div class="item"><span><b>'+c.jp+'</b><br><small>'+c.en+'</small></span><small>習得 '+Math.max(0,c.score)+'</small></div>').join('')||'<div class="empty">単語がありません</div>'}$('#search').oninput=e=>list(e.target.value);$('#sideSearch').oninput=e=>list(e.target.value,'#sideList');list();render();
