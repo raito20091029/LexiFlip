@@ -1245,7 +1245,7 @@ function showQuiz(){
       card.weak=true;
       card.quizWeakCorrectStreak=0;
     }
-    card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
+    card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; window.__lfQuizCoinAnswer=true; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
     const quizStreakEl=$('#quizStreak');if(quizStreakEl)quizStreakEl.textContent='🔥 連続正解 '+streak;
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
     const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40);} if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();
@@ -1995,7 +1995,11 @@ function hook(){
  if(typeof f!=='function'||f.__lfCoinV2)return;
  var n=function(ok){
   var out=f.apply(this,arguments);
-  awardFromQuiz(!!ok);
+  /* コインは4択クイズの回答時だけ付与。カード学習からは付与しない */
+  if(window.__lfQuizCoinAnswer===true){
+   window.__lfQuizCoinAnswer=false;
+   awardFromQuiz(!!ok);
+  }
   return out;
  };
  n.__lfCoinV2=true;
