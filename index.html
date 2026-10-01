@@ -2392,7 +2392,7 @@ function startTest(){
    b.onclick=function(){
     body.querySelectorAll('[data-answer]').forEach(function(x){x.disabled=true});
     var answer=decodeURIComponent(b.getAttribute('data-answer')),ok=answer===String(q.card.en||'');
-    if(ok)state.correct++;else state.wrong++;
+    if(ok){state.correct++;if(typeof window.lexiAddXP==='function')window.lexiAddXP(2);}else state.wrong++;
     var result=document.getElementById('lfRankResult');
     result.className='lf-rank-result '+(ok?'good':'bad');
     result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+String(q.card.en||'');
