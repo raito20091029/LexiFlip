@@ -800,7 +800,7 @@ try{
   )));
   if(localStorage.getItem('lexiflip_cards'))localStorage.removeItem('lexiflip_cards');
 }catch(e){}
-window.lexiMergeVocabulary=()=>cards.length;
+window.__lexiCards=cards;window.lexiMergeVocabulary=()=>cards.length;
 let i=0,dir='jp',quizIndex=0,quizScore=0,streak=0,quizCards=[],quizLastKey='';
 try{const savedQuizStreak=Number(localStorage.getItem('lexiflip_quiz_streak'));if(Number.isFinite(savedQuizStreak)&&savedQuizStreak>=0)streak=Math.floor(savedQuizStreak);}catch(e){}const COMMON_WORDS=new Set(('a an and are as at be been but by can could did do does doing done for from get give go had has have he her here him his how i if in into is it its just know like look make me more most my need no not now of on one only or our out over please say see she so some take than that the their them then there they think this time to too up us use very want was we were what when where which who will with would yes you'+(typeof seed!=='undefined'?' '+seed.map(x=>String(x[1]).toLowerCase()).join(' '):'')).split(/\s+/).filter(Boolean));const normalizeLevelWord=w=>String(w??'').toLowerCase().replace(/[^a-z]+/g,' ').trim().replace(/\\s+/g,' ');const difficultyScore=w=>{const s=normalizeLevelWord(w).replace(/ /g,'');const syll=(s.match(/[aeiouy]+/g)||[]).length;const rare=(s.match(/[jqxz]/g)||[]).length;return s.length+syll*1.15+rare*2.5};const levelGroups=[...new Set(cards.map(c=>normalizeLevelWord(c.en)).filter(Boolean))].sort((a,b)=>difficultyScore(a)-difficultyScore(b));const levelByWord=new Map();const levelCount=levelGroups.length;levelGroups.forEach((w,n)=>{const ratio=n/Math.max(1,levelCount-1);levelByWord.set(w,ratio<.34?'beginner':ratio<.67?'intermediate':'advanced')});cards.forEach(c=>{const w=normalizeLevelWord(c.en);c.common=COMMON_WORDS.has(w);c.level=levelByWord.get(w)||'advanced'});let studyCards=cards;
 const $=s=>document.querySelector(s);
@@ -1473,7 +1473,7 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
 </style><script id="lexiflip-update-guard">
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  var BUILD='0.9.112';
+  var BUILD='0.9.133';
   var reloaded=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){
     if(reloaded)return;
