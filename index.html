@@ -1256,20 +1256,10 @@ function showQuiz(){
       let lfShopState={};
       try{lfShopState=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}')}catch(e){}
       const lfShield=Number(lfShopState.__shieldActive||0)>0;
-      const lfCombo=Number(lfShopState.__comboActive||0)>0;
-      if(lfShield||lfCombo){
-        if(lfShield){
-          streak=Math.max(0,streak);
-          card.score=Math.max(0,card.score);
-          card.weak=!!card.weak;
-        }else if(lfCombo){
-          streak=Math.max(1,streak);
-          card.score=Math.max(0,card.score-1);
-          card.weak=true;
-        }
-        lfShopState.__shieldActive=0;
-        lfShopState.__comboActive=0;
-        try{localStorage.setItem('lexiflip_shop_v1',JSON.stringify(lfShopState))}catch(e){}
+      if(lfShield){
+        streak=Math.max(0,streak);
+        card.score=Math.max(0,card.score);
+        card.weak=!!card.weak;
       }else{
         streak=0;
         card.score=Math.max(0,card.score-1);
