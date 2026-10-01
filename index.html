@@ -1047,7 +1047,12 @@ function showQuiz(){
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
     const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40);} if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();
     quizIndex++;
-    setTimeout(()=>showQuiz(),ok?1300:2000);
+    if(ok){
+      setTimeout(()=>showQuiz(),1300);
+    }else{
+      // ×が1.95秒表示された後、さらに2.00秒待って次の問題へ
+      setTimeout(()=>showQuiz(),3950);
+    }
   });
 }
 
