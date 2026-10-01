@@ -1086,13 +1086,13 @@ function currentPlayerLevel(){try{const raw=localStorage.getItem('lexiflip_progr
 function showCardLevelSelect(){
   const el=ensureCardLevelSelector(),grid=el.querySelector('#cardLevelGrid'),lv=currentPlayerLevel();
   grid.innerHTML=Object.entries(cardLevelLabels).map(([key,v])=>{
-    const count=key==='common'?cards.filter(c=>c.common).length:key==='furniture'?cards.filter(c=>c.category==='furniture').length:cards.filter(c=>c.level===key).length;
+    const count=key==='common'?cards.filter(c=>c.common).length:key==='furniture'?cards.filter(c=>c.category==='furniture_only').length:cards.filter(c=>c.level===key).length;
     const need=CARD_LEVEL_UNLOCKS[key]||1,locked=lv<need;
     return '<button type="button" class="card-level-btn '+(locked?'is-locked':'')+'" data-card-level="'+key+'" '+(locked?'disabled aria-disabled="true"':'')+'><span class="card-level-icon">'+(locked?'🔒':v[0])+'</span><span class="card-level-name">'+v[1]+'</span><span class="card-level-desc">'+(locked?'Lv.'+need+'で解放':v[2])+'</span><span class="card-level-count">'+(locked?'あとLv.'+(need-lv):count.toLocaleString()+'語')+'</span></button>'
   }).join('')+'<button type="button" class="card-level-btn '+(cards.some(c=>c.weak)?'':'is-locked')+'" data-card-level="weak" '+(cards.some(c=>c.weak)?'':'disabled aria-disabled="true"')+'><span class="card-level-icon">😣</span><span class="card-level-name">苦手な単語</span><span class="card-level-desc">苦手登録した単語からランダムに学習</span><span class="card-level-count">'+cards.filter(c=>c.weak).length.toLocaleString()+'語</span></button>';
   grid.querySelectorAll('[data-card-level]:not([disabled])').forEach(b=>b.onclick=()=>{
     const mode=b.dataset.cardLevel;
-    const deck=mode==='weak'?cards.filter(c=>c.weak):(mode==='common'?cards.filter(c=>c.common):mode==='furniture'?cards.filter(c=>c.category==='furniture'):cards.filter(c=>c.level===mode));
+    const deck=mode==='weak'?cards.filter(c=>c.weak):(mode==='common'?cards.filter(c=>c.common):mode==='furniture'?cards.filter(c=>c.category==='furniture_only'):cards.filter(c=>c.level===mode));
     studyCards=deck;
     window.__lexiStudySeenKeys=new Set();
     window.__lexiStudySeenPromptKeys=new Set();
@@ -1531,14 +1531,14 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
     };
     const unlocks={common:1,beginner:5,intermediate:15,advanced:30,furniture:1};
     grid.innerHTML=Object.entries(labels).map(([key,v])=>{
-      const count=key==='common'?cards.filter(c=>c.common).length:key==='furniture'?cards.filter(c=>c.category==='furniture').length:cards.filter(c=>c.level===key).length;
+      const count=key==='common'?cards.filter(c=>c.common).length:key==='furniture'?cards.filter(c=>c.category==='furniture_only').length:cards.filter(c=>c.level===key).length;
       const need=unlocks[key],locked=lv<need;
       return '<button type="button" class="card-level-btn '+(locked?'is-locked':'')+'" data-quiz-level="'+key+'" '+(locked?'disabled aria-disabled="true"':'')+'><span class="card-level-icon">'+(locked?'🔒':v[0])+'</span><span class="card-level-name">'+v[1]+'</span><span class="card-level-desc">'+(locked?'Lv.'+need+'で解放':v[2])+'</span><span class="card-level-count">'+(locked?'あとLv.'+(need-lv):count.toLocaleString()+'語')+'</span></button>';
     }).join('')+'<button type="button" class="card-level-btn '+(cards.some(c=>c.weak)?'':'is-locked')+'" data-quiz-level="weak" '+(cards.some(c=>c.weak)?'':'disabled aria-disabled="true"')+'><span class="card-level-icon">😣</span><span class="card-level-name">苦手な単語</span><span class="card-level-desc">苦手登録した単語からランダムに4択テスト</span><span class="card-level-count">'+cards.filter(c=>c.weak).length.toLocaleString()+'語</span></button>';
     grid.querySelectorAll('[data-quiz-level]:not([disabled])').forEach(b=>b.onclick=()=>{
       const mode=b.dataset.quizLevel;
       quizMode=mode;
-      quizStudyCards=mode==='weak'?cards.filter(c=>c.weak):(mode==='common'?cards.filter(c=>c.common):mode==='furniture'?cards.filter(c=>c.category==='furniture'):cards.filter(c=>c.level===mode));
+      quizStudyCards=mode==='weak'?cards.filter(c=>c.weak):(mode==='common'?cards.filter(c=>c.common):mode==='furniture'?cards.filter(c=>c.category==='furniture_only'):cards.filter(c=>c.level===mode));
       el.style.display='none';
       const initial=document.getElementById('initialModeSelect'),home=document.getElementById('homeScreen'),top=document.querySelector('.top'),tabs=document.querySelector('.tabs'),layout=document.querySelector('.layout');
       if(initial)initial.style.display='none';
