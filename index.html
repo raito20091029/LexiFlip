@@ -1749,9 +1749,9 @@ function paintTheme(t){
  var m={
   default:{bg:'#f4f6fb',panel:'#ffffff',panel2:'#f7f8fc',text:'#111522',muted:'#687286',accent:'#665cf6',border:'#e3e7ef'},
   cyber:{bg:'#050812',panel:'#0b1220',panel2:'#101a2c',text:'#e8fbff',muted:'#79a7b8',accent:'#00d9ff',border:'#16445a'},
-  rose:{bg:'#fff5f8',panel:'#ffffff',panel2:'#fff0f4',text:'#351724',muted:'#9b7180',accent:'#e85b8a',border:'#f0c8d6'},
-  forest:{bg:'#f2f8f3',panel:'#ffffff',panel2:'#edf6ef',text:'#14251a',muted:'#6b806f',accent:'#3b9b62',border:'#c8ddce'},
-  gold:{bg:'#fffaf0',panel:'#ffffff',panel2:'#fff6df',text:'#2b2110',muted:'#8b7956',accent:'#c99524',border:'#ead7a6'}
+  rose:{bg:'#170911',panel:'#24101b',panel2:'#321522',text:'#ffeaf2',muted:'#d89aae',accent:'#ff4f91',border:'#63213e'},
+  forest:{bg:'#07130c',panel:'#0d2115',panel2:'#12301d',text:'#eaffef',muted:'#8fbaa0',accent:'#35d879',border:'#245d38'},
+  gold:{bg:'#120d04',panel:'#211807',panel2:'#30220a',text:'#fff4cf',muted:'#cbb477',accent:'#f2bd45',border:'#654b18'}
  };
  var x=m[t]||m.default;
  document.documentElement.style.setProperty('--bg',x.bg,'important');
@@ -1763,6 +1763,7 @@ function paintTheme(t){
  document.documentElement.style.setProperty('--border',x.border,'important');
  document.body.style.setProperty('background',x.bg,'important');
  document.body.style.setProperty('color',x.text,'important');
+ document.documentElement.style.setProperty('color-scheme',t==='default'?'light':'dark','important');
  document.querySelectorAll('.main,.side,.face,.tabs,.section,.stat,.profile-card,.profile-stat,.lf-extra-card,.lf-mission,.lf-record,.lf-review,.lf-challenge').forEach(function(e){
   e.style.setProperty('background',x.panel,'important');
   e.style.setProperty('color',x.text,'important');
@@ -1775,6 +1776,11 @@ function paintTheme(t){
   if(e.getAttribute('data-t')===t){e.style.setProperty('background',x.accent,'important');e.style.setProperty('color','#fff','important')}
   else e.style.setProperty('background',x.panel,'important');
  });
+ var logo=document.querySelector('.logo');
+ if(logo){
+  var grad={default:'linear-gradient(135deg,#766cff,#4c44d9)',cyber:'linear-gradient(135deg,#00d9ff,#6b4cff)',rose:'linear-gradient(135deg,#ff4f91,#b83280)',forest:'linear-gradient(135deg,#35d879,#16804b)',gold:'linear-gradient(135deg,#f6d36b,#b87912)'};
+  logo.style.setProperty('background',grad[t]||grad.default,'important');
+ }
 }
 function mount(){
  if(document.getElementById('lfExtra2'))return;
