@@ -845,12 +845,17 @@ function buildQuizPool(){
   });
 }
 function makeQuiz(){
-  quizStudyCards=Array.isArray(quizStudyCards)&&quizStudyCards.length?quizStudyCards:cards;
+  if(quizMode==='common')quizStudyCards=cards.filter(c=>c.common);
+  else if(quizMode==='beginner'||quizMode==='intermediate'||quizMode==='advanced')quizStudyCards=cards.filter(c=>c.level===quizMode);
+  else quizStudyCards=cards;
+  if(!Array.isArray(quizStudyCards)||!quizStudyCards.length)quizStudyCards=cards;
   quizCards=buildQuizPool();
+  if(!quizCards.length)quizCards=quizShuffle([...cards]);
   quizUsedKeys=new Set();
   quizUsedPromptKeys=new Set();
   quizIndex=0;
   quizScore=0;
+  quizLastOptionKey='';
   showQuiz();
 }
 function showQuiz(){
