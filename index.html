@@ -2419,19 +2419,29 @@ function startTest(){
  var s=rankInfo(),pool=poolForTier(s.tier);
  if(pool.length<8){alert('ランクテストに必要な単語が8語以上必要です。');return}
  var questions=[],used={};
- var attempts=0;
+ var directions=shuffle([true,true,true,true,true,false,false,false,false,false]),attempts=0;
+ function makeRankQuestion(card,askJP){
+  var choices=[],seen={},correct=askJP?String(card.en||''):String(card.jp||'');
+  seen[correct]=1;choices.push(correct);
+  shuffle(pool.slice()).some(function(x){
+   var v=askJP?String(x.en||''):String(x.jp||'');
+   if(v&&!seen[v]&&v!==correct){seen[v]=1;choices.push(v)}
+   return choices.length>=8;
+  });
+  if(choices.length<8)return null;
+  return {card:card,choices:shuffle(choices),askJP:askJP};
+ }
  while(questions.length<10&&attempts++<300){
-  var c=pool[Math.floor(Math.random()*pool.length)];
-  var k=key(c);
+  var c=pool[Math.floor(Math.random()*pool.length)],k=key(c);
   if(used[k])continue;
-  var q=makeQuestion(c,pool);
+  var q=makeRankQuestion(c,directions[questions.length]);
   if(!q)continue;
   used[k]=1;questions.push(q);
  }
  if(questions.length<10){
   var shuffled=shuffle(pool.slice());
   for(var i=0;i<shuffled.length&&questions.length<10;i++){
-   var q=makeQuestion(shuffled[i],pool);
+   var q=makeRankQuestion(shuffled[i],directions[questions.length]);
    if(q&&!used[key(shuffled[i])]){used[key(shuffled[i])]=1;questions.push(q)}
   }
  }
@@ -2462,11 +2472,12 @@ function startTest(){
  function show(){
   var body=document.getElementById('lfRankBody'),q=questions[state.index];
   document.getElementById('lfRankProgress').textContent=(state.index+1)+' / 10問 ・ '+s.name;
-  body.innerHTML='<div class="lf-rank-question">'+String(q.card.jp||'')+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+v+'</button>'+lfPronounceInline(v)+'</div>'}).join('')+'</div><div id="lfRankResult"></div>';
+  var rankPrompt=q.askJP?String(q.card.jp||''):String(q.card.en||'');
+  body.innerHTML='<div class="lf-rank-question">'+rankPrompt+(q.askJP?'':lfPronounceInline(q.card.en))+'</div><div class="lf-rank-answers">'+q.choices.map(function(v){return '<div class="lf-rank-answer-row"><button data-answer="'+encodeURIComponent(v)+'" class="lf-rank-answer-main">'+v+'</button>'+(q.askJP?lfPronounceInline(v):'')+'</div>'}).join('')+'</div><div id="lfRankResult"></div>';
   body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(b){
    b.onclick=function(){
     body.querySelectorAll('.lf-rank-answer-main[data-answer]').forEach(function(x){x.disabled=true});
-    var answer=decodeURIComponent(b.getAttribute('data-answer')),ok=answer===String(q.card.en||'');
+    var answer=decodeURIComponent(b.getAttribute('data-answer')),correctAnswer=q.askJP?String(q.card.en||''):String(q.card.jp||''),ok=answer===correctAnswer;
     if(ok){
       state.correct++;
       if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(true);
@@ -2483,7 +2494,7 @@ function startTest(){
      }
     var result=document.getElementById('lfRankResult');
     result.className='lf-rank-result '+(ok?'good':'bad');
-    result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+String(q.card.en||'');
+    result.textContent=ok?'⭕ 正解！':'❌ 不正解　正解：'+correctAnswer;
     setTimeout(function(){state.index++;if(state.index<10)show();else finish()},650);
    };
   });
