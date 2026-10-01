@@ -2446,12 +2446,14 @@ function startTest(){
   var event=promoted?'🎉 ランクアップ！':demoted?'📉 ランクダウン':'';
   document.getElementById('lfRankProgress').textContent='テスト完了';
   document.getElementById('lfRankBody').innerHTML='<div class="lf-rank-summary"><div class="big">'+state.correct+' / 10</div><div class="lf-rank-result '+(promoted?'good':demoted?'bad':'')+'">'+(event||'テスト完了！')+'</div><div class="lf-rank-current-label">あなたの現在のランク</div><div class="lf-rank-current">'+after.name+'</div><div class="lf-rank-current-rr">'+after.rr+' RR</div><div>正解 '+state.correct+' ・ 不正解 '+state.wrong+'</div><div class="delta">'+changeText+'</div><div class="sub">'+before.name+' '+before.rr+' RR → <b>'+after.name+' '+after.rr+' RR</b></div><div class="lf-rank-result-actions"><button class="lf-rank-test-btn" id="lfRankRetry">🔄 再度挑戦</button><button class="lf-rank-test-btn" id="lfRankDone">この画面を閉じる</button></div></div>';
-  document.getElementById('lfRankRetry').onclick=function(){modal.remove();startTest()};document.getElementById('lfRankDone').onclick=function(){modal.remove();render()};
+  document.getElementById('lfRankRetry').onclick=function(e){e.preventDefault();e.stopPropagation();window.lexiRetryRankTest()};document.getElementById('lfRankDone').onclick=function(e){e.preventDefault();e.stopPropagation();modal.remove();render()};
   render();
  }
  show();
 }
 window.startTest=startTest;
+window.lexiRetryRankTest=function(){try{var oldModal=document.getElementById('lfRankModal');if(oldModal)oldModal.remove();window.lexiRankTestActive=false;setTimeout(function(){startTest()},0)}catch(e){console.error('LexiFlip rank retry failed:',e)}};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#lfRankRetry');if(!b)return;e.preventDefault();e.stopPropagation();window.lexiRetryRankTest()},true);
 
 function boot(){render();var hb=document.getElementById('lfHomeRankTestBtn');if(hb&&!hb.__bound){hb.__bound=true;hb.onclick=startTest}setInterval(function(){render();var b=document.getElementById('lfHomeRankTestBtn');if(b&&!b.__bound){b.__bound=true;b.onclick=startTest}},900)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
