@@ -1954,12 +1954,12 @@ function boot(){mount();hook();syncSource();setInterval(function(){hook();syncSo
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script><style id="lexiflip-coin-style">
-#lfCoinBadge{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid #16445a;border-radius:999px;background:#0b1220;color:#e8fbff;font-weight:950;box-shadow:0 0 18px #00d9ff22,0 5px 16px #0003;white-space:nowrap}
+#lfCoinBadge{position:fixed;top:14px;right:16px;z-index:190000;display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid #16445a;border-radius:999px;background:#0b1220;color:#e8fbff;font-weight:950;box-shadow:0 0 18px #00d9ff22,0 5px 16px #0003;white-space:nowrap;backdrop-filter:blur(10px)}
 #lfCoinBadge .lf-coin-icon{font-size:18px;filter:drop-shadow(0 0 6px #ffd54a)}
 #lfCoinBadge b{color:#ffd95a}
 #lfCoinToast{position:fixed;top:76px;left:50%;transform:translate(-50%,-10px);z-index:200000;opacity:0;pointer-events:none;padding:10px 16px;border:1px solid #00d9ff66;border-radius:14px;background:#0b1220;color:#e8fbff;font-weight:900;box-shadow:0 0 24px #00d9ff33,0 12px 30px #0005;transition:.22s}
 #lfCoinToast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:600px){#lfCoinBadge{padding:7px 10px;font-size:12px}.lf-coin-icon{font-size:16px!important}}
+@media(max-width:600px){#lfCoinBadge{top:10px;right:10px;padding:7px 10px;font-size:12px}.lf-coin-icon{font-size:16px!important}}
 </style>
 <script id="lexiflip-coins-v2">
 (function(){
@@ -1976,10 +1976,7 @@ function add(n,reason){
 }
 function mount(){
  if(!document.getElementById('lfCoinBadge')){
-  var top=document.querySelector('.top');
-  if(top){
-   var badge=document.createElement('div');badge.id='lfCoinBadge';badge.innerHTML='<span class="lf-coin-icon">💰</span><span><b id="lfCoinValue">0</b> コイン</span>';top.appendChild(badge);
-  }
+  var badge=document.createElement('div');badge.id='lfCoinBadge';badge.innerHTML='<span class="lf-coin-icon">💰</span><span><b id="lfCoinValue">0</b> コイン</span>';document.body.appendChild(badge);
  }
  if(!document.getElementById('lfCoinToast')){var toast=document.createElement('div');toast.id='lfCoinToast';document.body.appendChild(toast)}
  render();
