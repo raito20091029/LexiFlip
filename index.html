@@ -1123,9 +1123,11 @@ function randomCard(){if(studyCards.length<2)return 0;let n=i;while(n===i)n=Math
   function levelUp(from,to){
     const d=document.createElement('div');
     d.id='lexiLevelUp';
-    d.innerHTML='<div class="lx-levelup-box"><div class="lx-stars">✨</div><div class="lx-small">LEVEL UP!</div><div class="lx-level">Lv.'+to+'</div><div class="lx-from">Lv.'+from+' → Lv.'+to+'</div></div>';
+    d.innerHTML='<div class="lx-levelup-backdrop"></div><div class="lx-levelup-rays"></div><div class="lx-levelup-particles">'+Array.from({length:18},(_,i)=>'<i style="--i:'+i+'"></i>').join('')+'</div><div class="lx-levelup-box"><div class="lx-levelup-ring"></div><div class="lx-stars">✦</div><div class="lx-small">LEVEL UP</div><div class="lx-level">Lv.'+to+'</div><div class="lx-from">Lv.'+from+' <span>→</span> Lv.'+to+'</div><div class="lx-levelup-line"></div><div class="lx-levelup-sub">NEW LEVEL REACHED</div></div>';
     document.body.appendChild(d);
-    setTimeout(()=>d.remove(),1800);
+    requestAnimationFrame(()=>d.classList.add('show'));
+    setTimeout(()=>d.classList.remove('show'),2600);
+    setTimeout(()=>d.remove(),3000);
   }
   function render(){
     const all=document.querySelectorAll('[id="lexiPlayerCard"],[id="lexiSidePlayerCard"]');
@@ -1153,6 +1155,33 @@ function randomCard(){if(studyCards.length<2)return 0;let n=i;while(n===i)n=Math
       '<div class="lx-xp"><i style="width:'+pct+'%"></i></div>'+
       '<div class="lx-next">次のレベルまで '+Math.max(0,n-p.xp)+' XP</div>';
   }
+  const levelUpStyle=document.createElement('style');
+  levelUpStyle.textContent=
+  '#lexiLevelUp{position:fixed;inset:0;z-index:200000;display:grid;place-items:center;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .35s ease}'+
+  '#lexiLevelUp.show{opacity:1}'+
+  '#lexiLevelUp .lx-levelup-backdrop{position:absolute;inset:0;background:radial-gradient(circle at center,#665cf633 0%,#0b0e1400 48%),#00000066;backdrop-filter:blur(5px);animation:lxLUBackdrop 2.7s ease forwards}'+
+  '#lexiLevelUp .lx-levelup-rays{position:absolute;width:90vmax;height:90vmax;border-radius:50%;background:conic-gradient(from 0deg,#ffffff00,#8b7cff55,#ffffff00,#8b7cff44,#ffffff00);filter:blur(2px);animation:lxLURays 2.6s linear infinite}'+
+  '#lexiLevelUp .lx-levelup-box{position:relative;width:min(440px,88vw);padding:44px 28px 34px;text-align:center;border:1px solid #ffffff44;border-radius:30px;background:linear-gradient(145deg,#ffffff14,#665cf626);box-shadow:0 30px 100px #0008,0 0 80px #665cf655,0 0 0 1px #ffffff18 inset;backdrop-filter:blur(18px);transform:translateY(30px) scale(.78);animation:lxLUBox 1.05s cubic-bezier(.16,.9,.25,1) forwards}'+
+  '#lexiLevelUp .lx-levelup-ring{position:absolute;inset:-3px;border-radius:33px;border:2px solid #9b92ff88;box-shadow:0 0 30px #8b7cff66,0 0 80px #665cf633;animation:lxLURing 1.8s ease-out infinite}'+
+  '#lexiLevelUp .lx-stars{font-size:58px;line-height:1;margin-bottom:6px;color:#fff;text-shadow:0 0 18px #ffffffaa,0 0 45px #8b7cff;animation:lxLUStar 1.2s cubic-bezier(.2,.9,.2,1) forwards}'+
+  '#lexiLevelUp .lx-small{font-size:13px;font-weight:1000;letter-spacing:.35em;color:#cfcaff;text-shadow:0 0 15px #8b7cff;margin-left:.35em}'+
+  '#lexiLevelUp .lx-level{margin:8px 0 10px;font-size:clamp(58px,13vw,92px);font-weight:1000;letter-spacing:-.06em;line-height:1;color:#fff;text-shadow:0 4px 20px #0008,0 0 35px #8b7cff,0 0 70px #665cf6;animation:lxLULevel 1s .12s cubic-bezier(.15,.9,.2,1) both}'+
+  '#lexiLevelUp .lx-from{font-size:14px;font-weight:800;color:#c3c7d7}'+
+  '#lexiLevelUp .lx-from span{display:inline-block;margin:0 8px;color:#9b92ff;font-size:20px}'+
+  '#lexiLevelUp .lx-levelup-line{width:0;height:2px;margin:18px auto 10px;background:linear-gradient(90deg,#ffffff00,#fff,#ffffff00);box-shadow:0 0 18px #fff;animation:lxLULine .8s .45s ease-out forwards}'+
+  '#lexiLevelUp .lx-levelup-sub{font-size:10px;letter-spacing:.25em;color:#9fa7bc;font-weight:900;opacity:0;animation:lxLUFade .5s .65s ease forwards}'+
+  '#lexiLevelUp .lx-levelup-particles{position:absolute;inset:0;pointer-events:none}'+
+  '#lexiLevelUp .lx-levelup-particles i{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 14px #8b7cff;transform:rotate(calc(var(--i)*20deg)) translateY(0) scale(.2);animation:lxLUParticle 1.5s calc(var(--i)*.035s) ease-out forwards}'+
+  '@keyframes lxLUBackdrop{0%,100%{opacity:0}12%,82%{opacity:1}100%{opacity:0}}'+
+  '@keyframes lxLURays{to{transform:rotate(360deg)}}'+
+  '@keyframes lxLUBox{0%{transform:translateY(30px) scale(.78);opacity:0}55%{transform:translateY(0) scale(1.04);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}'+
+  '@keyframes lxLURing{0%{transform:scale(.92);opacity:0}35%{transform:scale(1);opacity:1}100%{transform:scale(1.08);opacity:0}}'+
+  '@keyframes lxLUStar{0%{transform:scale(.2) rotate(-30deg);opacity:0}55%{transform:scale(1.2) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}'+
+  '@keyframes lxLULevel{0%{transform:scale(.45);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}'+
+  '@keyframes lxLULine{to{width:78%}}'+
+  '@keyframes lxLUFade{to{opacity:1}}'+
+  '@keyframes lxLUParticle{0%{transform:rotate(calc(var(--i)*20deg)) translateY(0) scale(.2);opacity:0}12%{opacity:1}100%{transform:rotate(calc(var(--i)*20deg)) translateY(-min(34vw,260px)) scale(1);opacity:0}}';
+  document.head.appendChild(levelUpStyle);
   const style=document.createElement('style');
   style.textContent=
   '#lexiPlayerCard,#lexiSidePlayerCard{padding:18px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(145deg,var(--panel),var(--panel2));box-shadow:0 8px 0 #0002,0 18px 36px #0002;margin-bottom:14px}'+
