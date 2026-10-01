@@ -1604,7 +1604,7 @@ body[data-lf-theme="gold"]{--accent:#d89b24;--lf-glow:#f5b942}
   function cardKey(c){return String(c?.jp||'')+'|'+String(c?.en||'')}
   function refresh(){
     const d=day();
-    try{const list=document.getElementById('lfReviewList');if(list&&Array.isArray(window.__lexiCards)){const picks=window.__lexiCards.slice().sort((a,b)=>(a.weak?-100:mastery(a))-(b.weak?-100:mastery(b))).slice(0,4);list.innerHTML=picks.map(x=>'<div class="lf-mission"><b>'+String(x.en||'').replace(/</g,'&lt;')+'</b><small>'+String(x.jp||'').replace(/</g,'&lt;')+' · 熟練 '+mastery(x)+'%'+(x.weak?' · 😣苦手':'')+'</small></div>').join('')||'<div class="lf-muted">復習する単語はありません</div>'}}catch(e){}, xpEl=document.getElementById('lfTodayXP'), aEl=document.getElementById('lfTodayAnswered'), cEl=document.getElementById('lfTodayCorrect');
+    try{const list=document.getElementById('lfReviewList');if(list&&Array.isArray(window.__lexiCards)){const picks=window.__lexiCards.slice().sort((a,b)=>(a.weak?-100:mastery(a))-(b.weak?-100:mastery(b))).slice(0,4);list.innerHTML=picks.map(x=>'<div class="lf-mission"><b>'+String(x.en||'').replace(/</g,'&lt;')+'</b><small>'+String(x.jp||'').replace(/</g,'&lt;')+' · 熟練 '+mastery(x)+'%'+(x.weak?' · 😣苦手':'')+'</small></div>').join('')||'<div class="lf-muted">復習する単語はありません</div>'}}catch(e){} const xpEl=document.getElementById('lfTodayXP'), aEl=document.getElementById('lfTodayAnswered'), cEl=document.getElementById('lfTodayCorrect');
     if(xpEl)xpEl.textContent=d.xp; if(aEl)aEl.textContent=d.answered;if(cEl)cEl.textContent=d.correct;
     const m=document.querySelectorAll('[data-lf-mission]');
     m.forEach(el=>{const type=el.dataset.lfMission, target=Number(el.dataset.target)||1;let v=type==='answered'?d.answered:type==='correct'?d.correct:type==='xp'?d.xp:d.weakCorrect;const pct=Math.min(100,Math.round(v/target*100));el.querySelector('b').textContent=el.dataset.label+' '+Math.min(v,target)+'/'+target;el.querySelector('i').style.width=pct+'%'});
@@ -1612,6 +1612,18 @@ body[data-lf-theme="gold"]{--accent:#d89b24;--lf-glow:#f5b942}
     const vals={totalAnswered:state.records.totalAnswered,totalCorrect:state.records.totalCorrect,bestCombo:state.records.bestCombo,bestDay:state.records.bestDay,weakCleared:state.records.totalWeakCleared};
     Object.entries(vals).forEach(([k,v])=>{const e=document.getElementById('lfRec'+k);if(e)e.textContent=v});
     save();
+    try{
+      state.claimed=state.claimed||{};
+      const dkey=today();
+      [['answered',10],['correct',20],['weak',3],['xp',50]].forEach(([type,target])=>{
+        const value=type==='answered'?d.answered:type==='correct'?d.correct:type==='weak'?d.weakCorrect:d.xp;
+        const key=dkey+'_'+type;
+        if(value>=target&&!state.claimed[key]){
+          state.claimed[key]=1;save();
+          setTimeout(()=>{try{if(typeof window.lexiAddXP==='function')window.lexiAddXP(5)}catch(e){}},0);
+        }
+      });
+    }catch(e){}
   }
   function addActivity(ok,xp,weak){
     const d=day();d.answered++;if(ok)d.correct++;d.xp+=Number(xp)||0;if(weak&&ok)d.weakCorrect++;
@@ -1682,11 +1694,21 @@ body[data-lf-theme="gold"]{--accent:#d89b24;--lf-glow:#f5b942}
     try{
       document.querySelectorAll('.item').forEach(el=>{
         if(el.querySelector('.lf-mastery'))return;
-        const t=el.textContent||'';const c=(typeof cards!=='undefined')?cards.find(x=>t.includes(String(x.jp))||t.includes(String(x.en))):null;
+        const t=el.textContent||'';const c=Array.isArray(window.__lexiCards)?window.__lexiCards.find(x=>t.includes(String(x.jp))||t.includes(String(x.en))):null;
         if(c){const s=mastery(c);const b=document.createElement('span');b.className='lf-badge lf-mastery';b.textContent='熟練 '+s+'%';el.appendChild(b)}
       })
     }catch(e){}
   }
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest && e.target.closest('#answers button');
+    if(!btn)return;
+    try{
+      const q=(document.getElementById('question')?.textContent||'').trim();
+      const ans=(btn.dataset.fullAnswer||btn.textContent||'').trim();
+      const card=Array.isArray(window.__lexiCards)?window.__lexiCards.find(x=>String(x.jp||'').trim()===q||String(x.en||'').trim()===q):null;
+      if(card&&card.weak&&ans===String(card.en||'').trim()){day().weakCorrect++;refresh()}
+    }catch(err){}
+  },true);
   function hookActivity(){
     const orig=window.lexiProfileRecord;
     if(typeof orig==='function'&&!orig.__lfWrapped){const w=function(ok){addActivity(!!ok,0,false);const out=orig.apply(this,arguments);if(ok)comboToast();return out};w.__lfWrapped=true;window.lexiProfileRecord=w}
