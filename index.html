@@ -2091,7 +2091,7 @@ function buy(k,qty){
 }
 function use(k){
  var s=state();
- if(k==='xp'&&s.xp>0){s.xp--;s.__xpActive=10;save(s);msg('⚡ XPブーストを発動！次の10回が2倍');}
+ if(k==='xp'&&s.xp>0){s.xp--;s.__xpActive=Number(s.__xpActive)||0;s.__xpActive+=10;save(s);msg('⚡ XPブーストを発動！残り'+s.__xpActive+'回が2倍');}
  else if(k==='shield'&&s.shield>0){s.shield--;s.__shieldActive=1;save(s);msg('🛡️ 1ミス保護を発動！');}
  else if(k==='combo'&&s.combo>0){s.combo--;s.__comboActive=1;save(s);msg('🔥 コンボ保険を発動！');}
  else if(k==='effect'&&s.effectOwned){s.effect=!s.effect;save(s);document.documentElement.classList.toggle('lf-neon-effect',s.effect);msg(s.effect?'✨ エフェクトON':'✨ エフェクトOFF');}
