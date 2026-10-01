@@ -820,7 +820,7 @@ function showCardLevelSelect(){
   el.style.display='flex';
   window.scrollTo(0,0);
 }
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');['cards','quiz','manage','profile'].forEach(p=>{const el=$('#'+p+'Page');if(el)el.classList.toggle('hide',p!==b.dataset.page)});if(b.dataset.page==='quiz'){makeQuiz();$('#quizPage').classList.add('show')}else $('#quizPage').classList.remove('show');if(b.dataset.page==='profile'&&window.renderProfile)window.renderProfile()});function quizShuffle(arr){
+/* unified tab handler above controls navigation and mode selectors */function quizShuffle(arr){
   for(let n=arr.length-1;n>0;n--){
     const j=Math.floor(Math.random()*(n+1));
     [arr[n],arr[j]]=[arr[j],arr[n]];
