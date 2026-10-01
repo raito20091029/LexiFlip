@@ -2340,7 +2340,7 @@ function render(){
  if(btn&&!btn.__bound){btn.__bound=true;btn.onclick=startTest}
 }
 function poolForTier(tier){
- var all=Array.isArray(window.__lexiCards)?window.__lexiCards:[];
+ var all=Array.isArray(window.__lexiCards)?window.__lexiCards:(typeof cards!=='undefined'&&Array.isArray(cards)?cards:[]);
  if(!all.length)return [];
  var maxLevel=tier<=2?'beginner':tier<=5?'intermediate':'advanced';
  var order={beginner:0,intermediate:1,advanced:2};
@@ -2448,5 +2448,21 @@ window.startTest=startTest;
 
 function boot(){render();var hb=document.getElementById('lfHomeRankTestBtn');if(hb&&!hb.__bound){hb.__bound=true;hb.onclick=startTest}setInterval(function(){render();var b=document.getElementById('lfHomeRankTestBtn');if(b&&!b.__bound){b.__bound=true;b.onclick=startTest}},900)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script><script id="lexiflip-home-action-guard">
+(function(){
+  function bind(){
+    var study=document.getElementById('initialStudy');
+    var quiz=document.getElementById('initialQuiz');
+    var rank=document.getElementById('initialRankTest');
+    var hero=document.getElementById('lfHomeRankHero');
+    if(study){study.onclick=function(e){e.preventDefault();if(typeof window.showCardLevelSelect==='function')window.showCardLevelSelect();};}
+    if(quiz){quiz.onclick=function(e){e.preventDefault();if(typeof window.showQuizLevelSelect==='function')window.showQuizLevelSelect();};}
+    if(rank){rank.onclick=function(e){e.preventDefault();if(typeof window.startTest==='function')window.startTest();};}
+    if(hero){hero.onclick=function(e){e.preventDefault();if(typeof window.startTest==='function')window.startTest();};}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+  setTimeout(bind,300);
+  setTimeout(bind,1200);
 })();
 </script></body></html>
