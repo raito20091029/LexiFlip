@@ -1501,9 +1501,10 @@ function getActiveCorrectEffect(){
     var ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');
     var catalog=['default','neon','rainbow','thunder','impact','flame','crystal'];
     var type=String(ss.effectType||'default');
-    if(ss.effect===true && catalog.indexOf(type)>=0){
-      if(type==='default' || (ss.effects && ss.effects[type]===true)) return type;
-    }
+    // 現在「使用中」の設定だけを正解演出に採用する。
+    // OFF状態・未所持・不正な値の場合は通常演出に戻す。
+    if(type==='default') return 'default';
+    if(ss.effect===true && catalog.indexOf(type)>=0 && ss.effects && ss.effects[type]===true) return type;
   }catch(e){}
   return fallback;
 }
