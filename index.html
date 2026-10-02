@@ -1465,9 +1465,12 @@ function showQuizCorrectOverlay(){
   el.setAttribute('data-shop-effect',lfShopEffect);
   const mark=el.querySelector('.quiz-correct-mark');
   if(mark){
-    mark.style.animation='none';
+    const anim=lfShopEffect==='rainbow'?'lfQuizRainbowCorrect 1.15s linear both':lfShopEffect==='thunder'?'lfQuizThunderCorrect 1.15s linear both':lfShopEffect==='impact'?'lfQuizImpactCorrect 1.15s cubic-bezier(.15,.9,.2,1) both':lfShopEffect==='flame'?'lfQuizFlameCorrect 1.15s ease-in-out both':lfShopEffect==='crystal'?'lfQuizCrystalCorrect 1.15s ease-in-out both':lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'lfQuizCorrectMark .55s cubic-bezier(.2,.85,.25,1) forwards';
+    // CSS側の通常演出に上書きされないよう、選択中エフェクトを最優先で固定。
+    mark.style.setProperty('animation','none','important');
+    mark.style.setProperty('transform','scale(1)','important');
     void mark.offsetWidth;
-    mark.style.animation=lfShopEffect==='rainbow'?'lfQuizRainbowCorrect 1.15s linear both':lfShopEffect==='thunder'?'lfQuizThunderCorrect 1.15s linear both':lfShopEffect==='impact'?'lfQuizImpactCorrect 1.15s cubic-bezier(.15,.9,.2,1) both':lfShopEffect==='flame'?'lfQuizFlameCorrect 1.15s ease-in-out both':lfShopEffect==='crystal'?'lfQuizCrystalCorrect 1.15s ease-in-out both':lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'lfQuizCorrectMark .55s cubic-bezier(.2,.85,.25,1) forwards';
+    mark.style.setProperty('animation',anim,'important');
   }
   el.classList.remove('show');el.style.display='grid';void el.offsetWidth;el.style.opacity='1';
   el.classList.add('show');
