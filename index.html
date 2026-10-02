@@ -1277,6 +1277,12 @@ function makeQuiz(){
 }
 function updateQuizActiveItems(){
   const el=document.getElementById('quizActiveItems');
+  const streakEl=document.getElementById('quizStreak');
+  if(streakEl){
+    streakEl.textContent='🔥 連続正解 '+(Number(window.lexiQuizCombo)||Number(streak)||0);
+    streakEl.style.display='inline-flex';
+    streakEl.style.visibility='visible';
+  }
   if(!el)return;
   let s={};
   try{s=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}')}catch(e){}
@@ -1285,6 +1291,8 @@ function updateQuizActiveItems(){
   if(Number(s.__shieldActive)>0)a.push('🛡️ 1ミス保護 ・残り'+Number(s.__shieldActive)+'ミス');
   if(Number(s.__boostActive)>0)a.push('🪙 コイン 2倍 ・残り'+Number(s.__boostActive)+'回');
   el.innerHTML=a.map(x=>'<span class="quiz-active-item">'+x+'</span>').join('');
+  el.style.display=a.length?'flex':'none';
+  el.style.visibility='visible';
 }
 function showQuiz(){
   // 4択テストへ戻ったときに、画面側の表示状態が残っていても必ず問題エリアを表示する。
@@ -1435,7 +1443,7 @@ function showQuiz(){
       card.quizWeakCorrectStreak=0;
     }
     card.seen++; save(); try{localStorage.setItem('lexiflip_quiz_streak',String(streak));}catch(e){} window.lexiQuizCombo=streak; window.__lfQuizCoinAnswer=true; if(typeof window.lexiProfileRecord==='function')window.lexiProfileRecord(ok); if(ok&&typeof window.lexiAddXP==='function')window.lexiAddXP(2);
-    const quizStreakEl=$('#quizStreak');if(quizStreakEl)quizStreakEl.textContent='🔥 連続正解 '+streak;
+    const quizStreakEl=$('#quizStreak');if(quizStreakEl){quizStreakEl.textContent='🔥 連続正解 '+streak;quizStreakEl.style.display='inline-flex';quizStreakEl.style.visibility='visible';} updateQuizActiveItems();
     const quizScoreEl=$('#quizScore');if(quizScoreEl)quizScoreEl.textContent=quizScore;
     const reviewRows=opts.map(function(v){const matched=cards.find(function(x){return String(askJP?x.en:x.jp)===String(v)});const jp=matched?matched.jp:(v===answer?card.jp:'');const en=matched?matched.en:(v===answer?card.en:'');return '<div class="lf-quiz-review-pair"><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">🇯🇵</span><span class="lf-quiz-review-value">'+cleanDisplayText(jp||'—',28)+'</span></div><div class="lf-quiz-review-row"><span class="lf-quiz-review-label">🇺🇸</span><span class="lf-quiz-review-value">'+cleanDisplayText(en||'—',40)+'</span>'+(en?lfPronounceInline(en):'')+'</div></div>'}).join('');const resultEl=$('#result');if(resultEl){resultEl.className='result '+(ok?'result-correct':'result-wrong');resultEl.style.setProperty('display','none','important');resultEl.style.visibility='visible';resultEl.innerHTML='<div class="lf-quiz-review-screen"><div class="lf-quiz-review-title">'+(ok?'⭕ 正解！':'❌ 不正解　正解：'+cleanDisplayText(answer,40))+'</div><div class="lf-quiz-review"><div class="lf-quiz-review-title">📚 4つの選択肢を復習</div>'+reviewRows+'</div><button type="button" class="lf-quiz-next" id="lfQuizNext">'+(quizIndex+1<quizCards.length?'次の問題へ →':'結果を見る →')+'</button></div>';}const nextBtn=document.getElementById('lfQuizNext');if(nextBtn)nextBtn.onclick=function(){if(resultEl)resultEl.style.display='none';$('#question').style.display='';$('#answers').style.display='';showQuiz();};const reviewDelay=ok?1150:1950;if(ok)showQuizCorrectOverlay();else showQuizWrongOverlay();clearTimeout(window.__lfQuizReviewTimer);window.__lfQuizReviewTimer=setTimeout(function(){if(resultEl){resultEl.style.display='block';resultEl.scrollIntoView({behavior:'smooth',block:'start'});}$('#question').style.display='none';$('#answers').style.display='none';},reviewDelay);
     quizIndex++;
