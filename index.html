@@ -1525,8 +1525,8 @@ function showQuizCorrectOverlay(){
     const anim=lfShopEffect==='rainbow'?'lfQuizRainbowCorrect 1.15s linear both':lfShopEffect==='thunder'?'lfQuizThunderCorrect 1.15s linear both':lfShopEffect==='impact'?'lfQuizImpactCorrect 1.15s cubic-bezier(.15,.9,.2,1) both':lfShopEffect==='flame'?'lfQuizFlameCorrect 1.15s ease-in-out both':lfShopEffect==='crystal'?'lfQuizCrystalCorrect 1.15s ease-in-out both':lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'lfQuizCorrectMark .55s cubic-bezier(.2,.85,.25,1) forwards';
     // 選択中の演出だけを毎回明示的に適用し、前回のアニメーション状態を持ち越さない。
     mark.style.setProperty('animation','none','important');
-    mark.style.setProperty('transform','scale(1)','important');
-    mark.style.setProperty('filter','none','important');
+    mark.style.removeProperty('transform');
+    mark.style.removeProperty('filter');
     void mark.offsetWidth;
     mark.style.setProperty('animation',anim,'important');
   }
