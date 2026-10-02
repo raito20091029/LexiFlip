@@ -1496,17 +1496,21 @@ function showQuiz(){
 
 
 function getActiveCorrectEffect(){
-  var fallback='default';
+  var catalog=['default','neon','rainbow','thunder','impact','flame','crystal'];
   try{
+    // ショップと正解表示で同じ「現在使用中」の値を共有する。
+    if(window.__lexiActiveCorrectEffect && catalog.indexOf(window.__lexiActiveCorrectEffect)>=0){
+      return window.__lexiActiveCorrectEffect;
+    }
     var ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');
-    var catalog=['default','neon','rainbow','thunder','impact','flame','crystal'];
     var type=String(ss.effectType||'default');
-    // 現在「使用中」の設定だけを正解演出に採用する。
-    // OFF状態・未所持・不正な値の場合は通常演出に戻す。
-    if(type==='default') return 'default';
-    if(ss.effect===true && catalog.indexOf(type)>=0 && ss.effects && ss.effects[type]===true) return type;
+    if(type!=='default' && ss.effect===true && ss.effects && ss.effects[type]===true){
+      window.__lexiActiveCorrectEffect=type;
+      return type;
+    }
   }catch(e){}
-  return fallback;
+  window.__lexiActiveCorrectEffect='default';
+  return 'default';
 }
 function showQuizCorrectOverlay(){
   let el=document.getElementById('quizCorrectOverlay');
@@ -2381,7 +2385,7 @@ function render(){var box=document.getElementById('lfShop');if(!box)return;effec
 function renderEffectShop(){var box=document.getElementById('lfShop');if(!box)return;effectShopOpen=true;var s=state(),t=s.effectType||'default';box.innerHTML='<div class="lf-extra-card"><div class="lf-shop-head"><div><div class="lf-shop-title">✨ 正解エフェクト</div><div class="lf-extra-sub">好きなエフェクトを購入して、4択テストの正解演出をカスタマイズ</div></div><div class="lf-shop-coins">💰 '+coins().toLocaleString()+'</div></div><button class="lf-shop-use" data-effects-back style="margin-bottom:14px">← コインショップ</button><div class="lf-effect-grid">'+Object.keys(effectCatalog).map(function(k){var e=effectCatalog[k],owned=!!s.effects[k],active=s.effect&&t===k;return '<div class="lf-effect-card '+(active?'lf-effect-selected':'')+'"><div class="lf-effect-icon">'+e.name.slice(0,2)+'</div><h3>'+e.name+'</h3><p>'+e.desc+'</p><div class="lf-shop-price">💰 '+e.price+' コイン</div><div class="lf-effect-status">'+(active?'✨ 使用中':owned?'✓ 所有済み':'未購入')+'</div><div class="lf-shop-actions">'+(owned?'<button class="lf-shop-use" data-effect-select="'+k+'">'+(active?'使用中':'使う')+'</button>':'<button data-effect-buy="'+k+'" '+(coins()<e.price?'disabled':'')+'>購入</button>')+'</div></div>'}).join('')+'</div></div>';var back=box.querySelector('[data-effects-back]');if(back)back.onclick=function(){effectShopOpen=false;render()};box.querySelectorAll('[data-effect-buy]').forEach(function(x){x.onclick=function(){buyEffect(x.getAttribute('data-effect-buy'))}});box.querySelectorAll('[data-effect-select]').forEach(function(x){x.onclick=function(){useEffectType(x.getAttribute('data-effect-select'))}})}
 function buyEffect(type){var e=effectCatalog[type],s=state();if(!e||type==='default'||s.effects[type]||coins()<e.price)return;setCoins(coins()-e.price);s.effects[type]=true;s.effectOwned=true;s.effect=true;s.effectType=type;save(s);renderEffectShop();msg(e.name+' を購入！')}
 function buy(k,qty){var it=items[k],s=state(),n=Math.max(1,Number(qty)||1),cost=it?it.price*n:0;if(!it||it.type==='effect'||coins()<cost||(it.type==='unique'&&s[k]))return;if(n>1&&it.type==='unique')return;setCoins(coins()-cost);if(it.type==='unique'){s[k]=true;if(k==='title'){try{localStorage.setItem('lexiflip_title','COIN HUNTER')}catch(e){}}}else s[k]=(Number(s[k])||0)+n;save(s);render();msg(n===1?it.name+' を購入！':it.name+' を'+n+'個購入！')}
-function useEffectType(type){var s=state();if(!effectCatalog[type])return;if(type==='default'){s.effectType='default';s.effect=false;s.effectOwned=false;s.effects.default=true;save(s);document.documentElement.classList.remove('lf-neon-effect');msg('⭕ 通常の正解演出を使用！');renderEffectShop();return}if(!s.effects[type])return;s.effectType=type;s.effect=true;s.effectOwned=true;save(s);document.documentElement.classList.remove('lf-neon-effect');msg(effectCatalog[type].name+' を使用！');renderEffectShop()}
+function useEffectType(type){var s=state();if(!effectCatalog[type])return;if(type==='default'){s.effectType='default';s.effect=false;s.effectOwned=false;s.effects.default=true;window.__lexiActiveCorrectEffect='default';save(s);document.documentElement.classList.remove('lf-neon-effect');msg('⭕ 通常の正解演出を使用！');renderEffectShop();return}if(!s.effects[type])return;s.effectType=type;s.effect=true;s.effectOwned=true;window.__lexiActiveCorrectEffect=type;save(s);document.documentElement.classList.remove('lf-neon-effect');msg(effectCatalog[type].name+' を使用！');renderEffectShop()}
 function use(k){
  if(window.lexiRankTestActive&&k!=='xp'&&k!=='boost'){msg('🏆 ランクテストではXP・コイン増加アイテムのみ使用できます');return}
  var s=state();
