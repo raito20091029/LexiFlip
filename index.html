@@ -1720,7 +1720,12 @@ window.lexiProfileAddXP=n=>{const x=load();x.totalXp=(x.totalXp||0)+n;saveStats(
       b.classList.toggle('active',b.dataset.page===page);
     });
     const quiz=document.getElementById('quizPage');
-    if(quiz) quiz.classList.toggle('show',page==='quiz');
+    if(quiz){
+      quiz.classList.toggle('show',page==='quiz');
+      /* 4択テスト側で強制表示した display:block!important をプロフィール等へ持ち越さない */
+      if(page==='quiz') quiz.style.setProperty('display','block','important');
+      else quiz.style.setProperty('display','none','important');
+    }
     if(page==='quiz' && typeof makeQuiz==='function') makeQuiz();
     if(page==='profile' && typeof window.renderProfile==='function') window.renderProfile();
   }
