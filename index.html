@@ -1451,6 +1451,10 @@ function showQuizCorrectOverlay(){
   let lfShopEffect='default';
   try{const ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');if(ss.effect)lfShopEffect='neon'}catch(e){}
   el.setAttribute('data-shop-effect',lfShopEffect);
+  /* ネオン・パルス時はCSS競合に左右されないよう、演出アニメーションを要素へ直接固定する。 */
+  el.style.animation=lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'';
+  const mark=el.querySelector('.quiz-correct-mark');
+  if(mark)mark.style.animation=lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'lfQuizCorrectMark .55s cubic-bezier(.2,.85,.25,1) forwards';
   el.classList.remove('show');el.style.display='grid';void el.offsetWidth;el.style.opacity='1';
   el.classList.add('show');
   clearTimeout(window.__lexiQuizCorrectOverlayTimer);
