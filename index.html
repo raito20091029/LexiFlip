@@ -1458,7 +1458,11 @@ function showQuizCorrectOverlay(){
     el.innerHTML='<div class="quiz-correct-mark">○</div>';document.body.appendChild(el);
   }
   let lfShopEffect='default';
-  try{const ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');if(ss.effect)lfShopEffect='neon'}catch(e){}
+  try{
+    const ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');
+    /* 正解エフェクトを使用中なら、ショップ再描画や画面切替の影響を受けず必ずネオン・パルスを選択する。 */
+    if(ss.effect===true)lfShopEffect='neon';
+  }catch(e){}
   el.setAttribute('data-shop-effect',lfShopEffect);
   /* ネオン・パルス時はCSS競合に左右されないよう、演出アニメーションを要素へ直接固定する。 */
   el.style.animation=lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'';
