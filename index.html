@@ -1542,10 +1542,10 @@ function showQuizWrongOverlay(){
   }
   el.classList.remove('show');el.style.animation='none';el.style.display='grid';el.style.opacity='1';void el.offsetWidth;
   const mark=el.querySelector('.quiz-wrong-mark');
-  if(mark){mark.style.animation='none';void mark.offsetWidth;mark.style.animation='lfQuizWrongMark .55s cubic-bezier(.2,.85,.25,1) forwards';}
+  if(mark){mark.style.animation='none';void mark.offsetWidth;mark.style.animation='lfQuizWrongMark 1.15s cubic-bezier(.2,.85,.25,1) forwards';}
   el.classList.add('show');
   clearTimeout(window.__lexiQuizWrongOverlayTimer);
-  const duration=550;
+  const duration=1150;
   window.__lexiQuizWrongOverlayTimer=setTimeout(function(){
     el.classList.remove('show');el.style.opacity='0';el.style.display='none';
   },duration);
