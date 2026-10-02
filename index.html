@@ -1283,8 +1283,7 @@ function updateQuizActiveItems(){
   const a=[];
   if(Number(s.__xpActive)>0)a.push('⚡ XP 2倍 ・残り'+Number(s.__xpActive)+'回');
   if(Number(s.__shieldActive)>0)a.push('🛡️ 1ミス保護 ・残り'+Number(s.__shieldActive)+'ミス');
-    if(Number(s.__boostActive)>0)a.push('🪙 コイン 2倍 ・残り'+Number(s.__boostActive)+'回');
-  if(s.effect)a.push('✨ 正解エフェクト ・ON');
+  if(Number(s.__boostActive)>0)a.push('🪙 コイン 2倍 ・残り'+Number(s.__boostActive)+'回');
   el.innerHTML=a.map(x=>'<span class="quiz-active-item">'+x+'</span>').join('');
 }
 function showQuiz(){
