@@ -403,7 +403,9 @@ input,select{background:#080b12!important;color:#fff!important;border-color:#303
 #quizCorrectOverlay .quiz-correct-mark{color:#20a66a;text-shadow:0 8px 30px #0004,0 0 45px #20a66a66}
 #quizWrongOverlay .quiz-wrong-mark{color:#e5484d;text-shadow:0 8px 30px #0004,0 0 45px #e5484d66}
 #quizWrongOverlay{position:fixed;inset:0;z-index:100000;display:none;place-items:center;pointer-events:none;opacity:0}
-#quizWrongOverlay.show{display:grid!important;opacity:1!important;animation:lfQuizWrongPop 1.95s ease-out forwards}
+#quizWrongOverlay.show{display:grid!important;opacity:1!important;animation:none!important}
+#quizWrongOverlay.show .quiz-wrong-mark{animation:lfQuizWrongMark .55s cubic-bezier(.2,.85,.25,1) forwards}
+@keyframes lfQuizWrongMark{0%{transform:scale(.45) rotate(-8deg);opacity:0}35%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes lfQuizWrongPop{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
 @keyframes lfQuizCorrectPop{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
 @keyframes lfQuizCorrectMark{0%{transform:scale(.45) rotate(-8deg)}35%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
@@ -1467,7 +1469,9 @@ function showQuizWrongOverlay(){
     el.innerHTML='<div class="quiz-wrong-mark">×</div>';
     document.body.appendChild(el);
   }
-  el.classList.remove('show');el.style.display='grid';el.style.opacity='1';void el.offsetWidth;
+  el.classList.remove('show');el.style.animation='none';el.style.display='grid';el.style.opacity='1';void el.offsetWidth;
+  const mark=el.querySelector('.quiz-wrong-mark');
+  if(mark){mark.style.animation='none';void mark.offsetWidth;mark.style.animation='lfQuizWrongMark .55s cubic-bezier(.2,.85,.25,1) forwards';}
   el.classList.add('show');
   clearTimeout(window.__lexiQuizWrongOverlayTimer);
   window.__lexiQuizWrongOverlayTimer=setTimeout(()=>{
