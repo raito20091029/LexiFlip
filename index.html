@@ -1451,28 +1451,37 @@ function showQuiz(){
 }
 
 
+function getActiveCorrectEffect(){
+  var fallback='default';
+  try{
+    var ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');
+    var catalog=['default','neon','rainbow','thunder','impact','flame','crystal'];
+    var type=String(ss.effectType||'default');
+    if(ss.effect===true && catalog.indexOf(type)>=0){
+      if(type==='default' || (ss.effects && ss.effects[type]===true)) return type;
+    }
+  }catch(e){}
+  return fallback;
+}
 function showQuizCorrectOverlay(){
   let el=document.getElementById('quizCorrectOverlay');
   if(!el){
     el=document.createElement('div');el.id='quizCorrectOverlay';el.setAttribute('aria-hidden','true');
     el.innerHTML='<div class="quiz-correct-mark">○</div>';document.body.appendChild(el);
   }
-  let lfShopEffect='default';
-  try{
-    const ss=JSON.parse(localStorage.getItem('lexiflip_shop_v1')||'{}');
-    if(ss.effect===true&&ss.effects&&ss.effects[ss.effectType]===true)lfShopEffect=ss.effectType;else if(ss.effect===true)lfShopEffect='neon';
-  }catch(e){}
+  const lfShopEffect=getActiveCorrectEffect();
   el.setAttribute('data-shop-effect',lfShopEffect);
   const mark=el.querySelector('.quiz-correct-mark');
   if(mark){
     const anim=lfShopEffect==='rainbow'?'lfQuizRainbowCorrect 1.15s linear both':lfShopEffect==='thunder'?'lfQuizThunderCorrect 1.15s linear both':lfShopEffect==='impact'?'lfQuizImpactCorrect 1.15s cubic-bezier(.15,.9,.2,1) both':lfShopEffect==='flame'?'lfQuizFlameCorrect 1.15s ease-in-out both':lfShopEffect==='crystal'?'lfQuizCrystalCorrect 1.15s ease-in-out both':lfShopEffect==='neon'?'lfCoinNeonCorrect 1.15s ease-out both':'lfQuizCorrectMark .55s cubic-bezier(.2,.85,.25,1) forwards';
-    // CSS側の通常演出に上書きされないよう、選択中エフェクトを最優先で固定。
+    // 選択中の演出だけを毎回明示的に適用し、前回のアニメーション状態を持ち越さない。
     mark.style.setProperty('animation','none','important');
     mark.style.setProperty('transform','scale(1)','important');
+    mark.style.setProperty('filter','none','important');
     void mark.offsetWidth;
     mark.style.setProperty('animation',anim,'important');
   }
-  el.classList.remove('show');el.style.display='grid';void el.offsetWidth;el.style.opacity='1';
+  el.classList.remove('show');el.style.display='grid';el.style.opacity='1';void el.offsetWidth;
   el.classList.add('show');
   clearTimeout(window.__lexiQuizCorrectOverlayTimer);
   window.__lexiQuizCorrectOverlayTimer=setTimeout(()=>{el.classList.remove('show');el.style.opacity='0';el.style.display='none';},1150);
