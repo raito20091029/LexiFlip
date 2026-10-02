@@ -405,7 +405,7 @@ input,select{background:#080b12!important;color:#fff!important;border-color:#303
 #quizWrongOverlay{position:fixed;inset:0;z-index:100000;display:none;place-items:center;pointer-events:none;opacity:0}
 #quizWrongOverlay.show{display:grid!important;opacity:1!important;animation:none!important}
 #quizWrongOverlay.show .quiz-wrong-mark{animation:lfQuizWrongMark .55s cubic-bezier(.2,.85,.25,1) forwards}
-@keyframes lfQuizWrongMark{0%{transform:scale(.45) rotate(-8deg);opacity:0}35%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes lfQuizWrongMark{0%{transform:scale(.45) rotate(-8deg);opacity:1}35%{transform:scale(1.08) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 @keyframes lfQuizWrongPop{0%{opacity:0}10%{opacity:1}100%{opacity:0}}
 @keyframes lfQuizCorrectPop{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
 @keyframes lfQuizCorrectMark{0%{transform:scale(.45) rotate(-8deg)}35%{transform:scale(1.08) rotate(2deg)}100%{transform:scale(1) rotate(0)}}
